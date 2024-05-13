@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const profileMenuRef = useRef(null);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -19,10 +21,8 @@ const Header = () => {
 
   const handleOutsideClick = (event) => {
     if (
-      menuRef.current &&
-      !menuRef.current.contains(event.target) &&
-      profileMenuRef.current &&
-      !profileMenuRef.current.contains(event.target)
+      (menuRef.current && !menuRef.current.contains(event.target)) ||
+      (profileMenuRef.current && !profileMenuRef.current.contains(event.target))
     ) {
       closeMenu();
     }
@@ -53,7 +53,7 @@ const Header = () => {
             {menuOpen && (
               <div
                 ref={menuRef}
-                className="absolute top-full left-0 mt-1 w-48 bg-blue-950 rounded-md shadow-lg"
+                className="absolute top-16 left-0 mt-1 w-40 bg-blue-950 rounded-xl shadow-lg"
               >
                 <div className="py-1">
                   <Link
@@ -97,24 +97,24 @@ const Header = () => {
             {profileMenuOpen && (
               <div
                 ref={profileMenuRef}
-                className="absolute top-full left-0 mt-1 w-48 bg-blue-800 rounded-md shadow-lg"
+                className="absolute top-full right-0 mt-1 w-40 bg-blue-950 rounded-md shadow-lg"
               >
                 <div className="py-1">
                   <Link
                     to="/profile"
-                    className="block px-4 py-2 text-blue-800 hover:bg-white"
+                    className="block px-4 py-2 hover:bg-white hover:text-blue-950"
                   >
                     Profile
                   </Link>
                   <Link
                     to="/updates"
-                    className="block px-4 py-2 text-blue-800 hover:bg-white"
+                    className="block px-4 py-2 hover:bg-white hover:text-blue-950"
                   >
                     Updates
                   </Link>
                   <Link
                     to="/loginpage"
-                    className="block px-4 py-2 text-blue-800 hover:bg-white"
+                    className="block px-4 py-2 hover:bg-white hover:text-blue-950"
                   >
                     Logout
                   </Link>
