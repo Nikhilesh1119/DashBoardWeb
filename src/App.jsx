@@ -1,10 +1,30 @@
-import React from "react";
-import Class from "./components/class";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/Header";
+// import TeacherPage from './components/TeacherPage';
+// import StudentPage from './components/StudentPage';
+// import ClassroomPage from './components/ClassroomPage';
+// import Update from './components/Update';
+// import Profile from './components/Profile';
+// import LoginSignup from './components/LoginSignup';
+// import Home from './components/Home';
 
-export default function App() {
+function App() {
   return (
-    <>
-      <Class />
-    </>
+    <div className="App">
+      <Router>
+        <Header />
+        <Routes>
+          {/* <Route path = "/" element = {<Home />} />
+          <Route path="/teacher" element={<TeacherPage />} />
+          <Route path="/student" element={<StudentPage />} />
+          <Route path="/classroom" element={<ClassroomPage />} />
+          <Route path="/Updates" element={<Update />} />
+          <Route path="/Profile" element={<Profile/>} /> 
+          <Route path="/LoginPage" element={<LoginSignup/>} /> */}
+        </Routes>
+      </Router>
+    </div>
   );
 }
+
+export default App;
