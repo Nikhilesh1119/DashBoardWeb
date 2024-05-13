@@ -8,13 +8,22 @@ const Header = () => {
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+  const toggleProfileMenu = () => {
+    setProfileMenuOpen(!profileMenuOpen);
+  };
 
   const closeMenu = () => {
     setMenuOpen(false);
+    setProfileMenuOpen(false);
   };
 
   const handleOutsideClick = (event) => {
-    if (menuRef.current && !menuRef.current.contains(event.target)) {
+    if (
+      menuRef.current &&
+      !menuRef.current.contains(event.target) &&
+      profileMenuRef.current &&
+      !profileMenuRef.current.contains(event.target)
+    ) {
       closeMenu();
     }
   };
@@ -79,29 +88,39 @@ const Header = () => {
 
         <div className="flex space-x-8">
           <div className="relative">
-            <button className="text-white px-4 py-2 rounded-md ">Name</button>
-            <div className="absolute top-full left-0 mt-1 w-48 bg-blue-800 rounded-md shadow-lg hidden">
-              <div className="py-1">
-                <Link
-                  to="/profile"
-                  className="block px-4 py-2 text-blue-800 hover:bg-white"
-                >
-                  Profile
-                </Link>
-                <Link
-                  to="/updates"
-                  className="block px-4 py-2 text-blue-800 hover:bg-white"
-                >
-                  Updates
-                </Link>
-                <Link
-                  to="/loginpage"
-                  className="block px-4 py-2 text-blue-800 hover:bg-white"
-                >
-                  Logout
-                </Link>
+            <button
+              onClick={toggleProfileMenu}
+              className="text-white px-4 py-2 rounded-md"
+            >
+              Name
+            </button>
+            {profileMenuOpen && (
+              <div
+                ref={profileMenuRef}
+                className="absolute top-full left-0 mt-1 w-48 bg-blue-800 rounded-md shadow-lg"
+              >
+                <div className="py-1">
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 text-blue-800 hover:bg-white"
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    to="/updates"
+                    className="block px-4 py-2 text-blue-800 hover:bg-white"
+                  >
+                    Updates
+                  </Link>
+                  <Link
+                    to="/loginpage"
+                    className="block px-4 py-2 text-blue-800 hover:bg-white"
+                  >
+                    Logout
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
