@@ -1,29 +1,33 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-// import TeacherPage from './components/TeacherPage';
-// import StudentPage from './components/StudentPage';
-// import ClassroomPage from './components/ClassroomPage';
-// import Update from './components/Update';
-// import Profile from './components/Profile';
-// import LoginSignup from './components/LoginSignup';
-// import Home from './components/Home';
+import { Routes, Route } from "react-router-dom";
+import DashBoard from "./components/DashBoard";
+import NotRequireUser from "./components/NotRequireUser";
+import RequireUser from "./components/RequireUser";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Header />
+    <>
         <Routes>
-          {/* <Route path = "/" element = {<Home />} />
-          <Route path="/teacher" element={<TeacherPage />} />
-          <Route path="/student" element={<StudentPage />} />
-          <Route path="/classroom" element={<ClassroomPage />} />
-          <Route path="/Updates" element={<Update />} />
-          <Route path="/Profile" element={<Profile/>} /> 
-          <Route path="/LoginPage" element={<LoginSignup/>} /> */}
+          <Route element={<RequireUser/>}>
+            <Route path="/" element={<Home/>}>
+              <Route path="/" element={<DashBoard/>}/>
+              <Route path="/about" element={<About/>}/>
+              <Route path="/contact" element={<Contact/>}/>
+            </Route>
+          </Route>
+
+          <Route element={<NotRequireUser/>}>
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/signup" element={<Signup/>}/>
+          </Route>
+          
         </Routes>
-      </Router>
-    </div>
+    </>
   );
 }
 
