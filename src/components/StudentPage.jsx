@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
+import nostudent from "../assets/nostudent.png";
 
 function TeacherPage() {
   const [isFormOpen, setIsFormOpen] = useState(false); // State to manage the visibility of the form
-  const history = useHistory();
 
   // Function to handle opening the form
   const handleOpenForm = () => {
@@ -55,12 +55,12 @@ function TeacherPage() {
         </div>
         <div className="bg-white shadow-md rounded-lg p-5 h-96">
           <div className="flex flex-col items-center justify-center text-center">
-            <img src={noteacher} className="mb-4 size-52" />
+            <img src={nostudent} className="mb-4 size-52" />
             <p className="text-2xl font-bold text-blue-950">
-              No Teachers at this time
+              No Student at this time
             </p>
             <p className="text-blue-950 text-sm">
-              Teachers will be displayed after added
+              Student will be appear here after they enroll in your School
             </p>
           </div>
           <div className="flex justify-end">
