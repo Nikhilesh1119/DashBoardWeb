@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Header from "./components/Header";
-// import TeacherPage from './components/TeacherPage';
+import Navbar from "./components/Navbar";
+import TeacherPage from "./components/TeacherPage";
 // import StudentPage from './components/StudentPage';
 // import ClassroomPage from './components/ClassroomPage';
 // import Update from './components/Update';
@@ -12,10 +12,10 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <Header />
+        <Navbar />
         <Routes>
-          {/* <Route path = "/" element = {<Home />} />
           <Route path="/teacher" element={<TeacherPage />} />
+          {/* <Route path = "/" element = {<Home />} />
           <Route path="/student" element={<StudentPage />} />
           <Route path="/classroom" element={<ClassroomPage />} />
           <Route path="/Updates" element={<Update />} />
