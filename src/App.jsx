@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import TeacherPage from "./components/TeacherPage";
 import StudentPage from "./components/StudentPage";
-import ClassroomPage from "./components/ClassroomPage";
+import ClassSetup from "./components/ClassRoom";
 
 // import Update from './components/Update';
 // import Profile from './components/Profile';

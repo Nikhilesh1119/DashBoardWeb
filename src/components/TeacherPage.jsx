@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function TeacherPage() {
   const [isFormOpen, setIsFormOpen] = useState(false); // State to manage the visibility of the form
-  const history = useHistory();
 
   // Function to handle opening the form
   const handleOpenForm = () => {
