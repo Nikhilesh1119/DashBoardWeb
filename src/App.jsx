@@ -2,6 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import TeacherPage from "./components/TeacherPage";
+
+import Login from "./pages/Login";
+import Class from "./components/class";
+
 // import StudentPage from './components/StudentPage';
 // import ClassroomPage from './components/ClassroomPage';
 // import Update from './components/Update';
@@ -16,6 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/teacher" element={<TeacherPage />} />
+          <Route path="/classroom" element={<Class/>} />
           {/* <Route path = "/" element = {<Home />} />
           <Route path="/student" element={<StudentPage />} />
           {/* 
