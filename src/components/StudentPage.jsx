@@ -3,14 +3,12 @@ import { Link } from "react-router-dom";
 import nostudent from "../assets/nostudent.png";
 
 function TeacherPage() {
-  const [isFormOpen, setIsFormOpen] = useState(false); // State to manage the visibility of the form
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
-  // Function to handle opening the form
   const handleOpenForm = () => {
     setIsFormOpen(true);
   };
 
-  // Function to handle closing the form
   const handleCloseForm = () => {
     setIsFormOpen(false);
   };
