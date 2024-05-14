@@ -19,8 +19,8 @@ function TeacherPage() {
         <div className="mb-4 flex">
           <div className="border border-red-500 inline-block bg-white">
             <button className="bg-white text-red-500 font-bold py-2 px-2 ">
-              <Link to="/TeacherForm" className="text-red-500 no-underline">
-                + new Teacher
+              <Link to="/studentform" className="text-red-500 no-underline">
+                + new Student
               </Link>
             </button>
             <button
