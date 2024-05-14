@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import noteacher from "../assets/noteacher.png";
+import noteacher from '../assets/noteacher.png'
 
 function TeacherPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
