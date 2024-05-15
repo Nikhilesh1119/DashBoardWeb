@@ -6,6 +6,7 @@ import StudentPage from "./components/StudentPage";
 import ClassSetup from "./components/ClassRoom";
 import RegisterTeacher from "./components/TeacherRegisterPage";
 import RegisterStudent from "./components/StudentRegisterPage";
+import Event from "./components/Event";
 
 // import Update from './components/Update';
 // import Profile from './components/Profile';
@@ -23,6 +24,7 @@ function App() {
           <Route path="/classroom" element={<ClassSetup />} />
           <Route path="/teacherform" element={<RegisterTeacher />} />
           <Route path="/studentform" element={<RegisterStudent />} />
+          <Route path="/Event" element={<Event />} />
 
           {/* 
           <Route path="/Updates" element={<Update />} />

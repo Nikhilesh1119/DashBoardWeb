@@ -84,7 +84,7 @@ const Navbar = () => {
                     Classroom
                   </Link>
                   <Link
-                    to="/event"
+                    to="/Event"
                     className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
                   >
                     Events
