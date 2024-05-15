@@ -52,7 +52,7 @@ const Navbar = () => {
           </div>
           <span className="font-bold text-lg ml-2 text-white">LOGO</span>
           {/* setup menu */}
-          <div className="relative pl-6">
+          <div className="relative pl-6 z-10">
             <button
               onMouseEnter={handleMenu}
               className="text-white bg-blue-900 px-4 py-2 rounded-md hover:text-blue-800 hover:bg-white"
