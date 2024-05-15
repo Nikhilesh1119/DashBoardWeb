@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import "tailwindcss/tailwind.css";
 
 const months = [
@@ -33,12 +33,13 @@ const Calendar = ({ month, year, handlePrevMonth, handleNextMonth }) => {
   );
 };
 
-const Day = ({ day, isActive, hasEvent, onClick }) => {
+const Day = ({ day, isActive, hasEvent, onClick, isSunday }) => {
   return (
     <div
-      className={`day ${isActive ? 'bg-blue-900 text-white' : 'bg-gray-200'} 
-        ${hasEvent ? 'border border-purple-500' : ''} 
-        cursor-pointer rounded-lg flex items-center justify-center`}
+      className={`day ${isActive ? 'bg-blue-900 text-white':'bg-white text-blue-950 border border-blue-950' } 
+        ${isSunday ? 'bg-red-100 text-red-600' : ''} 
+        ${hasEvent ? 'bg-green-200' : ''} 
+        cursor-pointer rounded-lg flex items-center justify-center h-14 `}
       onClick={onClick}
     >
       {day}
@@ -48,7 +49,7 @@ const Day = ({ day, isActive, hasEvent, onClick }) => {
 
 const DaysGrid = ({ days }) => {
   return (
-    <div className="days grid grid-cols-7 gap-2 p-4">
+    <div className="days grid grid-cols-7 gap-3 p-4">
       {days}
     </div>
   );
@@ -211,12 +212,14 @@ const Event = () => {
 
     for (let i = 1; i <= lastDay; i++) {
       const hasEvent = getEventsForDay(i).length > 0;
+      const isSunday = new Date(year, month, i).getDay() === 0;
       days.push(
         <Day
           key={i}
           day={i}
           isActive={i === activeDay}
           hasEvent={hasEvent}
+          isSunday={isSunday}
           onClick={() => updateActiveDay(i)}
         />
       );
@@ -230,63 +233,68 @@ const Event = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-200">
-      <div className="container relative w-full max-w-5xl p-5 mx-auto flex rounded-lg bg-blue-950 text-white">
-        <div className="left w-3/5 p-5">
-          <Calendar
-            month={month}
-            year={year}
-            handlePrevMonth={handlePrevMonth}
-            handleNextMonth={handleNextMonth}
-          />
-          <DaysGrid days={generateDays()} />
-          <div className="goto-today flex items-center justify-between p-4 text-blue-950">
-            <div className="goto flex items-center border border-blue-950 rounded-md overflow-hidden">
-              <input
-                type="text"
-                placeholder="mm/yyyy"
-                className="date-input w-full h-8 outline-none px-2"
-                onBlur={handleGotoDate}
-              />
-              <button className="goto-btn px-3 py-1 bg-blue-900 text-white">
-                Go
+    <div className="flex flex-col px-3 bg-blue-100">
+      <div className="text-2xl font-bold text-blue-950 m-3">
+        Event
+      </div>
+      <div className="flex items-center justify-center min-h-screen bg-blue-100">
+        <div className="container relative w-full h-screen max-w-8xl p-5 mb-3 mx-auto flex rounded-lg bg-white text-blue-900">
+          <div className="left w-3/5 p-5">
+            <Calendar
+              month={month}
+              year={year}
+              handlePrevMonth={handlePrevMonth}
+              handleNextMonth={handleNextMonth}
+            />
+            <DaysGrid days={generateDays()} />
+            <div className="goto-today flex items-center justify-between p-4 text-blue-950">
+              <div className="goto flex items-center border border-blue-950 rounded-md overflow-hidden">
+                <input
+                  type="text"
+                  placeholder="mm/yyyy"
+                  className="date-input w-full h-8 outline-none px-2"
+                  onBlur={handleGotoDate}
+                />
+                <button className="goto-btn px-3 py-1 bg-blue-900 text-white">
+                  Go
+                </button>
+              </div>
+              <button
+                className="today-btn px-3 py-1 bg-blue-900 text-white rounded-md"
+                onClick={handleToday}
+              >
+                Today
               </button>
             </div>
-            <button
-              className="today-btn px-3 py-1 bg-blue-900 text-white rounded-md"
-              onClick={handleToday}
-            >
-              Today
-            </button>
+          </div>
+          <div className="right w-2/5 p-5">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold bg-white p-2 rounded-md shadow-md">Events on {activeDay} {months[month]} {year}</h2>
+              <FontAwesomeIcon
+                icon={faPlus}
+                className="cursor-pointer p-4 rounded-md text-blue-900 hover:bg-blue-900 hover:text-white"
+                onClick={() => setShowAddEvent(true)}
+              />
+            </div>
+            <div className="events">
+              {getEventsForDay(activeDay).map((event, index) => (
+                <div key={index} className="event bg-white text-gray-800 p-3 mb-2 rounded-lg shadow">
+                  <h3 className="text-lg font-semibold">{event.title}</h3>
+                  <p className="text-sm">{event.time}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="right w-2/5 p-5">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold">Events on {activeDay} {months[month]} {year}</h2>
-            <FontAwesomeIcon
-              icon={faPlus}
-              className="cursor-pointer text-white hover:bg-white hover:text-blue-900"
-              onClick={() => setShowAddEvent(true)}
-            />
-          </div>
-          <div className="events">
-            {getEventsForDay(activeDay).map((event, index) => (
-              <div key={index} className="event bg-white text-gray-800 p-3 mb-2 rounded-lg shadow">
-                <h3 className="text-lg font-semibold">{event.title}</h3>
-                <p className="text-sm">{event.time}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        {showAddEvent && (
+          <EventForm
+            newEvent={newEvent}
+            setNewEvent={setNewEvent}
+            handleAddEvent={handleAddEvent}
+            setShowAddEvent={setShowAddEvent}
+          />
+        )}
       </div>
-      {showAddEvent && (
-        <EventForm
-          newEvent={newEvent}
-          setNewEvent={setNewEvent}
-          handleAddEvent={handleAddEvent}
-          setShowAddEvent={setShowAddEvent}
-        />
-      )}
     </div>
   );
 };
