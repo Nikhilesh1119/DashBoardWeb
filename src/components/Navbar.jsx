@@ -7,11 +7,20 @@ const Navbar = () => {
   const menuRef = useRef(null);
   const profileMenuRef = useRef(null);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
+  // const toggleMenu = () => {
+  //   setMenuOpen(!menuOpen);
+  // };
+
+  // const toggleProfileMenu = () => {
+  //   setProfileMenuOpen(!profileMenuOpen);
+  // };
+
+  const handleMenu = () => {
+    setMenuOpen(true);
   };
-  const toggleProfileMenu = () => {
-    setProfileMenuOpen(!profileMenuOpen);
+
+  const handleProfileMenu = () => {
+    setProfileMenuOpen(true);
   };
 
   const closeMenu = () => {
@@ -45,7 +54,7 @@ const Navbar = () => {
           {/* setup menu */}
           <div className="relative pl-6">
             <button
-              onClick={toggleMenu}
+              onMouseEnter={handleMenu}
               className="text-white bg-blue-900 px-4 py-2 rounded-md hover:text-blue-800 hover:bg-white"
             >
               Setup
@@ -53,7 +62,7 @@ const Navbar = () => {
             {menuOpen && (
               <div
                 ref={menuRef}
-                className="absolute top-16 left-0 mt-1 w-40 bg-blue-950 rounded-xl shadow-lg"
+                className="absolute top-12 left-0 mt-1 w-40 bg-blue-950 rounded-xl shadow-lg"
               >
                 <div className="py-1">
                   <Link
@@ -89,7 +98,7 @@ const Navbar = () => {
         <div className="flex space-x-8">
           <div className="relative">
             <button
-              onClick={toggleProfileMenu}
+              onMouseEnter={handleProfileMenu}
               className="text-white px-4 py-2 rounded-md"
             >
               Name

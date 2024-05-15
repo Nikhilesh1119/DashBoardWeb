@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import noteacher from '../assets/noteacher.png'
+import noteacher from "../assets/noteacher.png";
 
 function TeacherPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   const handleOpenForm = () => {
     setIsFormOpen(true);
@@ -12,9 +13,16 @@ function TeacherPage() {
   const handleCloseForm = () => {
     setIsFormOpen(false);
   };
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
 
   return (
-    <div className="bg-white min-h-screen flex justify-center  h-35rem py-4 px-3">
+    <div
+      className={`bg-${
+        isDarkMode ? "black" : "white"
+      } min-h-screen flex justify-center  h-35rem py-4 px-3`}
+    >
       <div className="flex flex-col max-w-full max-h-full h-[90%] mx-auto px-16 py-6 bg-[#b9d7f1] bg-opacity-30 w-[90%]">
         <div className="mb-4 flex">
           <div className="border border-red-500 inline-block bg-white">
