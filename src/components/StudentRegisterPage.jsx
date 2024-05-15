@@ -25,7 +25,7 @@ export default function RegisterStudent() {
         <div className="flex flex-col gap-8 max-w-full   mx-auto px-16 py-6 bg-[#b9d7f1] bg-opacity-30 w-[90%]">
           <div className="flex flex-col">
             <div className="flex flex-col pb-10 w-full bg-white rounded-3xl max-md:max-w-full">
-              <div className="justify-center items-start px-10 py-5 w-full text-2xl font-bold text-white rounded bg-sky-950 max-md:px-5 max-md:max-w-full">
+              <div className="justify-center items-start px-10 py-3 w-full text-2xl font-bold text-white rounded bg-sky-950 max-md:px-5 max-md:max-w-full">
                 Student Details
               </div>
               <form
@@ -45,7 +45,8 @@ export default function RegisterStudent() {
                           id="firstname"
                           name="firstname"
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter firstname"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
@@ -58,7 +59,8 @@ export default function RegisterStudent() {
                           id="lastname"
                           name="lastname"
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter lastname"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                     </div>
@@ -73,7 +75,8 @@ export default function RegisterStudent() {
                           onChange={formik.handleChange}
                           value={formik.values.rollNumber}
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter rollNumber"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
@@ -86,7 +89,7 @@ export default function RegisterStudent() {
                           id="gender"
                           name="gender"
                           type="radio"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         >
                           <option value="">Select Gender</option>
                           <option value="male">Male</option>
@@ -106,7 +109,8 @@ export default function RegisterStudent() {
                           onChange={formik.handleChange}
                           value={formik.values.age}
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter age"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
@@ -119,7 +123,8 @@ export default function RegisterStudent() {
                           onChange={formik.handleChange}
                           value={formik.values.phone}
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter phone"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                     </div>
@@ -134,7 +139,8 @@ export default function RegisterStudent() {
                           onChange={formik.handleChange}
                           value={formik.values.email}
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter email"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
@@ -147,14 +153,15 @@ export default function RegisterStudent() {
                           onChange={formik.handleChange}
                           value={formik.values.address}
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter address"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                     </div>
                     <div className="flex justify-end mt-3 mr-3">
                       <button
                         value="Register"
-                        className="justify-center items-center px-6 py-2.5 text-xl font-bold bg-sky-950 rounded border-2 border-solid border-sky-950 max-w-[203px] text-white"
+                        className="justify-center items-center px-6 py-1.5 text-xl font-bold bg-sky-950 rounded border-2 border-solid border-sky-950 max-w-[203px] text-white"
                       >
                         Save
                       </button>

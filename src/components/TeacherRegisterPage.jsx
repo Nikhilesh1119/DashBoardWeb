@@ -23,7 +23,7 @@ export default function RegisterTeacher() {
         <div className="flex flex-col gap-8 max-w-full   mx-auto px-16 py-6 bg-[#b9d7f1] bg-opacity-30 w-[90%]">
           <div className="flex flex-col">
             <div className="flex flex-col pb-10 w-full bg-white rounded-3xl max-md:max-w-full">
-              <div className="justify-center items-start px-10 py-5 w-full text-2xl font-bold text-white rounded bg-sky-950 max-md:px-5 max-md:max-w-full">
+              <div className="justify-center items-start px-10 py-3 w-full text-2xl font-bold text-white rounded bg-sky-950 max-md:px-5 max-md:max-w-full">
                 Teacher Details
               </div>
               <form
@@ -43,7 +43,8 @@ export default function RegisterTeacher() {
                           id="username"
                           name="username"
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter username"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
@@ -56,7 +57,8 @@ export default function RegisterTeacher() {
                           id="firstname"
                           name="firstname"
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter firstname"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                     </div>
@@ -71,7 +73,8 @@ export default function RegisterTeacher() {
                           onChange={formik.handleChange}
                           value={formik.values.lastname}
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter lastname"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
@@ -84,7 +87,8 @@ export default function RegisterTeacher() {
                           onChange={formik.handleChange}
                           value={formik.values.email}
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter email"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                     </div>
@@ -99,7 +103,8 @@ export default function RegisterTeacher() {
                           onChange={formik.handleChange}
                           value={formik.values.password}
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter password"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
@@ -112,14 +117,15 @@ export default function RegisterTeacher() {
                           onChange={formik.handleChange}
                           value={formik.values.phone}
                           type="text"
-                          className="justify-center items-start px-3.5 py-5 mt-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          placeholder="Enter phone"
+                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
                         />
                       </div>
                     </div>
                     <div className="flex justify-end mt-3 mr-3">
                       <button
                         value="Register"
-                        className="justify-center items-center px-6 py-2.5 text-xl font-bold bg-sky-950 rounded border-2 border-solid border-sky-950 max-w-[203px] text-white"
+                        className="justify-center items-center px-6 py-1.5 text-xl font-bold bg-sky-950 rounded-lg border-2 border-solid border-sky-950 max-w-[203px] text-white"
                       >
                         Save
                       </button>
