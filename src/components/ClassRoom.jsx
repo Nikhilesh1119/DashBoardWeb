@@ -5,9 +5,11 @@ import students from "../assets/students.png";
 import downbtn from "../assets/downbtn.png";
 // import trash from "../assets/trash.png";
 import ReactCardFlip from "react-card-flip";
+import { useSelector } from "react-redux";
 
 function ClassSetup() {
   const [count, setCount] = useState(0);
+  const isDarkMode = useSelector((state) => state.auth.isDarkMode);
 
   const [classes, setClasses] = useState([
     ["Nursery", 0],
@@ -61,15 +63,27 @@ function ClassSetup() {
 
   return (
     <>
-      <div>
+      <div className={`${isDarkMode ? "bg-[#0d192f]" : "bg-white"} py-6`}>
         <div
-          className="bg-[#b9d7f1] bg-opacity-25 w-[1600] my-6 mx-16"
+          className={`${
+            isDarkMode
+              ? "bg-[#152f54] bg-opacity-70"
+              : "bg-[#b9d7f1] bg-opacity-30"
+          }  bg-opacity-25 w-[1600] mx-16 `}
           style={{ minHeight: "800px" }}
         >
           <div className="px-16 py-6">
-            <h3 className="text-[#01345b] font-bold text-4xl ">Classroom</h3>
+            <h3
+              className={`${
+                isDarkMode ? "text-white" : "text-[#01345b]"
+              } font-bold text-4xl `}
+            >
+              Classroom
+            </h3>
             <div
-              className="w-[1460] bg-white my-3"
+              className={`${
+                isDarkMode ? "bg-[#0d192f]" : "bg-white"
+              } w-[1460]my-3`}
               style={{ minHeight: "650px" }}
             >
               <div className="py-3 px-11 flex flex-row justify-center flex-wrap">
@@ -77,7 +91,9 @@ function ClassSetup() {
                 {count > 0 && count != 15 ? (
                   <>
                     <div
-                      className="m-6 size-36 flex justify-center items-center border border-yellow-400 rounded-3xl cursor-pointer"
+                      className={`${
+                        isDarkMode ? "bg-[#152f54] bg-opacity-70" : "bg-white"
+                      } m-6 size-36 flex justify-center items-center border border-yellow-400 rounded-3xl cursor-pointer`}
                       onClick={() => {
                         setCount(count - 1);
                         setIsFlipped((prevIsFlipped) =>
@@ -100,7 +116,9 @@ function ClassSetup() {
                   >
                     {/* Front side of the card */}
                     <div
-                      className="my-6 mx-6 size-36 border border-yellow-400 rounded-3xl cursor-pointer"
+                      className={`${
+                        isDarkMode ? "bg-[#152f54] bg-opacity-70" : "bg-white"
+                      } my-6 mx-6 size-36 border border-yellow-400 rounded-3xl cursor-pointer`}
                       key={index}
                     >
                       <div className="rounded-full bg-white">
@@ -117,7 +135,11 @@ function ClassSetup() {
                       </div>
                       <div onClick={() => handleCardClick(index)}>
                         <img src={students} className="h-3/4 w-full p-2" />
-                        <p className="text-center font-semibold text-[#01345b]">
+                        <p
+                          className={`${
+                            isDarkMode ? "text-white" : "text-[#01345b]"
+                          } text-center font-semibold `}
+                        >
                           {classes[index][0]}
                         </p>
                       </div>
@@ -125,7 +147,9 @@ function ClassSetup() {
                     {/* Back side of the card */}
                     <div>
                       <div
-                        className="mt-6 mx-6 size-36 border border-yellow-400 rounded-3xl cursor-pointer"
+                        className={`${
+                          isDarkMode ? "bg-[#152f54] bg-opacity-70" : "bg-white"
+                        } mt-6 mx-6 size-36 border border-yellow-400 rounded-3xl cursor-pointer`}
                         key={index}
                       >
                         <div>
@@ -147,10 +171,20 @@ function ClassSetup() {
                             {/* section */}
                             {[...Array(classes[index][1])].map((_, j) => (
                               <div
-                                className="size-6 mx-1 my-1 border border-rose-500 rounded-lg flex justify-center items-center"
+                                className={`${
+                                  isDarkMode
+                                    ? "border-white"
+                                    : "border-rose-500"
+                                } size-6 mx-1 my-1 border  rounded-lg flex justify-center items-center`}
                                 key={j}
                               >
-                                <div className="text-rose-500">{j + 1}</div>
+                                <div
+                                  className={`${
+                                    isDarkMode ? "text-white" : "text-rose-500"
+                                  } `}
+                                >
+                                  {j + 1}
+                                </div>
                               </div>
                             ))}
 
@@ -171,7 +205,11 @@ function ClassSetup() {
                           </div>
                         </div>
                       </div>
-                      <p className="text-center  font-semibold text-rose-500">
+                      <p
+                        className={`${
+                          isDarkMode ? "text-white" : "text-rose-500"
+                        } text-center  font-semibold `}
+                      >
                         {classes[index][0]}
                       </p>
                     </div>
@@ -182,7 +220,9 @@ function ClassSetup() {
                 {count != 15 ? (
                   <>
                     <div
-                      className="m-6 size-36 flex justify-center items-center border border-yellow-400 rounded-3xl cursor-pointer"
+                      className={`${
+                        isDarkMode ? "bg-[#152f54] bg-opacity-70" : "bg-white"
+                      } m-6 size-36 flex justify-center items-center border border-yellow-400 rounded-3xl cursor-pointer`}
                       onClick={() => {
                         setCount(count + 1);
                         setIsFlipped((prevIsFlipped) => [
@@ -204,10 +244,18 @@ function ClassSetup() {
             {count < 1 ? (
               <>
                 <div className="flex flex-col justify-center items-center -translate-y-80">
-                  <p className="text-3xl font-bold text-[#01345b]">
+                  <p
+                    className={`${
+                      isDarkMode ? "text-white" : "text-[#01345b]"
+                    } text-3xl font-bold `}
+                  >
                     No Classroom at This time
                   </p>
-                  <p className="text-[#01345b] text-lg">
+                  <p
+                    className={`${
+                      isDarkMode ? "text-white" : "text-[#01345b]"
+                    } text-lg`}
+                  >
                     classroom will appear here after you create it using icon
                     above
                   </p>

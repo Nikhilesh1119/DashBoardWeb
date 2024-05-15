@@ -1,6 +1,9 @@
 import { useFormik } from "formik";
+import { useSelector } from "react-redux";
 
 export default function RegisterStudent() {
+  const isDarkMode = useSelector((state) => state.auth.isDarkMode);
+
   const formik = useFormik({
     initialValues: {
       firstname: "",
@@ -21,22 +24,44 @@ export default function RegisterStudent() {
 
   return (
     <div>
-      <div className="bg-white flex justify-center  py-4 px-3">
-        <div className="flex flex-col gap-8 max-w-full   mx-auto px-16 py-6 bg-[#b9d7f1] bg-opacity-30 w-[90%]">
+      <div
+        className={`${
+          isDarkMode ? "bg-[#0d192f]" : "bg-white"
+        } flex justify-center  py-4 px-3`}
+      >
+        <div
+          className={`${
+            isDarkMode
+              ? "bg-[#152f54] bg-opacity-40"
+              : "bg-[#b9d7f1] bg-opacity-30"
+          } flex flex-col gap-8 max-w-full   mx-auto px-16 py-6 w-[90%]`}
+        >
           <div className="flex flex-col">
-            <div className="flex flex-col pb-10 w-full bg-white rounded-3xl max-md:max-w-full">
-              <div className="justify-center items-start px-10 py-3 w-full text-2xl font-bold text-white rounded bg-sky-950 max-md:px-5 max-md:max-w-full">
+            <div className="flex flex-col w-full bg-white  max-md:max-w-full">
+              <div
+                className={`${
+                  isDarkMode
+                    ? "bg-blue-400 text-blue-950"
+                    : "bg-sky-950 text-white "
+                } justify-center items-start px-10 py-3 w-full text-2xl font-bold  max-md:px-5 max-md:max-w-full`}
+              >
                 Student Details
               </div>
               <form
                 onSubmit={formik.handleSubmit}
-                className="flex flex-col px-6 py-0.5 mt-8 w-full max-md:px-5 max-md:max-w-full"
+                className={`${
+                  isDarkMode ? "bg-[#0d192f]" : "bg-white"
+                } flex flex-col px-6 py-0.5 pt-8 pb-4 w-full max-md:px-5 max-md:max-w-full`}
               >
                 <div className="flex gap-5 max-md:flex-wrap">
                   <div className="flex flex-col grow shrink-0 basis-0 w-fit max-md:max-w-full">
                     <div className="flex gap-5 max-md:flex-wrap">
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div className="text-lg font-semibold text-indigo-900 max-md:max-w-full">
+                        <div
+                          className={`${
+                            isDarkMode ? "text-white" : "text-indigo-900"
+                          } text-lg font-semibold  max-md:max-w-full`}
+                        >
                           First Name *
                         </div>
                         <input
@@ -46,11 +71,19 @@ export default function RegisterStudent() {
                           name="firstname"
                           type="text"
                           placeholder="Enter firstname"
-                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          className={`${
+                            isDarkMode
+                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              : "text-zinc-400 bg-white bg-opacity-30"
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div className="text-lg font-semibold text-indigo-900 max-md:max-w-full">
+                        <div
+                          className={`${
+                            isDarkMode ? "text-white" : "text-indigo-900"
+                          } text-lg font-semibold  max-md:max-w-full`}
+                        >
                           Last Name *
                         </div>
                         <input
@@ -60,13 +93,21 @@ export default function RegisterStudent() {
                           name="lastname"
                           type="text"
                           placeholder="Enter lastname"
-                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          className={`${
+                            isDarkMode
+                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              : "text-zinc-400 bg-white bg-opacity-30"
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
                       </div>
                     </div>
                     <div className="flex gap-5 max-md:flex-wrap mt-3">
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div className="text-lg font-semibold text-indigo-900 max-md:max-w-full">
+                        <div
+                          className={`${
+                            isDarkMode ? "text-white" : "text-indigo-900"
+                          } text-lg font-semibold  max-md:max-w-full`}
+                        >
                           Roll Number *
                         </div>
                         <input
@@ -76,11 +117,19 @@ export default function RegisterStudent() {
                           value={formik.values.rollNumber}
                           type="text"
                           placeholder="Enter rollNumber"
-                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          className={`${
+                            isDarkMode
+                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              : "text-zinc-400 bg-white bg-opacity-30"
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div className="text-lg font-semibold text-indigo-900 max-md:max-w-full">
+                        <div
+                          className={`${
+                            isDarkMode ? "text-white" : "text-indigo-900"
+                          } text-lg font-semibold  max-md:max-w-full`}
+                        >
                           Gender *
                         </div>
                         <select
@@ -89,18 +138,54 @@ export default function RegisterStudent() {
                           id="gender"
                           name="gender"
                           type="radio"
-                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          className={`${
+                            isDarkMode
+                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              : "text-zinc-400 bg-white bg-opacity-30"
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         >
-                          <option value="">Select Gender</option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="other">Other</option>
+                          <option
+                            className={`${
+                              isDarkMode ? "text-white bg-[#152f54]" : ""
+                            }`}
+                            value=""
+                          >
+                            Select Gender
+                          </option>
+                          <option
+                            className={`${
+                              isDarkMode ? "text-white bg-[#152f54]" : ""
+                            }`}
+                            value="male"
+                          >
+                            Male
+                          </option>
+                          <option
+                            className={`${
+                              isDarkMode ? "text-white bg-[#152f54]" : ""
+                            }`}
+                            value="female"
+                          >
+                            Female
+                          </option>
+                          {/* <option
+                            className={`${
+                              isDarkMode ? "text-white bg-[#152f54]" : ""
+                            }`}
+                            value="other"
+                          >
+                            Other
+                          </option> */}
                         </select>
                       </div>
                     </div>
                     <div className="flex gap-5 max-md:flex-wrap">
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div className="text-lg font-semibold text-indigo-900 max-md:max-w-full">
+                        <div
+                          className={`${
+                            isDarkMode ? "text-white" : "text-indigo-900"
+                          } text-lg font-semibold  max-md:max-w-full`}
+                        >
                           Age *
                         </div>
                         <input
@@ -110,11 +195,19 @@ export default function RegisterStudent() {
                           value={formik.values.age}
                           type="text"
                           placeholder="Enter age"
-                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          className={`${
+                            isDarkMode
+                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              : "text-zinc-400 bg-white bg-opacity-30"
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div className="text-lg font-semibold text-indigo-900 max-md:max-w-full">
+                        <div
+                          className={`${
+                            isDarkMode ? "text-white" : "text-indigo-900"
+                          } text-lg font-semibold  max-md:max-w-full`}
+                        >
                           Phone *
                         </div>
                         <input
@@ -124,13 +217,21 @@ export default function RegisterStudent() {
                           value={formik.values.phone}
                           type="text"
                           placeholder="Enter phone"
-                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          className={`${
+                            isDarkMode
+                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              : "text-zinc-400 bg-white bg-opacity-30"
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                       </div>
                     </div>
                     <div className="flex gap-5 max-md:flex-wrap">
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div className="text-lg font-semibold text-indigo-900 max-md:max-w-full">
+                        <div
+                          className={`${
+                            isDarkMode ? "text-white" : "text-indigo-900"
+                          } text-lg font-semibold  max-md:max-w-full`}
+                        >
                           Email *
                         </div>
                         <input
@@ -140,11 +241,19 @@ export default function RegisterStudent() {
                           value={formik.values.email}
                           type="text"
                           placeholder="Enter email"
-                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          className={`${
+                            isDarkMode
+                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              : "text-zinc-400 bg-white bg-opacity-30"
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div className="text-lg font-semibold text-indigo-900 max-md:max-w-full">
+                        <div
+                          className={`${
+                            isDarkMode ? "text-white" : "text-indigo-900"
+                          } text-lg font-semibold  max-md:max-w-full`}
+                        >
                           Address *
                         </div>
                         <input
@@ -154,14 +263,22 @@ export default function RegisterStudent() {
                           value={formik.values.address}
                           type="text"
                           placeholder="Enter address"
-                          className="justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap bg-white rounded-md border border-violet-300 border-solid text-zinc-400 max-md:pr-5 max-md:max-w-full"
+                          className={`${
+                            isDarkMode
+                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              : "text-zinc-400 bg-white bg-opacity-30"
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                       </div>
                     </div>
                     <div className="flex justify-end mt-3 mr-3">
                       <button
                         value="Register"
-                        className="justify-center items-center px-6 py-1.5 text-xl font-bold bg-sky-950 rounded border-2 border-solid border-sky-950 max-w-[203px] text-white"
+                        className={`${
+                          isDarkMode
+                            ? "text-white bg-[#152f54] bg-opacity-30"
+                            : " bg-sky-950 text-white"
+                        } justify-center items-center px-6 py-1.5 text-xl font-bold  rounded border-2 border-solid border-sky-950 max-w-[203px] `}
                       >
                         Save
                       </button>

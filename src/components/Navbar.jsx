@@ -1,11 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { Switch } from "@material-tailwind/react";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+
   const menuRef = useRef(null);
   const profileMenuRef = useRef(null);
+
+  const isDarkMode = useSelector((state) => state.auth.isDarkMode);
 
   // const toggleMenu = () => {
   //   setMenuOpen(!menuOpen);
@@ -96,6 +101,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex space-x-8">
+          <div className=""></div>
           <div className="relative">
             <button
               onMouseEnter={handleProfileMenu}
