@@ -15,9 +15,25 @@ export default function StudentRegister() {
       email: "",
       address: "",
     },
-    validateOnBlur: false,
+    validateOnBlur: true,
     validateOnChange: false,
-    validate: {},
+    validate: (value) => {
+      const error = {};
+      if (!value.firstname.length) error.firstname = "Firstname required";
+      if (!value.lastname.length) error.lastname = "Lastname required";
+      if (value.rollNumber.length < 5 || value.rollNumber.length > 20)
+        error.rollNumber = "RollNumber length should lie in 5 to 20 characters";
+      if (!["male", "female"].includes(value.gender))
+        error.gender = "Please select Gender";
+      if (value.age < 1 || value.age > 100)
+        error.age = "Enter age between 0 and 100";
+      if (value.phone.length != 10) error.phone = "Enter a valid Phone number";
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!value.email || !emailPattern.test(value.email))
+        error.email = "Enter a valid email address";
+      if (!value.address) error.address = "Address required";
+      return error;
+    },
     onSubmit: async function (value) {
       console.log(value);
     },
@@ -35,7 +51,7 @@ export default function StudentRegister() {
             isDarkMode
               ? "bg-[#152f54] bg-opacity-40"
               : "bg-[#b9d7f1] bg-opacity-30"
-          } flex flex-col gap-8 max-w-full   mx-auto px-8 sm:px-16 py-6 w-[90%]`}
+          } flex flex-col gap-8 max-w-full   mx-auto px-16 py-6 w-[90%]`}
         >
           <div className="flex flex-col">
             <div className="flex flex-col w-full bg-white  max-md:max-w-full">
@@ -68,6 +84,7 @@ export default function StudentRegister() {
                         <input
                           onChange={formik.handleChange}
                           value={formik.values.firstname}
+                          onBlur={formik.handleBlur}
                           id="firstname"
                           name="firstname"
                           type="text"
@@ -78,6 +95,12 @@ export default function StudentRegister() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.firstname &&
+                          formik.errors.firstname && (
+                            <p className="text-red-500 my-0">
+                              {formik.errors.firstname}
+                            </p>
+                          )}
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
                         <div
@@ -90,6 +113,7 @@ export default function StudentRegister() {
                         <input
                           onChange={formik.handleChange}
                           value={formik.values.lastname}
+                          onBlur={formik.handleBlur}
                           id="lastname"
                           name="lastname"
                           type="text"
@@ -100,6 +124,11 @@ export default function StudentRegister() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.lastname && formik.errors.lastname && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.lastname}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex gap-5 max-md:flex-wrap mt-3">
@@ -115,6 +144,7 @@ export default function StudentRegister() {
                           id="rollNumber"
                           name="rollNumber"
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.rollNumber}
                           type="text"
                           placeholder="Enter rollNumber"
@@ -124,6 +154,12 @@ export default function StudentRegister() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.rollNumber &&
+                          formik.errors.rollNumber && (
+                            <p className="text-red-500 my-0">
+                              {formik.errors.rollNumber}
+                            </p>
+                          )}
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
                         <div
@@ -135,6 +171,7 @@ export default function StudentRegister() {
                         </div>
                         <select
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.gender}
                           id="gender"
                           name="gender"
@@ -169,15 +206,12 @@ export default function StudentRegister() {
                           >
                             Female
                           </option>
-                          {/* <option
-                            className={`${
-                              isDarkMode ? "text-white bg-[#152f54]" : ""
-                            }`}
-                            value="other"
-                          >
-                            Other
-                          </option> */}
                         </select>
+                        {formik.touched.gender && formik.errors.gender && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.gender}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex gap-5 max-md:flex-wrap">
@@ -193,6 +227,7 @@ export default function StudentRegister() {
                           id="age"
                           name="age"
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.age}
                           type="text"
                           placeholder="Enter age"
@@ -202,6 +237,11 @@ export default function StudentRegister() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.age && formik.errors.age && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.age}
+                          </p>
+                        )}
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
                         <div
@@ -215,6 +255,7 @@ export default function StudentRegister() {
                           id="phone"
                           name="phone"
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.phone}
                           type="text"
                           placeholder="Enter phone"
@@ -224,6 +265,11 @@ export default function StudentRegister() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.phone && formik.errors.phone && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.phone}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex gap-5 max-md:flex-wrap">
@@ -239,6 +285,7 @@ export default function StudentRegister() {
                           id="email"
                           name="email"
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.email}
                           type="text"
                           placeholder="Enter email"
@@ -248,6 +295,11 @@ export default function StudentRegister() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.email && formik.errors.email && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.email}
+                          </p>
+                        )}
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
                         <div
@@ -261,6 +313,7 @@ export default function StudentRegister() {
                           id="address"
                           name="address"
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.address}
                           type="text"
                           placeholder="Enter address"
@@ -270,11 +323,18 @@ export default function StudentRegister() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.address && formik.errors.address && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.address}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex justify-end mt-3 mr-3">
                       <button
+                        type="submit"
                         value="Register"
+                        disabled={!formik.isValid}
                         className={`${
                           isDarkMode
                             ? "text-white bg-[#152f54] bg-opacity-30"
