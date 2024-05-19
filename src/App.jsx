@@ -6,9 +6,10 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import StudentPage from "./components/Student";
-import TeacherPage from "./components/Teacher";
 import ClassSetup from "./components/ClassSetup";
-import RegisterTeacher from "./components/RegisterTeacher";
+import RegisterTeacher from "./components/TeacherRegister";
+import StudentRegister from "./components/StudentRegister";
+import TeacherPage from "./components/Teacher";
 
 
 function App() {
@@ -19,7 +20,9 @@ function App() {
             <Route path="/" element={<Home/>}>
               <Route path="" element={<DashBoard/>}/>
               <Route path="student" element={<StudentPage/>}/>
-              <Route path="teacher" element={<RegisterTeacher/>}/>
+              <Route path="register-student" element={<StudentRegister/>}/>
+              <Route path="teacher" element={<TeacherPage/>}/>
+              <Route path="register-teacher" element={<RegisterTeacher/>}/>
               <Route path="class-setup" element={<ClassSetup/>}/>
             </Route>
           </Route>

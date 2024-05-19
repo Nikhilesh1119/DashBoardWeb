@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { KEY_ACCESS_TOKEN, setItem } from './LocalStorageManager';
+import { KEY_ACCESS_TOKEN, setItem, setUsername } from './LocalStorageManager';
 // const baseURL = "http://89.116.33.150:4400";
 const baseURL = "http://localhost:4000";
 
@@ -37,6 +37,7 @@ export async function loginAdmin(data){
         if (response.data["status"] === "ok") {
             // console.log(response.data);
             setItem(response?.data?.result.accessToken);
+            setUsername(response?.data.result.username);
             return Promise.resolve("login successfully");
         }        
     } catch(error){

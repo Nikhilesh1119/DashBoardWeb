@@ -1,3 +1,5 @@
+import { func } from "prop-types";
+
 export const KEY_ACCESS_TOKEN = 'access_token';
 
 export function getItem(key){
@@ -10,4 +12,7 @@ export function setItem(value){
 
 export function removeItem(key){
     localStorage.removeItem(key);
+}
+export function setUsername(value){
+    localStorage.setItem("username",value);
 }
