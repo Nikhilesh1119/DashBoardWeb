@@ -1,41 +1,39 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
-import Home from "./components/Home";
-import TeacherPage from "./components/TeacherPage";
-import StudentPage from "./components/StudentPage";
-import ClassSetup from "./components/ClassRoom";
-import RegisterTeacher from "./components/TeacherRegisterPage";
-import RegisterStudent from "./components/StudentRegisterPage";
-import Event from "./components/Event";
-import Studentlist from "./components/Studentlist";
+import { Routes, Route } from "react-router-dom";
+import DashBoard from "./components/DashBoard";
+import NotRequireUser from "./components/NotRequireUser";
+import RequireUser from "./components/RequireUser";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import StudentPage from "./components/Student";
+import ClassSetup from "./components/ClassSetup";
+import RegisterTeacher from "./components/TeacherRegister";
+import StudentRegister from "./components/StudentRegister";
+import TeacherPage from "./components/Teacher";
 
-// import Update from './components/Update';
-// import Profile from './components/Profile';
-// import LoginSignup from './components/LoginSignup';
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Navbar />
+    <>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/teacher" element={<TeacherPage />} />
-          <Route path="/student" element={<StudentPage />} />
-          <Route path="/classroom" element={<ClassSetup />} />
-          <Route path="/teacherform" element={<RegisterTeacher />} />
-          <Route path="/studentform" element={<RegisterStudent />} />
-          <Route path="/Event" element={<Event />} />
-          <Route path="/studentlist" element={<Studentlist />} />
+          <Route element={<RequireUser/>}>
+            <Route path="/" element={<Home/>}>
+              <Route path="" element={<DashBoard/>}/>
+              <Route path="student" element={<StudentPage/>}/>
+              <Route path="register-student" element={<StudentRegister/>}/>
+              <Route path="teacher" element={<TeacherPage/>}/>
+              <Route path="register-teacher" element={<RegisterTeacher/>}/>
+              <Route path="class-setup" element={<ClassSetup/>}/>
+            </Route>
+          </Route>
 
-          {/* 
-          <Route path="/Updates" element={<Update />} />
-          <Route path="/Profile" element={<Profile/>} /> 
-          <Route path="/LoginPage" element={<LoginSignup/>} />
-           */}
+          <Route element={<NotRequireUser/>}>
+            <Route path="/login" element={<Login/>}/>
+            <Route path="/signup" element={<Signup/>}/>
+          </Route>
+          
         </Routes>
-      </Router>
-    </div>
+    </>
   );
 }
 
