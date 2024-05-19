@@ -13,7 +13,20 @@ export default function RegisterTeacher() {
       password: "",
       phone: "",
     },
-    validateOnBlur: false,
+    validate: (value) => {
+      const error = {};
+      if (!value.username.length) error.username = "Username required";
+      if (!value.firstname.length) error.firstname = "Firstname required";
+      if (!value.lastname.length) error.lastname = "Lastname required";
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!value.email || !emailPattern.test(value.email))
+        error.email = "Enter a valid email address";
+      if (value.password.length < 8)
+        error.password = "Password should be at least 8 characters long";
+      if (value.phone.length != 10) error.phone = "Enter a valid Phone number";
+      return error;
+    },
+    validateOnBlur: true,
     validateOnChange: false,
     onSubmit: async function (value) {
       console.log(value);
@@ -64,6 +77,7 @@ export default function RegisterTeacher() {
                         </div>
                         <input
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.username}
                           id="username"
                           name="username"
@@ -75,6 +89,11 @@ export default function RegisterTeacher() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.username && formik.errors.username && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.username}
+                          </p>
+                        )}
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
                         <div
@@ -86,6 +105,7 @@ export default function RegisterTeacher() {
                         </div>
                         <input
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.firstname}
                           id="firstname"
                           name="firstname"
@@ -97,6 +117,12 @@ export default function RegisterTeacher() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.firstname &&
+                          formik.errors.firstname && (
+                            <p className="text-red-500 my-0">
+                              {formik.errors.firstname}
+                            </p>
+                          )}
                       </div>
                     </div>
                     <div className="flex gap-5 max-md:flex-wrap">
@@ -112,6 +138,7 @@ export default function RegisterTeacher() {
                           id="lastname"
                           name="lastname"
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.lastname}
                           type="text"
                           placeholder="Enter lastname"
@@ -121,6 +148,12 @@ export default function RegisterTeacher() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
+
+                        {formik.touched.lastname && formik.errors.lastname && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.lastname}
+                          </p>
+                        )}
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
                         <div
@@ -134,6 +167,7 @@ export default function RegisterTeacher() {
                           id="email"
                           name="email"
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.email}
                           type="text"
                           placeholder="Enter email"
@@ -143,6 +177,11 @@ export default function RegisterTeacher() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.email && formik.errors.email && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.email}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex gap-5 max-md:flex-wrap">
@@ -158,6 +197,7 @@ export default function RegisterTeacher() {
                           id="password"
                           name="password"
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.password}
                           type="text"
                           placeholder="Enter password"
@@ -167,6 +207,11 @@ export default function RegisterTeacher() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.password && formik.errors.password && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.password}
+                          </p>
+                        )}
                       </div>
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
                         <div
@@ -180,6 +225,7 @@ export default function RegisterTeacher() {
                           id="phone"
                           name="phone"
                           onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           value={formik.values.phone}
                           type="text"
                           placeholder="Enter phone"
@@ -189,11 +235,18 @@ export default function RegisterTeacher() {
                               : "text-zinc-400 bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
+                        {formik.touched.phone && formik.errors.phone && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.phone}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex justify-end mt-3 mr-3">
                       <button
+                        type="submit"
                         value="Register"
+                        disabled={!formik.isValid}
                         className={`${
                           isDarkMode
                             ? "text-white bg-[#152f54] bg-opacity-30"
