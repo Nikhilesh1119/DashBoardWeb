@@ -17,6 +17,7 @@ export default function RegisterStudent() {
     },
     validateOnBlur: false,
     validateOnChange: false,
+    validate: {},
     onSubmit: async function (value) {
       console.log(value);
     },

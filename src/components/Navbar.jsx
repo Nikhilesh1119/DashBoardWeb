@@ -1,16 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Switch } from "@material-tailwind/react";
-import { useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux";
+import Switch from "react-switch";
+import { authAction } from "../store/AuthSlice";
 const Navbar = () => {
+  const dispatch = useDispatch();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-
   const menuRef = useRef(null);
   const profileMenuRef = useRef(null);
 
   const isDarkMode = useSelector((state) => state.auth.isDarkMode);
+
+  const handleChange = () => {
+    dispatch(authAction.toggleDarkMode());
+  };
 
   // const toggleMenu = () => {
   //   setMenuOpen(!menuOpen);
@@ -41,6 +46,7 @@ const Navbar = () => {
       closeMenu();
     }
   };
+
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
@@ -101,7 +107,18 @@ const Navbar = () => {
         </div>
 
         <div className="flex space-x-8">
-          <div className=""></div>
+          <label className="py-2 flex justify-center items-center gap-x-2">
+            <span>Dark Mode</span>
+            <Switch
+              height={20}
+              width={40}
+              checked={isDarkMode}
+              uncheckedIcon={false}
+              checkedIcon={false}
+              onChange={handleChange}
+              onColor="#000"
+            />
+          </label>
           <div className="relative">
             <button
               onMouseEnter={handleProfileMenu}

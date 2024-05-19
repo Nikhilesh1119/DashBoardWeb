@@ -2,19 +2,16 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: { isLoggedin: false, isDarkMode: true },
+  initialState: { isLoggedin: false, isDarkMode: false },
   reducers: {
-    login(state, action) {
+    login(state) {
       state.isLoggedin = true;
     },
     logout(state) {
       state.isLoggedin = false;
     },
-    setDarkMode(state) {
-      state.isDarkMode = true;
-    },
-    setLightMode(state) {
-      state.isDarkMode = false;
+    toggleDarkMode(state) {
+      state.isDarkMode = !state.isDarkMode;
     },
   },
 });
