@@ -44,3 +44,14 @@ export async function loginAdmin(data){
        return Promise.reject("some error occurred");
     }
 }
+
+export async function registerStudentr(data){
+    try {
+        
+        const response = await axios.post(`${baseURL}/teacher/register`,data);
+
+        
+    } catch (error) {
+        return Promise.reject("some error occured");
+    }
+}

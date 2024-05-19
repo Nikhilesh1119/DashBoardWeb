@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 
 export default function StudentRegister() {
-  const isDarkMode = useSelector((state) => state.auth.isDarkMode);
+  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
 
   const formik = useFormik({
     initialValues: {

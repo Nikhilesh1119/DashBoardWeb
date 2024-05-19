@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const authSlice = createSlice({
+const appConfigSlice = createSlice({
     name:"auth",
     initialState:{
         isLoggedin:false,
         isDarkMode: true,
+        isLoading:false,
+        toastData:{},
     },
     reducers:{
         login(state){
@@ -17,9 +19,16 @@ const authSlice = createSlice({
             console.log("toggle clicked")
             console.log(state.isDarkMode)
             state.isDarkMode = !state.isDarkMode;
-        },        
+        }, 
+        setLoading(state,action){
+            state.isLoading = action.payload;
+        },
+        sowToast(state,action){
+            state.toastData = action.payload;
+        }       
     }
 });
 
-export const authAction = authSlice.actions;
-export default authSlice;
+
+export const appConfigAction = appConfigSlice.actions;
+export default appConfigSlice;

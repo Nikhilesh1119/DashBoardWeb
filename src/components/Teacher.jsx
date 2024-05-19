@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 function TeacherPage () {
   const [isFormOpen, setIsFormOpen] = useState (false);
 
-  const isDarkMode = useSelector (state => state.auth.isDarkMode);
+  const isDarkMode = useSelector (state => state.appConfig.isDarkMode);
 
   const handleOpenForm = () => {
     setIsFormOpen (true);
