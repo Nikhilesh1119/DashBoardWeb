@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Switch from "react-switch";
 import { authAction } from "../store/AuthSlice";
+import { getItem, KEY_ACCESS_TOKEN, removeItem } from "../services/LocalStorageManager";
+// import { authAction } from "../store/AuthSlice";
 const Navbar = () => {
   const dispatch = useDispatch();
 
@@ -12,18 +14,12 @@ const Navbar = () => {
   const profileMenuRef = useRef(null);
 
   const isDarkMode = useSelector((state) => state.auth.isDarkMode);
+  const username = getItem("username");
 
   const handleChange = () => {
     dispatch(authAction.toggleDarkMode());
   };
 
-  // const toggleMenu = () => {
-  //   setMenuOpen(!menuOpen);
-  // };
-
-  // const toggleProfileMenu = () => {
-  //   setProfileMenuOpen(!profileMenuOpen);
-  // };
 
   const handleMenu = () => {
     setMenuOpen(true);
@@ -47,6 +43,11 @@ const Navbar = () => {
     }
   };
 
+
+  const handleLogout=()=>{
+    removeItem(KEY_ACCESS_TOKEN);
+    removeItem("username");
+  }
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
@@ -124,7 +125,7 @@ const Navbar = () => {
               onMouseEnter={handleProfileMenu}
               className="text-white px-4 py-2 rounded-md"
             >
-              Name
+              {username?username:"Admin"}
             </button>
             {profileMenuOpen && (
               <div
@@ -145,7 +146,8 @@ const Navbar = () => {
                     Updates
                   </Link>
                   <Link
-                    to="/loginpage"
+                    onClick={handleLogout}
+                    to="/login"
                     className="block px-4 py-2 hover:bg-white hover:text-blue-950"
                   >
                     Logout
