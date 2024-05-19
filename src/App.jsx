@@ -10,6 +10,7 @@ import ClassSetup from "./components/ClassSetup";
 import RegisterTeacher from "./components/TeacherRegister";
 import StudentRegister from "./components/StudentRegister";
 import TeacherPage from "./components/Teacher";
+import Studentlist from "./components/Studentlist";
 
 
 function App() {
@@ -24,7 +25,8 @@ function App() {
               <Route path="teacher" element={<TeacherPage/>}/>
               <Route path="register-teacher" element={<RegisterTeacher/>}/>
               <Route path="class-setup" element={<ClassSetup/>}/>
-            </Route>
+              <Route path="studentlist" element={<Studentlist/>}/>
+              </Route>
           </Route>
 
           <Route element={<NotRequireUser/>}>
