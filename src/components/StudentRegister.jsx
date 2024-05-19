@@ -1,5 +1,7 @@
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
+import { registerStudent } from "../services/Axios.service";
+import { Toaster, toast } from "react-hot-toast";
 
 export default function StudentRegister() {
   const isDarkMode = useSelector((state) => state.auth.isDarkMode);
@@ -27,15 +29,26 @@ export default function StudentRegister() {
         error.gender = "Please select Gender";
       if (value.age < 1 || value.age > 100)
         error.age = "Enter age between 0 and 100";
-      if (value.phone.length != 10) error.phone = "Enter a valid Phone number";
+      if (value.phone.length != 13) error.phone = "Enter a valid Phone number";
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!value.email || !emailPattern.test(value.email))
         error.email = "Enter a valid email address";
       if (!value.address) error.address = "Address required";
       return error;
     },
-    onSubmit: async function (value) {
-      console.log(value);
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
+      try {
+        console.log(values);
+        const response = await registerStudent(values);
+        console.log(response);
+        toast.success(<b>register Successfully</b>);
+        resetForm();
+      } catch (error) {
+        console.error("Error:", error);
+        toast.error(<b>{error}</b>);
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
@@ -46,6 +59,7 @@ export default function StudentRegister() {
           isDarkMode ? "bg-[#0d192f]" : "bg-white"
         } flex justify-center  py-4 px-3`}
       >
+        <Toaster position="top-center" reverseOrder={false} />
         <div
           className={`${
             isDarkMode

@@ -1,4 +1,3 @@
-import { func } from "prop-types";
 
 export const KEY_ACCESS_TOKEN = 'access_token';
 
