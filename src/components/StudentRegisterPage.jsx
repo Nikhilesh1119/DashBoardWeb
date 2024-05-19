@@ -17,7 +17,50 @@ export default function RegisterStudent() {
     },
     validateOnBlur: false,
     validateOnChange: false,
-    validate: {},
+    validate: (value) => {
+      const error = {};
+
+      // Validate firstname
+      if (value.firstname.length < 3)
+        error.firstname = "Firstname should be at least 3 characters long";
+
+      // Validate lastname
+      if (value.lastname.length < 3)
+        error.lastname = "Lastname should be at least 3 characters long";
+
+      // Validate rollNumber (assuming it should be non-empty and a valid string)
+      if (!value.rollNumber || typeof value.rollNumber !== "string")
+        error.rollNumber = "RollNumber should be a valid string";
+
+      // Validate gender (assuming it should be "Male" or "Female")
+      if (!["Male", "Female"].includes(value.gender))
+        error.gender = "Gender should be either 'Male' or 'Female'";
+
+      // Validate age (assuming a reasonable age range)
+      if (typeof value.age !== "number" || value.age < 0 || value.age > 120)
+        error.age = "Age should be a number between 0 and 120";
+
+      // Validate phone (assuming a basic length check)
+      if (
+        !value.phone ||
+        typeof value.phone !== "string" ||
+        value.phone.length < 10
+      )
+        error.phone =
+          "Phone should be a valid string with at least 10 characters";
+
+      // Validate email (basic regex check for email format)
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!value.email || !emailPattern.test(value.email))
+        error.email = "Email should be a valid email address";
+
+      // Validate address (assuming non-empty string)
+      if (!value.address || typeof value.address !== "string")
+        error.address = "Address should be a valid string";
+
+      return error;
+    },
+
     onSubmit: async function (value) {
       console.log(value);
     },

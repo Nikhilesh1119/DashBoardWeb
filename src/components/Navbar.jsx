@@ -17,14 +17,6 @@ const Navbar = () => {
     dispatch(authAction.toggleDarkMode());
   };
 
-  // const toggleMenu = () => {
-  //   setMenuOpen(!menuOpen);
-  // };
-
-  // const toggleProfileMenu = () => {
-  //   setProfileMenuOpen(!profileMenuOpen);
-  // };
-
   const handleMenu = () => {
     setMenuOpen(true);
   };
