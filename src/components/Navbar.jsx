@@ -79,7 +79,7 @@ const Navbar = () => {
                 ref={menuRef}
                 className="absolute top-12 left-0 mt-1 w-40 bg-blue-950 rounded-xl shadow-lg"
               >
-                <div className="py-1">
+                <div className="py-1" onClick={closeMenu}>
                   <Link
                     to="/teacher"
                     className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
@@ -93,7 +93,7 @@ const Navbar = () => {
                     Student
                   </Link>
                   <Link
-                    to="/classroom"
+                    to="/class-setup"
                     className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
                   >
                     Classroom
@@ -132,7 +132,8 @@ const Navbar = () => {
             {profileMenuOpen &&
               <div
                 ref={profileMenuRef}
-                className="absolute top-full right-0 mt-1 w-40 bg-blue-950 rounded-md shadow-lg"
+                className="absolute top-full right-0 mt-1 w-40 bg-blue-950 rounded-md shadow-lg z-10"
+                onClick={closeMenu}
               >
                 <div className="py-1">
                   <Link

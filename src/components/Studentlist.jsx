@@ -309,5 +309,4 @@ function Studentlist() {
   );
 }
 
-
 export default Studentlist;
