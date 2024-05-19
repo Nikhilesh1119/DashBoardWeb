@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { KEY_ACCESS_TOKEN, setItem, setUsername } from './LocalStorageManager';
-// const baseURL = "http://89.116.33.150:4400";
-const baseURL = "http://localhost:4000";
+const baseURL = "http://89.116.33.150:4400";
+// const baseURL = "http://localhost:4000";
 
 export async function registerAdmin(data) {
     try {
