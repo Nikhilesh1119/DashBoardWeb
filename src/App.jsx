@@ -2,11 +2,13 @@ import { Routes, Route } from "react-router-dom";
 import DashBoard from "./components/DashBoard";
 import NotRequireUser from "./components/NotRequireUser";
 import RequireUser from "./components/RequireUser";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import StudentPage from "./components/Student";
+import TeacherPage from "./components/Teacher";
+import ClassSetup from "./components/ClassSetup";
+import RegisterTeacher from "./components/RegisterTeacher";
 
 
 function App() {
@@ -15,9 +17,10 @@ function App() {
         <Routes>
           <Route element={<RequireUser/>}>
             <Route path="/" element={<Home/>}>
-              <Route path="/" element={<DashBoard/>}/>
-              <Route path="/about" element={<About/>}/>
-              <Route path="/contact" element={<Contact/>}/>
+              <Route path="" element={<DashBoard/>}/>
+              <Route path="student" element={<StudentPage/>}/>
+              <Route path="teacher" element={<RegisterTeacher/>}/>
+              <Route path="class-setup" element={<ClassSetup/>}/>
             </Route>
           </Route>
 

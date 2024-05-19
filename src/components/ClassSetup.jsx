@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import add from "../assets/add.png";
 import minus from "../assets/minus.png";
 import students from "../assets/students.png";
 import ReactCardFlip from "react-card-flip";
 
-function Class() {
+function ClassSetup() {
   const [count, setCount] = useState(0);
   const [classes, setClasses] = useState([
     ["Nursery", 0],
@@ -181,4 +181,4 @@ function Class() {
   );
 }
 
-export default Class;
+export default ClassSetup;
