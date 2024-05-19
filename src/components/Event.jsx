@@ -25,7 +25,7 @@ const months = [
 const Calendar = ({ month, year, handlePrevMonth, handleNextMonth }) => {
   return (
     <div className="calendar bg-white   text-[#0F4189]  rounded-lg  w-full">
-      <div className="month flex items-center justify-between p-4 text-xl font-semibold rounded-lg h-9 capitalize border-2 border-[#DCEBF8]">
+      <div className="month flex items-center justify-between p-4 text-xl font-semibold rounded-lg h-11 capitalize border-2 border-[#DCEBF8]">
         <FontAwesomeIcon
           icon={faAngleLeft}
           className="cursor-pointer text-red-600 size-10"
@@ -53,10 +53,10 @@ const Day = ({ day, isActive, hasEvent, onClick, isSunday, isToday }) => {
   return (
     <div
     className={`day ${isActive ? ' border-2 border-blue-900':'"bg-white text-[#01345B] border-2 border-[#B9D7F1]' } 
-      ${isSunday ? 'text-blue-950 bg-[#FFCF43] border-2 border-yellow-500' : 'bg-[#DCEBF8]'} 
-      ${hasEvent ? 'border-4 border-green-900' : ''} 
+      ${isSunday ? 'text-blue-950 bg-[#FFCF43] border-2 border-yellow-500 shadow-md shadow-yellow-500' : 'bg-[#DCEBF8]'} 
+      ${hasEvent ? 'bg-[#D50B4F] text-white' : ''} 
       ${isToday ? 'bg-purple-300' : ''} 
-      cursor-pointer rounded-lg flex font-bold p-2 h-24 shadow-md `}
+      cursor-pointer rounded-lg flex font-bold p-2 h-24 shadow-md shadow-[#B9D7F1]  `}
     onClick={onClick}
   >
     {day}
@@ -315,9 +315,9 @@ const Event = () => {
               </button>
             </div>
           </div>
-          <div className="right w-2/5 p-5 border border-[#B9D7F1] shadow-md   rounded-lg">
+          <div className="right w-2/5 p-5 border-2 border-[#B9D7F1] shadow-md shadow-[#B9D7F1]  rounded-lg">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold bg-white p-2 rounded-md border-2 border-[#B9D7F1] shadow-md">
+              <h2 className="text-2xl font-bold bg-white p-2 rounded-md border-2 border-[#B9D7F1]  h-11 border-[] shadow-md">
                 Events on {activeDay} {months[month]} {year}
               </h2>
               <FontAwesomeIcon
