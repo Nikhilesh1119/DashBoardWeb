@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 
 function ClassSetup() {
   const [count, setCount] = useState(0);
-  const isDarkMode = useSelector((state) => state.auth.isDarkMode);
+  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
 
   const [classes, setClasses] = useState([
     ["Nursery", 0],
