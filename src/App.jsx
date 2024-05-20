@@ -10,31 +10,29 @@ import ClassSetup from "./components/ClassSetup";
 import RegisterTeacher from "./components/TeacherRegister";
 import StudentRegister from "./components/StudentRegister";
 import TeacherPage from "./components/Teacher";
-import Studentlist from "./components/Studentlist";
-
+import Event from "./components/Event";
 
 function App() {
   return (
     <>
-        <Routes>
-          <Route element={<RequireUser/>}>
-            <Route path="/" element={<Home/>}>
-              <Route path="" element={<DashBoard/>}/>
-              <Route path="student" element={<StudentPage/>}/>
-              <Route path="register-student" element={<StudentRegister/>}/>
-              <Route path="teacher" element={<TeacherPage/>}/>
-              <Route path="register-teacher" element={<RegisterTeacher/>}/>
-              <Route path="class-setup" element={<ClassSetup/>}/>
-              <Route path="studentlist" element={<Studentlist/>}/>
-              </Route>
+      <Routes>
+        <Route element={<RequireUser />}>
+          <Route path="/" element={<Home />}>
+            <Route path="" element={<DashBoard />} />
+            <Route path="student" element={<StudentPage />} />
+            <Route path="register-student" element={<StudentRegister />} />
+            <Route path="teacher" element={<TeacherPage />} />
+            <Route path="register-teacher" element={<RegisterTeacher />} />
+            <Route path="class-setup" element={<ClassSetup />} />
+            <Route path="event" element={<Event />} />
           </Route>
+        </Route>
 
-          <Route element={<NotRequireUser/>}>
-            <Route path="/login" element={<Login/>}/>
-            <Route path="/signup" element={<Signup/>}/>
-          </Route>
-          
-        </Routes>
+        <Route element={<NotRequireUser />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Route>
+      </Routes>
     </>
   );
 }

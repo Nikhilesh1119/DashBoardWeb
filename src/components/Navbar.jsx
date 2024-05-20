@@ -1,57 +1,60 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import Switch from "react-switch";
-import { authAction } from "../store/AuthSlice";
-import { getItem, KEY_ACCESS_TOKEN, removeItem } from "../services/LocalStorageManager";
+import {useEffect, useRef, useState} from 'react';
+import {Link} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
+import Switch from 'react-switch';
+import {appConfigAction} from '../store/AppConfigSlice';
+import {
+  getItem,
+  KEY_ACCESS_TOKEN,
+  removeItem,
+} from '../services/LocalStorageManager';
 // import { authAction } from "../store/AuthSlice";
 const Navbar = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch ();
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
-  const menuRef = useRef(null);
-  const profileMenuRef = useRef(null);
+  const [menuOpen, setMenuOpen] = useState (false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState (false);
+  const menuRef = useRef (null);
+  const profileMenuRef = useRef (null);
 
-  const isDarkMode = useSelector((state) => state.auth.isDarkMode);
-  const username = getItem("username");
+  const isDarkMode = useSelector (state => state.appConfig.isDarkMode);
+  const username = getItem ('username');
 
   const handleChange = () => {
-    dispatch(authAction.toggleDarkMode());
+    dispatch (appConfigAction.toggleDarkMode ());
   };
 
-
   const handleMenu = () => {
-    setMenuOpen(true);
+    setMenuOpen (true);
   };
 
   const handleProfileMenu = () => {
-    setProfileMenuOpen(true);
+    setProfileMenuOpen (true);
   };
 
   const closeMenu = () => {
-    setMenuOpen(false);
-    setProfileMenuOpen(false);
+    setMenuOpen (false);
+    setProfileMenuOpen (false);
   };
 
-  const handleOutsideClick = (event) => {
+  const handleOutsideClick = event => {
     if (
-      (menuRef.current && !menuRef.current.contains(event.target)) ||
-      (profileMenuRef.current && !profileMenuRef.current.contains(event.target))
+      (menuRef.current && !menuRef.current.contains (event.target)) ||
+      (profileMenuRef.current &&
+        !profileMenuRef.current.contains (event.target))
     ) {
-      closeMenu();
+      closeMenu ();
     }
   };
 
-
-  const handleLogout=()=>{
-    removeItem(KEY_ACCESS_TOKEN);
-    removeItem("username");
-  }
-  useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
+  const handleLogout = () => {
+    removeItem (KEY_ACCESS_TOKEN);
+    removeItem ('username');
+  };
+  useEffect (() => {
+    document.addEventListener ('mousedown', handleOutsideClick);
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener ('mousedown', handleOutsideClick);
     };
   }, []);
 
@@ -71,12 +74,12 @@ const Navbar = () => {
             >
               Setup
             </button>
-            {menuOpen && (
+            {menuOpen &&
               <div
                 ref={menuRef}
                 className="absolute top-12 left-0 mt-1 w-40 bg-blue-950 rounded-xl shadow-lg"
               >
-                <div className="py-1">
+                <div className="py-1" onClick={closeMenu}>
                   <Link
                     to="/teacher"
                     className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
@@ -90,7 +93,7 @@ const Navbar = () => {
                     Student
                   </Link>
                   <Link
-                    to="/classroom"
+                    to="/class-setup"
                     className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
                   >
                     Classroom
@@ -102,8 +105,7 @@ const Navbar = () => {
                     Events
                   </Link>
                 </div>
-              </div>
-            )}
+              </div>}
           </div>
         </div>
 
@@ -125,12 +127,13 @@ const Navbar = () => {
               onMouseEnter={handleProfileMenu}
               className="text-white px-4 py-2 rounded-md"
             >
-              {username?username:"Admin"}
+              {username ? username : 'Admin'}
             </button>
-            {profileMenuOpen && (
+            {profileMenuOpen &&
               <div
                 ref={profileMenuRef}
-                className="absolute top-full right-0 mt-1 w-40 bg-blue-950 rounded-md shadow-lg"
+                className="absolute top-full right-0 mt-1 w-40 bg-blue-950 rounded-md shadow-lg z-10"
+                onClick={closeMenu}
               >
                 <div className="py-1">
                   <Link
@@ -153,8 +156,7 @@ const Navbar = () => {
                     Logout
                   </Link>
                 </div>
-              </div>
-            )}
+              </div>}
           </div>
         </div>
       </div>
