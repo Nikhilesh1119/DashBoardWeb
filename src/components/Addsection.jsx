@@ -85,7 +85,7 @@ function Addsection() {
               ) : (
                 <div className="mt-8 flex flex-wrap gap-4">
                   {sections.map((section, index) => (
-                    <div
+                    <button
                       key={index}
                       className={`${
                         isDarkMode ? "bg-blue-950" : "bg-white"
@@ -94,9 +94,9 @@ function Addsection() {
                       <h4
                         className={`${
                           isDarkMode ? "text-white" : "text-[#01345b]"
-                        } text-xl md:text-2xl font-bold`}
+                        } text-xl md:text-3xl font-bold justify-center flex`}
                       >
-                        {section.name}
+                         {section.name}
                       </h4>
                       <p
                         className={`${
@@ -105,7 +105,7 @@ function Addsection() {
                       >
                         Teacher: {section.teacher}
                       </p>
-                    </div>
+                    </button>
                   ))}
                 </div>
               )}
@@ -161,9 +161,9 @@ function Addsection() {
               )}
             </div>
 
-            <div className="mt-8">
+            {/* <div className="mt-8">
               {sections.map((section, index) => (
-                <div
+                <button
                   key={index}
                   className={`${
                     isDarkMode ? "bg-[#0d192f]" : "bg-white"
@@ -183,9 +183,9 @@ function Addsection() {
                   >
                     Teacher: {section.teacher}
                   </p>
-                </div>
+                </button>
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
