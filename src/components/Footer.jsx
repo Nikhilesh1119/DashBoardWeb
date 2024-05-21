@@ -17,7 +17,7 @@ export default function Footer () {
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-1 text-center sm:text-left">
           <div className="text-xl">Product</div>
-          <div className="border border-2  rounded-2xl sm:w-32" />
+          <div className="border-2  rounded-2xl sm:w-32" />
         </div>
         <div className="sm:block flex gap-8">
           <div className="">
@@ -33,7 +33,7 @@ export default function Footer () {
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-1">
           <div className="text-xl text-center sm:text-left">Company</div>
-          <div className="border border-2  rounded-2xl sm:w-32" />
+          <div className="border-2  rounded-2xl sm:w-32" />
         </div>
         <div className="sm:block flex gap-8">
           <div className="">
@@ -50,7 +50,7 @@ export default function Footer () {
       <div className="flex flex-col gap-2 ">
         <div className="flex flex-col gap-1 text-center sm:text-left">
           <div className="text-xl">Contact</div>
-          <div className="border border-2  rounded-2xl sm:w-36" />
+          <div className=" border-2  rounded-2xl sm:w-36" />
         </div>
         <div className="flex gap-4 text-2xl">
           <div><FaLinkedin /></div>
