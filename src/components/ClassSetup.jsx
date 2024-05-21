@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import add from "../assets/add.png";
 import students from "../assets/students.png";
 import downbtn from "../assets/downbtn.png";
 import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getClass } from "../services/Axios.service";
 import Modal from "react-modal";
 
 Modal.setAppElement('#root'); // Set the root element for accessibility
@@ -12,6 +13,26 @@ Modal.setAppElement('#root'); // Set the root element for accessibility
 function ClassSetup() {
   const [count, setCount] = useState(0);
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
+
+  const [classes, setClasses] = useState([
+    ["Nursery", 0],
+    ["LKG", 3],
+    ["UKG", 6],
+    ["1st", 8],
+    ["2nd", 0],
+    ["3rd", 0],
+    ["4th", 0],
+    ["5th", 0],
+    ["6th", 0],
+    ["7th", 0],
+    ["8th", 0],
+    ["9th", 0],
+    ["10th", 0],
+    ["11th", 0],
+    ["12th", 0],
+  ]);
+
+  const [isFlipped, setIsFlipped] = useState(Array(count).fill(false));
   const [classes, setClasses] = useState([]);
   const [isFlipped, setIsFlipped] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -25,38 +46,33 @@ function ClassSetup() {
     });
   };
 
-  const handleNewClassSubmit = () => {
-    if (newClassName.trim() === "") {
-      return;
-    }
-
-    // Check if the new class name already exists
-    const isDuplicate = classes.some(([className]) => className === newClassName.trim());
-    
-    if (isDuplicate) {
-      // Handle duplicate class name
-      alert("Class name already exists. Please enter a unique class name.");
-      return;
-    }
-
-    // Add the new class if it's unique
-    setClasses((prevClasses) => [
-      ...prevClasses,
-      [newClassName.trim(), 0]
-    ]);
-    setCount(count + 1);
-    setIsFlipped((prevIsFlipped) => [...prevIsFlipped, false]);
-    setNewClassName("");
-    closeModal();
+  const handleAddSection = (index) => {
+    setClasses((prevSection) => {
+      const newSection = [...prevSection];
+      newSection[index] = [newSection[index][0], newSection[index][1] + 1];
+      return newSection;
+    });
   };
 
-  const openModal = () => {
-    setModalIsOpen(true);
+  const handleRemoveSection = (index) => {
+    setClasses((prevSection) => {
+      const removeSection = [...prevSection];
+      removeSection[index] = [
+        removeSection[index][0],
+        removeSection[index][1] - 1,
+      ];
+      return removeSection;
+    });
   };
 
-  const closeModal = () => {
-    setModalIsOpen(false);
+  const getAllClass = async () => {
+    const res = await getClass();
+    setClasses(res);
   };
+
+  useEffect(() => {
+    getAllClass();
+  }, []);
 
   return (
     <>

@@ -116,3 +116,41 @@ export async function registerStudent(data) {
     return Promise.reject("some error occurred");
   }
 }
+
+export async function addClass(data) {
+  try {
+    const response = await axios.post(`${baseURL}/class/add`, data);
+    console.log(response);
+    if (response.data["status"] === "error") {
+      const errorField = response.data.message["field"];
+      if (errorField) {
+        return Promise.reject(`invalid ${errorField}`);
+      } else {
+        return Promise.reject(`${response?.data?.message}`);
+      }
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("Class Add successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function getClass() {
+  try {
+    const response = await axios.get(`${baseURL}/class/get`);
+    console.log(response);
+    if (response.data["status"] === "error") {
+      const errorField = response.data.message["field"];
+      if (errorField) {
+        return Promise.reject(`invalid ${errorField}`);
+      } else {
+        return Promise.reject(`${response?.data?.message}`);
+      }
+    }
+    return response;
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}

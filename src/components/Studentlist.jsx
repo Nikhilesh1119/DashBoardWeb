@@ -60,13 +60,19 @@ function Studentlist() {
   ]);
 
   return (
-    <div className={`${isdark} flex flex-col`}>
+    <div
+      className={`${isDarkMode ? "bg-[#152f54]" : "bg-white"} flex flex-col`}
+    >
       <div className="flex flex-col justify-center w-full bg-sky-950 max-md:max-w-full" />
-      <div className="flex flex-col self-center  pr-3  w-full max-w-[90%] mt-3 rounded bg-blue-200 bg-opacity-20 max-md:max-w-full">
+      <div
+        className={`${
+          isDarkMode ? "bg-[#0d192f]" : "bg-blue-200"
+        } flex flex-col self-center  pr-3  w-full max-w-[90%] mt-3 rounded  bg-opacity-20 max-md:max-w-full`}
+      >
         {studentData.length > 0 ? (
           <>
             <div className="flex flex-col self-center w-full font-medium max-w-[1478px] max-md:max-w-full">
-              <div className="flex  pl-4 gap-5 h-10 mt-10 max-md:flex-wrap max-md:mt-10">
+              <div className="flex  pl-3 gap-5 h-10 mt-10 max-md:flex-wrap max-md:mt-10">
                 <div className="flex flex-auto justify-around gap-3 text-lg text-sky-950 max-md:flex-wrap max-md:max-w-full">
                   <div className="flex gap-3 p-2 bg-white rounded">
                     <div>Add filter</div>
