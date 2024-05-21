@@ -2,10 +2,11 @@ import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { registerTeacher } from "../services/Axios.service";
 import { Toaster, toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-export default function RegisterTeacher () {
-  const isDarkMode = useSelector (state => state.appConfig.isDarkMode);
-
+export default function RegisterTeacher() {
+  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -37,6 +38,9 @@ export default function RegisterTeacher () {
         const response = await registerTeacher(values);
         console.log(response);
         toast.success(<b>register Successfully</b>);
+        setTimeout(() => {
+          navigate("/teacher");
+        }, 2000);
         resetForm();
       } catch (error) {
         console.error("Error:", error);

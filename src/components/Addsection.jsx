@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function Addsection() {
   const [sections, setSections] = useState([]);
@@ -8,7 +9,7 @@ function Addsection() {
   const [selectedTeacher, setSelectedTeacher] = useState("");
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
 
-  const teachers = ["Teacher A", "Teacher B", "Teacher C"]; // Example teachers list
+  const teachers = ["Teacher A", "Teacher B", "Teacher C"];
 
   const handleAddSectionClick = () => {
     setShowPopover(true);
@@ -44,14 +45,14 @@ function Addsection() {
               Classname
             </h3>
             <div
-              className={`${
-                isDarkMode ? "bg-[#0d192f]" : "bg-white"
-              } my-3 p-4`}
+              className={`${isDarkMode ? "bg-[#0d192f]" : "bg-white"} my-3 p-4`}
               style={{ minHeight: "650px" }}
             >
               <div
                 className={`flex flex-col justify-center p-3 h-12 rounded border-2 w-full sm:w-52 cursor-pointer mx-auto ${
-                  isDarkMode ? "bg-[#152f54] border-rose-600 text-white" : "bg-white border-rose-600"
+                  isDarkMode
+                    ? "bg-[#152f54] border-rose-600 text-white"
+                    : "bg-white border-rose-600"
                 }`}
                 onClick={handleAddSectionClick}
               >
@@ -79,13 +80,15 @@ function Addsection() {
                       isDarkMode ? "text-white" : "text-[#01345b]"
                     } text-lg`}
                   >
-                    Section will appear here after you create it using icon above
+                    Section will appear here after you create it using icon
+                    above
                   </p>
                 </div>
               ) : (
                 <div className="mt-8 flex flex-wrap gap-4">
                   {sections.map((section, index) => (
-                    <button
+                    <Link
+                      to="/student-list"
                       key={index}
                       className={`${
                         isDarkMode ? "bg-blue-950" : "bg-white"
@@ -96,7 +99,7 @@ function Addsection() {
                           isDarkMode ? "text-white" : "text-[#01345b]"
                         } text-xl md:text-3xl font-bold justify-center flex`}
                       >
-                         {section.name}
+                        {section.name}
                       </h4>
                       <p
                         className={`${
@@ -105,7 +108,7 @@ function Addsection() {
                       >
                         Teacher: {section.teacher}
                       </p>
-                    </button>
+                    </Link>
                   ))}
                 </div>
               )}

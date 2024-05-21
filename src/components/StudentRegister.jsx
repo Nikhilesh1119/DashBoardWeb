@@ -42,6 +42,9 @@ export default function StudentRegister() {
         const response = await registerStudent(values);
         console.log(response);
         toast.success(<b>register Successfully</b>);
+        setTimeout(() => {
+          navigate("/student");
+        }, 2000);
         resetForm();
       } catch (error) {
         console.error("Error:", error);

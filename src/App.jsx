@@ -12,6 +12,7 @@ import StudentRegister from "./components/StudentRegister";
 import TeacherPage from "./components/Teacher";
 import Event from "./components/Event";
 import Addsection from "./components/Addsection";
+import Studentlist from "./components/Studentlist";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route element={<RequireUser />}>
           <Route path="/" element={<Home />}>
             <Route path="" element={<DashBoard />} />
+            <Route path="student-list" element={<Studentlist />} />
             <Route path="student" element={<StudentPage />} />
             <Route path="register-student" element={<StudentRegister />} />
             <Route path="teacher" element={<TeacherPage />} />
