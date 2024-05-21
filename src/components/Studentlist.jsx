@@ -60,7 +60,7 @@ function Studentlist() {
   ]);
 
   return (
-    <div className="flex flex-col bg-white">
+    <div className={`${isdark} flex flex-col`}>
       <div className="flex flex-col justify-center w-full bg-sky-950 max-md:max-w-full" />
       <div className="flex flex-col self-center  pr-3  w-full max-w-[90%] mt-3 rounded bg-blue-200 bg-opacity-20 max-md:max-w-full">
         {studentData.length > 0 ? (

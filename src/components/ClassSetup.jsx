@@ -13,10 +13,10 @@ function ClassSetup() {
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
 
   const [classes, setClasses] = useState([
-    ["Nursery", 8],
-    ["LKG", 0],
-    ["UKG", 0],
-    ["1st", 0],
+    ["Nursery", 0],
+    ["LKG", 3],
+    ["UKG", 6],
+    ["1st", 8],
     ["2nd", 0],
     ["3rd", 0],
     ["4th", 0],
@@ -153,8 +153,8 @@ function ClassSetup() {
                         } mt-6 mx-6 size-36 border border-yellow-400 rounded-3xl cursor-pointer`}
                         key={index}
                       >
-                        <div>
-                          <div className="px-5 pt-5 flex flex-row flex-wrap ">
+                        <div className="flex flex-col justify-evenly h-full">
+                          <div className="px-5 pt-3 flex flex-row flex-wrap ">
                             {/* minus icon */}
                             {/* {classes[index][1] > 0 ? (
                               <>
@@ -176,7 +176,7 @@ function ClassSetup() {
                                   isDarkMode
                                     ? "border-white"
                                     : "border-rose-500"
-                                } size-6 mx-1 my-1 border  rounded-lg flex justify-center items-center`}
+                                } size-6 m-1 border  rounded-lg flex justify-center items-center`}
                                 key={j}
                               >
                                 <Link
@@ -205,11 +205,14 @@ function ClassSetup() {
                               <></>
                             )} */}
                           </div>
-                          {/* <div className="flex justify-center items-center">
+                          <Link
+                            to="/addsection"
+                            className="flex justify-center items-center"
+                          >
                             <div className="bg-red-500 text-white text-center text-sm  w-28 rounded-full">
                               Add Section
                             </div>
-                          </div> */}
+                          </Link>
                         </div>
                       </div>
                       <p

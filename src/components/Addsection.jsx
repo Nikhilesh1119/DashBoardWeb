@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function Addsection() {
   const [sections, setSections] = useState([]);
@@ -86,7 +87,8 @@ function Addsection() {
               ) : (
                 <div className="mt-8 flex flex-wrap gap-4">
                   {sections.map((section, index) => (
-                    <button
+                    <Link
+                      to="/student-list"
                       key={index}
                       className={`${
                         isDarkMode ? "bg-blue-950" : "bg-white"
@@ -97,7 +99,7 @@ function Addsection() {
                           isDarkMode ? "text-white" : "text-[#01345b]"
                         } text-xl md:text-3xl font-bold justify-center flex`}
                       >
-                         {section.name}
+                        {section.name}
                       </h4>
                       <p
                         className={`${
@@ -106,7 +108,7 @@ function Addsection() {
                       >
                         Teacher: {section.teacher}
                       </p>
-                    </button>
+                    </Link>
                   ))}
                 </div>
               )}
