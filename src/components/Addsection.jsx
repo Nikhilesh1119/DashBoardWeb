@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 function Addsection() {
   const [sections, setSections] = useState([]);
   const [showPopover, setShowPopover] = useState(false);
-  const [sectionName, setSectionName] = useState("");
+  const [selectedSection, setSelectedSection] = useState("");
   const [selectedTeacher, setSelectedTeacher] = useState("");
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
 
@@ -16,11 +16,17 @@ function Addsection() {
   };
 
   const handleSaveSection = () => {
-    if (sectionName && selectedTeacher) {
-      const newSection = { name: sectionName, teacher: selectedTeacher };
+    if (selectedSection && selectedTeacher) {
+      const isDuplicate = sections.some((section) => section.name === selectedSection);
+      if (isDuplicate) {
+        alert("Section name already exists. Please choose a different section name.");
+        return;
+      }
+
+      const newSection = { name: selectedSection, teacher: selectedTeacher };
       setSections([...sections, newSection]);
       setShowPopover(false);
-      setSectionName("");
+      setSelectedSection("");
       setSelectedTeacher("");
     }
   };
@@ -80,7 +86,7 @@ function Addsection() {
                       isDarkMode ? "text-white" : "text-[#01345b]"
                     } text-lg`}
                   >
-                    Section will appear here after you create it using icon
+                    Section will appear here after you create it using add section button above
                     above
                   </p>
                 </div>
@@ -91,7 +97,7 @@ function Addsection() {
                       to="/student-list"
                       key={index}
                       className={`${
-                        isDarkMode ? "bg-blue-950" : "bg-white"
+                        isDarkMode ? "bg-blue-950" : "bg-blue-50"
                       } p-4 mb-4 rounded shadow-md w-full sm:w-44`}
                     >
                       <h4
@@ -125,14 +131,20 @@ function Addsection() {
                       <label className="block text-sm font-bold mb-2">
                         Section Name
                       </label>
-                      <input
-                        type="text"
-                        value={sectionName}
-                        onChange={(e) => setSectionName(e.target.value)}
+                      <select
+                        value={selectedSection}
+                        onChange={(e) => setSelectedSection(e.target.value)}
                         className={`shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline ${
                           isDarkMode ? "bg-[#152f54] text-white" : "text-gray-700"
                         }`}
-                      />
+                      >
+                        <option value="">Select a section</option>
+                        {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map((section) => (
+                          <option key={section} value={section}>
+                            {section}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div className="mb-4">
                       <label className="block text-sm font-bold mb-2">

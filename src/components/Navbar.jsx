@@ -61,9 +61,12 @@ const Navbar = () => {
     <div className="bg-blue-950 p-4 text-white">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
+          <Link 
+           to="/">
           <div className="bg-yellow-400 p-2 rounded-full">
             <span className="text-blue-800 font-bold">A</span>
           </div>
+          </Link>
           <span className="font-bold text-lg ml-2 text-white">LOGO</span>
           {/* setup menu */}
           <div className="relative pl-6 z-10">
