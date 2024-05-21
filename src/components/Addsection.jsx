@@ -66,7 +66,7 @@ function Addsection() {
               </div>
 
               {sections.length === 0 ? (
-                <div className="flex flex-col justify-center items-center mt-8">
+                <div className="flex flex-col justify-center items-center mt-20">
                   <p
                     className={`${
                       isDarkMode ? "text-white" : "text-[#01345b]"
@@ -112,27 +112,35 @@ function Addsection() {
 
               {showPopover && (
                 <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
-                  <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+                  <div
+                    className={`${
+                      isDarkMode ? "bg-[#0d192f] text-white" : "bg-white text-gray-700"
+                    } p-6 rounded shadow-lg max-w-sm w-full`}
+                  >
                     <h2 className="text-2xl mb-4">Add Section</h2>
                     <div className="mb-4">
-                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                      <label className="block text-sm font-bold mb-2">
                         Section Name
                       </label>
                       <input
                         type="text"
                         value={sectionName}
                         onChange={(e) => setSectionName(e.target.value)}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className={`shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline ${
+                          isDarkMode ? "bg-[#152f54] text-white" : "text-gray-700"
+                        }`}
                       />
                     </div>
                     <div className="mb-4">
-                      <label className="block text-gray-700 text-sm font-bold mb-2">
+                      <label className="block text-sm font-bold mb-2">
                         Assign ClassTeacher
                       </label>
                       <select
                         value={selectedTeacher}
                         onChange={(e) => setSelectedTeacher(e.target.value)}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className={`shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline ${
+                          isDarkMode ? "bg-[#152f54] text-white" : "text-gray-700"
+                        }`}
                       >
                         <option value="">Select a teacher</option>
                         {teachers.map((teacher) => (
@@ -160,32 +168,6 @@ function Addsection() {
                 </div>
               )}
             </div>
-
-            {/* <div className="mt-8">
-              {sections.map((section, index) => (
-                <button
-                  key={index}
-                  className={`${
-                    isDarkMode ? "bg-[#0d192f]" : "bg-white"
-                  } p-4 mb-4 rounded shadow-md`}
-                >
-                  <h4
-                    className={`${
-                      isDarkMode ? "text-white" : "text-[#01345b]"
-                    } text-xl md:text-2xl font-bold`}
-                  >
-                    {section.name}
-                  </h4>
-                  <p
-                    className={`${
-                      isDarkMode ? "text-white" : "text-[#01345b]"
-                    }`}
-                  >
-                    Teacher: {section.teacher}
-                  </p>
-                </button>
-              ))}
-            </div> */}
           </div>
         </div>
       </div>
