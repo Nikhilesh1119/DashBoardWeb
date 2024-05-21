@@ -11,6 +11,7 @@ import RegisterTeacher from "./components/TeacherRegister";
 import StudentRegister from "./components/StudentRegister";
 import TeacherPage from "./components/Teacher";
 import Event from "./components/Event";
+import Addsection from "./components/Addsection";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="register-teacher" element={<RegisterTeacher />} />
             <Route path="class-setup" element={<ClassSetup />} />
             <Route path="event" element={<Event />} />
+            <Route path="addsection" element={<Addsection />} />
           </Route>
         </Route>
 
