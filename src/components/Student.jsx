@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import nostudent from "../assets/nostudent.png";
 import { useSelector } from "react-redux";
+import Studentlist from "./Studentlist";
 
-function StudentPage () {
-  const [isFormOpen, setIsFormOpen] = useState (false);
-  const isDarkMode = useSelector (state => state.appConfig.isDarkMode);
+function StudentPage() {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
 
   const handleOpenForm = () => {
     setIsFormOpen(true);
@@ -19,21 +19,21 @@ function StudentPage () {
     <div
       className={`${
         isDarkMode ? "bg-[#0d192f]" : "bg-white"
-      } min-h-screen flex justify-center  h-35rem py-4 px-3`}
+      } min-h-screen flex justify-center  py-4 px-3`}
     >
       <div
         className={`${
           isDarkMode
             ? "bg-[#152f54] bg-opacity-40"
             : "bg-[#b9d7f1] bg-opacity-30"
-        } flex flex-col max-w-full max-h-full h-[90%] mx-auto px-16 py-6 w-[90%]`}
+        } flex flex-col max-w-full mx-auto p-6 w-[90%]`}
       >
         <div className="mb-4 flex">
           <div className="border border-red-500 inline-block bg-white">
             <button
               className={`${
                 isDarkMode ? "bg-[#152f54]" : "bg-white"
-              } text-red-500 font-bold py-2 px-2 `}
+              } text-red-500 font-bold p-2 `}
             >
               <Link
                 to="/register-student"
@@ -85,25 +85,9 @@ function StudentPage () {
         <div
           className={`${
             isDarkMode ? "bg-[#0d192f]" : "bg-white"
-          }  shadow-md rounded-lg p-5 h-96`}
+          }  shadow-md rounded-lg p-5`}
         >
-          <div className="flex flex-col items-center justify-center text-center">
-            <img src={nostudent} className="mb-4 size-52" />
-            <p
-              className={`${
-                isDarkMode ? "text-white" : "text-blue-950"
-              } text-2xl font-bold `}
-            >
-              No Student at this time
-            </p>
-            <p
-              className={`${
-                isDarkMode ? "text-white" : "text-blue-950"
-              }  text-sm`}
-            >
-              Student will be appear here after they enroll in your School
-            </p>
-          </div>
+          <Studentlist />
           <div className="flex justify-end">
             <button
               className=" mt-4 bg-blue-950 w-36 hover:bg-blue-900 text-white py-2 px-4 rounded-full"

@@ -6,13 +6,14 @@ import downbtn from "../assets/downbtn.png";
 // import trash from "../assets/trash.png";
 import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function ClassSetup() {
   const [count, setCount] = useState(0);
-  const isDarkMode = useSelector((state) => state.auth.isDarkMode);
+  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
 
   const [classes, setClasses] = useState([
-    ["Nursery", 0],
+    ["Nursery", 8],
     ["LKG", 0],
     ["UKG", 0],
     ["1st", 0],
@@ -153,9 +154,9 @@ function ClassSetup() {
                         key={index}
                       >
                         <div>
-                          <div className="p-5 flex flex-row flex-wrap ">
+                          <div className="px-5 pt-5 flex flex-row flex-wrap ">
                             {/* minus icon */}
-                            {classes[index][1] > 0 ? (
+                            {/* {classes[index][1] > 0 ? (
                               <>
                                 <img
                                   src={minus}
@@ -166,7 +167,7 @@ function ClassSetup() {
                               </>
                             ) : (
                               <></>
-                            )}
+                            )} */}
 
                             {/* section */}
                             {[...Array(classes[index][1])].map((_, j) => (
@@ -178,18 +179,19 @@ function ClassSetup() {
                                 } size-6 mx-1 my-1 border  rounded-lg flex justify-center items-center`}
                                 key={j}
                               >
-                                <div
+                                <Link
+                                  to={"/student-list"}
                                   className={`${
                                     isDarkMode ? "text-white" : "text-rose-500"
                                   } `}
                                 >
                                   {j + 1}
-                                </div>
+                                </Link>
                               </div>
                             ))}
 
                             {/* plus icon */}
-                            {classes[index][1] < 8 ? (
+                            {/* {classes[index][1] < 8 ? (
                               <>
                                 <div onClick={() => handleAddSection(index)}>
                                   <img
@@ -201,8 +203,13 @@ function ClassSetup() {
                               </>
                             ) : (
                               <></>
-                            )}
+                            )} */}
                           </div>
+                          {/* <div className="flex justify-center items-center">
+                            <div className="bg-red-500 text-white text-center text-sm  w-28 rounded-full">
+                              Add Section
+                            </div>
+                          </div> */}
                         </div>
                       </div>
                       <p
