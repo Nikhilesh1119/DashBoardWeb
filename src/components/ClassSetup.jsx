@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import add from "../assets/add.png";
 import minus from "../assets/minus.png";
 import students from "../assets/students.png";
@@ -7,6 +7,7 @@ import downbtn from "../assets/downbtn.png";
 import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getClass } from "../services/Axios.service";
 
 function ClassSetup() {
   const [count, setCount] = useState(0);
@@ -29,9 +30,6 @@ function ClassSetup() {
     ["11th", 0],
     ["12th", 0],
   ]);
-
-  // const [sectioncount, SetSectionCount] = useState(4);
-  // const section = ["A", "B", "C", "D", "E"];
 
   const [isFlipped, setIsFlipped] = useState(Array(count).fill(false));
 
@@ -61,6 +59,15 @@ function ClassSetup() {
       return removeSection;
     });
   };
+
+  const getAllClass = async () => {
+    const res = await getClass();
+    setClasses(res);
+  };
+
+  useEffect(() => {
+    getAllClass();
+  }, []);
 
   return (
     <>
