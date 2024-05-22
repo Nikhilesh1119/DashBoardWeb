@@ -130,7 +130,6 @@ export async function getTeacherList(pageNo) {
     const response = await axios.get(
       `${baseURL}/teacher/teacher-list/${pageNo}`
     );
-    console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -139,5 +138,36 @@ export async function getTeacherList(pageNo) {
     }
   } catch (error) {
     return Promise.reject("some error occurred while fetching teacher list.");
+  }
+}
+
+export async function updateTeacher(teacherId,data){
+  try {
+    const response = await axios.put(
+      `${baseURL}/teacher/${teacherId}`,data
+    );
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("teacher updated successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while updating teacher.");
+  }
+}
+export async function deleteTeacher(teacherId){
+  try {
+    console.log("delete teacher : ",teacherId)
+    const response = await axios.delete(
+      `${baseURL}/teacher/${teacherId}`);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("teacher deleted successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while updating teacher.");
   }
 }

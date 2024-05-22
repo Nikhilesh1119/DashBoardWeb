@@ -4,7 +4,12 @@ import Stack from "@mui/material/Stack";
 import noteacher from "../assets/noteacher.png";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
-import { getTeacherList } from "../services/Axios.service";
+import { getTeacherList, updateTeacher, deleteTeacher } from "../services/Axios.service"; // Add deleteTeacher function
+import Popover from "@mui/material/Popover";
+import Button from "@mui/material/Button";
+import Modal from "@mui/material/Modal";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
 
 function Teacherlist() {
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
@@ -14,6 +19,19 @@ function Teacherlist() {
   const [teacherData, setTeacherData] = useState([]);
   const [teacherList, setTeacherList] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [formValues, setFormValues] = useState({
+    _id: "",
+    username: "",
+    firstname: "",
+    lastname: "",
+    phone: "",
+    email: ""
+  });
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState(false); // New state for delete confirmation modal
+  const [idForDelete , setIdForDelete] = useState();
 
   const getTeacher = async () => {
     const teacherList = await getTeacherList(pageNo);
@@ -27,6 +45,19 @@ function Teacherlist() {
     getTeacher();
   }, [pageNo]);
 
+  useEffect(() => {
+    if (selectedTeacher) {
+      setFormValues({
+        _id: selectedTeacher["_id"],
+        username: selectedTeacher.username,
+        firstname: selectedTeacher.firstname,
+        lastname: selectedTeacher.lastname,
+        phone: selectedTeacher.phone,
+        email: selectedTeacher.email
+      });
+    }
+  }, [selectedTeacher]);
+
   const handlePageChange = (event, value) => {
     setPageNo(value);
   };
@@ -34,16 +65,82 @@ function Teacherlist() {
   const handleSearch = () => {
     const searchInputLower = searchInput.toLowerCase();
     const searchedTeacher = teacherList.filter(
-      (itm) => itm.firstname.toLowerCase() === searchInputLower || itm.username.toLowerCase() === searchInputLower
+      (itm) =>
+        itm.firstname.toLowerCase() === searchInputLower ||
+        itm.username.toLowerCase() === searchInputLower
     );
     setTeacherData(searchedTeacher);
   };
-  
 
   const handleClear = () => {
     setSearchInput("");
     setTeacherData(teacherList);
   };
+
+  const handleClick = (event, teacher) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedTeacher(teacher);
+    setIdForDelete(teacher["_id"]);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedTeacher(null);
+  };
+
+  const handleDelete = () => {
+    setDeleteConfirmModal(true); // Show delete confirmation modal
+    handleClose();
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteTeacher(idForDelete);
+      getTeacher();
+      toast.success("Teacher deleted successfully!");
+    } catch (error) {
+      toast.error("Failed to delete teacher!");
+    }
+    setDeleteConfirmModal(false);
+    setSelectedTeacher(null);
+  };
+
+  const handleUpdate = () => {
+    setOpenModal(true);
+    handleClose();
+  };
+
+  const handleModalClose = () => {
+    setOpenModal(false);
+    setSelectedTeacher(null);
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value
+    }));
+  };
+
+  const handleModalSubmit = async (event) => {
+    event.preventDefault();
+    const updatedTeacher = {
+      ...formValues
+    };
+    try {
+      await updateTeacher(updatedTeacher["_id"], updatedTeacher);
+      getTeacher();
+      toast.success("Teacher updated successfully!");
+    } catch (error) {
+      toast.error("Failed to update teacher!");
+    }
+    setOpenModal(false);
+    setSelectedTeacher(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
 
   return (
     <div className="flex flex-col bg-white">
@@ -112,11 +209,13 @@ function Teacherlist() {
                       <td className="px-4 py-2">{data.phone}</td>
                       <td className="px-4 py-2">{data.email}</td>
                       <td className="px-4 py-2">
-                        <img
-                          loading="lazy"
-                          src="https://cdn.builder.io/api/v1/image/assets/TEMP/11cd8af69af68b6f85eb9d3af450dca7cf6045934053295a66bfcc55c3ff858d?apiKey=5571847fc48447bbad48faecb3b890d9&"
-                          className="shrink-0 w-6 aspect-square"
-                        />
+                        <Button
+                          aria-describedby={id}
+                          variant="contained"
+                          onClick={(e) => handleClick(e, data)}
+                        >
+                          Action
+                        </Button>
                       </td>
                     </tr>
                   ))}
@@ -156,6 +255,144 @@ function Teacherlist() {
           </div>
         )}
       </div>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        <div className="p-4">
+          <Button onClick={handleUpdate} color="primary">
+            Update
+          </Button>
+          <Button onClick={handleDelete} color="secondary">
+            Delete
+          </Button>
+        </div>
+      </Popover>
+      <Modal
+        open={openModal}
+        onClose={handleModalClose}
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+      >
+        <Box
+          component="form"
+          onSubmit={handleModalSubmit}
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <h2 id="modal-title">Update Teacher</h2>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            value={formValues.username}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="firstname"
+            label="First Name"
+            name="firstname"
+            value={formValues.firstname}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="lastname"
+            label="Last Name"
+            name="lastname"
+            value={formValues.lastname}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="phone"
+            label="Phone"
+            name="phone"
+            value={formValues.phone}
+            onChange={handleInputChange}
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email"
+            name="email"
+            value={formValues.email}
+            onChange={handleInputChange}
+          />
+          <div className="flex justify-end mt-4">
+            <Button type="button" onClick={handleModalClose} sx={{ mr: 2 }}>
+              Close
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              Submit
+            </Button>
+          </div>
+        </Box>
+      </Modal>
+      <Modal
+        open={deleteConfirmModal}
+        onClose={() => setDeleteConfirmModal(false)}
+        aria-labelledby="delete-confirmation-title"
+        aria-describedby="delete-confirmation-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            border: "2px solid #000",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          {/* <h2 id="delete-confirmation-title">Confirm Delete</h2> */}
+          <p id="delete-confirmation-description">
+            Are you sure you want to delete this teacher?
+          </p>
+          <div className="flex justify-end mt-4">
+            <Button onClick={() => setDeleteConfirmModal(false)} sx={{ mr: 2 }}>
+              No
+            </Button>
+            <Button onClick={handleConfirmDelete} variant="contained" color="secondary">
+              Yes
+            </Button>
+          </div>
+        </Box>
+      </Modal>
     </div>
   );
 }
