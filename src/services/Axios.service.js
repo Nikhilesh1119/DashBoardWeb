@@ -3,10 +3,10 @@ import {
   KEY_ACCESS_TOKEN,
   setItem,
   setUsername,
-  getItem,
+  getItem
 } from "./LocalStorageManager";
-const baseURL = "http://89.116.33.150:4400";
-// const baseURL = "http://localhost:4000";
+// const baseURL = "http://89.116.33.150:4400";
+const baseURL = "http://localhost:4000";
 
 axios.defaults.headers.common["Authorization"] = `Bearer ${getItem(
   KEY_ACCESS_TOKEN
@@ -16,12 +16,7 @@ export async function registerAdmin(data) {
   try {
     const response = await axios.post(`${baseURL}/admin/register`, data);
     if (response.data["status"] === "error") {
-      const errorField = response.data.message["field"];
-      if (errorField) {
-        return Promise.reject(`invalid ${errorField}`);
-      } else {
-        return Promise.reject(`${response?.data?.message}`);
-      }
+      return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
       return Promise.resolve("admin signup successfully");
@@ -59,12 +54,7 @@ export async function registerTeacher(data) {
     const response = await axios.post(`${baseURL}/teacher/register`, data);
     console.log(response);
     if (response.data["status"] === "error") {
-      const errorField = response.data.message["field"];
-      if (errorField) {
-        return Promise.reject(`invalid ${errorField}`);
-      } else {
-        return Promise.reject(`${response?.data?.message}`);
-      }
+      return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
       return Promise.resolve("Teacher registered successfully");
@@ -78,12 +68,7 @@ export async function loginTeacher(data) {
   try {
     const response = await axios.post(`${baseURL}/teacher/login`, data);
     if (response.data["status"] === "error") {
-      const errorField = response.data.message["field"];
-      if (errorField) {
-        return Promise.reject(`invalid ${errorField}`);
-      } else {
-        return Promise.reject(`${response?.data?.message}`);
-      }
+      return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
       // console.log(response.data);
@@ -102,17 +87,57 @@ export async function registerStudent(data) {
     const response = await axios.post(`${baseURL}/student/register`, data);
     console.log(response);
     if (response.data["status"] === "error") {
-      const errorField = response.data.message["field"];
-      if (errorField) {
-        return Promise.reject(`invalid ${errorField}`);
-      } else {
-        return Promise.reject(`${response?.data?.message}`);
-      }
+      return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
       return Promise.resolve("Student registered successfully");
     }
   } catch (error) {
     return Promise.reject("some error occurred");
+  }
+}
+
+export async function addClass(data) {
+  try {
+    const response = await axios.post(`${baseURL}/class/add`, data);
+    console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("Class Add successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function getClass() {
+  try {
+    const response = await axios.get(`${baseURL}/class/get`);
+    console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    return response;
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function getTeacherList(pageNo) {
+  try {
+    const response = await axios.get(
+      `${baseURL}/teacher/teacher-list/${pageNo}`
+    );
+    console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return response;
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while fetching teacher list.");
   }
 }
