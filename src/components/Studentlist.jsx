@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import Popover from "@mui/material/Popover";
+import Button from "@mui/material/Button";
 import nostudent from "../assets/nostudent.png";
 import { useSelector } from "react-redux";
 
@@ -59,6 +61,32 @@ function Studentlist() {
     },
   ]);
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+
+  const handleClick = (event, student) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedStudent(student);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedStudent(null);
+  };
+
+  const handleDelete = () => {
+    setStudentData(studentData.filter((student) => student !== selectedStudent));
+    handleClose();
+  };
+
+  const handleUpdate = () => {
+    // Implement update logic here
+    handleClose();
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   return (
     <div
       className={`${isDarkMode ? "bg-[#152f54]" : "bg-white"} flex flex-col`}
@@ -110,39 +138,35 @@ function Studentlist() {
                     <th className="text-left px-4 py-2 max-lg:hidden">
                       Gender
                     </th>
-                    {/* <th className="text-left px-4 py-2">Contact</th> */}
                     <th className="text-left px-4 py-2">Phone</th>
                     <th className="text-left px-4 py-2">Email</th>
                     <th className="text-left px-4 py-2">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {studentData.map((data, i) => {
-                    return (
-                      <tr className="border-t" key={i}>
-                        <td className="flex items-center px-4 py-2">
-                          <div className="bg-amber-300 h-[30px] rounded-[40px] w-[30px]" />
-                          <span className="ml-2">{data.firstname}</span>
-                        </td>
-                        <td className="px-4 py-2">#{data.rollNumber}</td>
-                        <td className="px-4 py-2 text-blue-950 max-lg:hidden">
-                          {data.gender}
-                        </td>
-                        <td className="px-4 py-2">{data.phone}</td>
-                        <td className="px-4 py-2">{data.email}</td>
-
-                        <td className="px-4 py-2">
-                          <button onclick="showOptions()">
-                            <img
-                              loading="lazy"
-                              src="https://cdn.builder.io/api/v1/image/assets/TEMP/11cd8af69af68b6f85eb9d3af450dca7cf6045934053295a66bfcc55c3ff858d?apiKey=5571847fc48447bbad48faecb3b890d9&"
-                              className="shrink-0 w-6 aspect-square"
-                            />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {studentData.map((data, i) => (
+                    <tr className="border-t" key={i}>
+                      <td className="flex items-center px-4 py-2">
+                        <div className="bg-amber-300 h-[30px] rounded-[40px] w-[30px]" />
+                        <span className="ml-2">{data.firstname}</span>
+                      </td>
+                      <td className="px-4 py-2">#{data.rollNumber}</td>
+                      <td className="px-4 py-2 text-blue-950 max-lg:hidden">
+                        {data.gender}
+                      </td>
+                      <td className="px-4 py-2">{data.phone}</td>
+                      <td className="px-4 py-2">{data.email}</td>
+                      <td className="px-4 py-2">
+                        <Button
+                          aria-describedby={id}
+                          variant="contained"
+                          onClick={(e) => handleClick(e, data)}
+                        >
+                          Action
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
               <div className="flex gap-5 justify-between items-start my-9 mx-10 text-sm max-md:flex-wrap max-md:mr-2.5 max-md:max-w-full">
@@ -187,6 +211,29 @@ function Studentlist() {
           </>
         )}
       </div>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+      >
+        <div className="p-4">
+          <Button onClick={handleUpdate} color="primary">
+            Update
+          </Button>
+          <Button onClick={handleDelete} color="secondary">
+            Delete
+          </Button>
+        </div>
+      </Popover>
     </div>
   );
 }
