@@ -104,14 +104,6 @@ function StudentPage () {
               Student will be appear here after they enroll in your School
             </p>
           </div>
-          <div className="flex justify-end">
-            <button
-              className=" mt-4 bg-blue-950 w-36 hover:bg-blue-900 text-white py-2 px-4 rounded-full"
-              onClick={() => alert("Support")}
-            >
-              Support
-            </button>
-          </div>
         </div>
       </div>
     </div>

@@ -2,9 +2,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import noteacher from "../assets/noteacher.png";
 import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 function TeacherPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const[teachers, setTeachers] = useState([]);
 
   const isDarkMode = useSelector (state => state.appConfig.isDarkMode);
 
@@ -15,7 +17,16 @@ function TeacherPage() {
   const handleCloseForm = () => {
     setIsFormOpen(false);
   };
+  const fetchTeachers = async()=>{
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
+  useEffect(()=>{
 
+  },[])
   return (
     <div
       className={`${
@@ -88,7 +99,7 @@ function TeacherPage() {
             isDarkMode ? "bg-[#0d192f]" : "bg-white"
           } shadow-md rounded-lg p-5 h-96`}
         >
-          <div className="flex flex-col items-center justify-center text-center">
+          {/* <div className="flex flex-col items-center justify-center text-center">
             <img src={noteacher} className="mb-4 size-52" />
             <p
               className={`${
@@ -104,15 +115,8 @@ function TeacherPage() {
             >
               Teachers will be displayed after added
             </p>
-          </div>
-          <div className="flex justify-end">
-            <button
-              className=" mt-4 bg-blue-950 w-36 hover:bg-blue-900 text-white py-2 px-4 rounded-full"
-              onClick={() => alert("Support")}
-            >
-              Support
-            </button>
-          </div>
+          </div> */}
+         
         </div>
       </div>
     </div>
