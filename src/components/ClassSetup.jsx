@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { getClass } from "../services/Axios.service";
 import Modal from "react-modal";
 
-Modal.setAppElement('#root'); // Set the root element for accessibility
+Modal.setAppElement("#root"); // Set the root element for accessibility
 
 function ClassSetup() {
   const [count, setCount] = useState(0);
@@ -33,8 +33,6 @@ function ClassSetup() {
   ]);
 
   const [isFlipped, setIsFlipped] = useState(Array(count).fill(false));
-  const [classes, setClasses] = useState([]);
-  const [isFlipped, setIsFlipped] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newClassName, setNewClassName] = useState("");
 
@@ -121,7 +119,11 @@ function ClassSetup() {
                         />
                       </div>
                       <div onClick={() => handleCardClick(index)}>
-                        <img src={students} className="h-3/4 w-full p-1 md:p-2" alt="students" />
+                        <img
+                          src={students}
+                          className="h-3/4 w-full p-1 md:p-2"
+                          alt="students"
+                        />
                         <p
                           className={`${
                             isDarkMode ? "text-white" : "text-[#01345b]"
@@ -188,7 +190,7 @@ function ClassSetup() {
                     <img src={add} alt="" className="w-6 h-6 md:w-10 md:h-10" />
                   </div>
                 ) : null}
-                            </div>
+              </div>
             </div>
 
             {/* No class */}
@@ -206,7 +208,8 @@ function ClassSetup() {
                     isDarkMode ? "text-white" : "text-[#01345b]"
                   } text-sm md:text-lg`}
                 >
-                  Classroom will appear here after you create it using the icon above
+                  Classroom will appear here after you create it using the icon
+                  above
                 </p>
               </div>
             ) : null}
@@ -286,4 +289,3 @@ function ClassSetup() {
 }
 
 export default ClassSetup;
-
