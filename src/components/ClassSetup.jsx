@@ -58,6 +58,24 @@ function ClassSetup() {
     setModalIsOpen(false);
   };
 
+  const classOptions = [
+    "Pre-Nursery",
+    "Nursery",
+    "KG",
+    "1st",
+    "2nd",
+    "3rd",
+    "4th",
+    "5th",
+    "6th",
+    "7th",
+    "8th",
+    "9th",
+    "10th",
+    "11th",
+    "12th"
+  ];
+
   return (
     <>
       <div className={`${isDarkMode ? "bg-[#0d192f]" : "bg-white"} py-6`}>
@@ -207,14 +225,19 @@ function ClassSetup() {
         overlayClassName="modal-overlay"
       >
         <h2 className="text-2xl mb-4">Add New Class</h2>
-        <input
-          type="text"
+        <select
           value={newClassName}
           onChange={(e) => setNewClassName(e.target.value)}
-          placeholder="Enter class name"
           className="input mb-4 p-2 border border-gray-300 rounded"
           required
-        />
+        >
+          <option value="">Select class</option>
+          {classOptions.map((classOption, index) => (
+            <option key={index} value={classOption}>
+              {classOption}
+            </option>
+          ))}
+        </select>
         <div className="flex justify-end">
           <button onClick={closeModal} className="btn-secondary mr-2">
             Cancel
