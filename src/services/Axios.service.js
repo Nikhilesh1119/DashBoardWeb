@@ -119,7 +119,7 @@ export async function registerStudent(data) {
 
 export async function addClass(data) {
   try {
-    const response = await axios.post(`${baseURL}/class/add`, data);
+    const response = await axios.post(`${baseURL}/class/register`, data);
     console.log(response);
     if (response.data["status"] === "error") {
       const errorField = response.data.message["field"];
@@ -139,7 +139,7 @@ export async function addClass(data) {
 
 export async function getClass() {
   try {
-    const response = await axios.get(`${baseURL}/class/get`);
+    const response = await axios.get(`${baseURL}/class/class-list`);
     console.log(response);
     if (response.data["status"] === "error") {
       const errorField = response.data.message["field"];
