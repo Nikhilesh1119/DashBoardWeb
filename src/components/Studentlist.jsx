@@ -130,24 +130,15 @@ function Studentlist() {
                         </td>
                         <td className="px-4 py-2">{data.phone}</td>
                         <td className="px-4 py-2">{data.email}</td>
-                        {/* <td className="flex items-center px-4 py-2">
-                          <img
-                            loading="lazy"
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/a4471486bc24afc72d32110a20b33f3fef6d2313d2780f97feed53ff11c2c224?apiKey=5571847fc48447bbad48faecb3b890d9&"
-                            className="shrink-0 w-10 aspect-square"
-                          />
-                          <img
-                            loading="lazy"
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/44e1cba793fe3b147129c7b06e6b9d0298567bd896b6b676365054a4db975ab6?apiKey=5571847fc48447bbad48faecb3b890d9&"
-                            className="shrink-0 w-10 aspect-square"
-                          />
-                        </td> */}
+
                         <td className="px-4 py-2">
-                          <img
-                            loading="lazy"
-                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/11cd8af69af68b6f85eb9d3af450dca7cf6045934053295a66bfcc55c3ff858d?apiKey=5571847fc48447bbad48faecb3b890d9&"
-                            className="shrink-0 w-6 aspect-square"
-                          />
+                          <button onclick="showOptions()">
+                            <img
+                              loading="lazy"
+                              src="https://cdn.builder.io/api/v1/image/assets/TEMP/11cd8af69af68b6f85eb9d3af450dca7cf6045934053295a66bfcc55c3ff858d?apiKey=5571847fc48447bbad48faecb3b890d9&"
+                              className="shrink-0 w-6 aspect-square"
+                            />
+                          </button>
                         </td>
                       </tr>
                     );

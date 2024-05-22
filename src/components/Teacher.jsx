@@ -43,29 +43,11 @@ function TeacherPage() {
                 + new Teacher
               </Link>
             </button>
-            <button
-              className={` ${
-                isDarkMode
-                  ? "text-[#152f54] bg-[#ed0c57]"
-                  : "text-white bg-red-500"
-              }  h-full font-bold py-2 px-4 `}
-              onClick={() => alert("Import CSV")}
-            >
-              Import CSV
-            </button>
+            
           </div>
         </div>
         <div className="mb-4 flex  items-center">
-          <button
-            className={`${
-              isDarkMode
-                ? "bg-[#0d192f] text-white hover:text-[#0d192f] hover:bg-gray-200"
-                : "bg-gray-200 text-gray-600 "
-            } hover:bg-gray-300  py-2 px-4 w-40 rounded-md`}
-            onClick={() => alert("Add filter")}
-          >
-            Add filter ▼
-          </button>
+          
           <input
             type="text"
             placeholder="Search here..."
