@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Teacherlist from "./Teacherlist";
 
 function TeacherPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const[teachers, setTeachers] = useState([]);
 
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
 
@@ -15,7 +16,16 @@ function TeacherPage() {
   const handleCloseForm = () => {
     setIsFormOpen(false);
   };
+  const fetchTeachers = async()=>{
+    try {
+      
+    } catch (error) {
+      
+    }
+  }
+  useEffect(()=>{
 
+  },[])
   return (
     <div
       className={`${
@@ -43,27 +53,7 @@ function TeacherPage() {
                 + new Teacher
               </Link>
             </button>
-            
           </div>
-        </div>
-        <div className="mb-4 flex  items-center">
-          
-          <input
-            type="text"
-            placeholder="Search here..."
-            className={`${
-              isDarkMode
-                ? "bg-[#0d192f] text-white hover:text-[#0d192f] hover:bg-gray-200"
-                : "bg-white text-gray-600 "
-            } py-2 px-4 ml-4 rounded-md w-full  border border-gray-300 shadow-sm`}
-          />
-          <button
-            className="bg-[#0d192f]  text-white hover:text-blue-950  hover:bg-white
-             py-2 px-4 ml-2 w-40 text-lg rounded-md"
-            onClick={() => alert("Add Search")}
-          >
-            Search
-          </button>
         </div>
         <div
           className={`${
@@ -71,14 +61,6 @@ function TeacherPage() {
           } shadow-md rounded-lg p-5`}
         >
           <Teacherlist />
-          <div className="flex justify-end">
-            <button
-              className=" mt-4 bg-blue-950 w-36 hover:bg-blue-900 text-white py-2 px-4 rounded-full"
-              onClick={() => alert("Support")}
-            >
-              Support
-            </button>
-          </div>
         </div>
       </div>
     </div>
