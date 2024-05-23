@@ -28,7 +28,7 @@ function App() {
             <Route path="register-teacher" element={<RegisterTeacher />} />
             <Route path="class-setup" element={<ClassSetup />} />
             <Route path="event" element={<Event />} />
-            <Route path="addsection" element={<Addsection />} />
+            <Route path="addsection/:id" element={<Addsection />} />
           </Route>
         </Route>
 

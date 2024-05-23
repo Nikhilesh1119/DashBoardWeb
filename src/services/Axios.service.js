@@ -5,8 +5,8 @@ import {
   setUsername,
   getItem,
 } from "./LocalStorageManager";
-const baseURL = "http://89.116.33.150:4400";
-// const baseURL = "http://localhost:4000";
+// const baseURL = "http://89.116.33.150:4400";
+const baseURL = "http://localhost:4000";
 
 axios.defaults.headers.common["Authorization"] = `Bearer ${getItem(
   KEY_ACCESS_TOKEN
@@ -117,17 +117,12 @@ export async function registerStudent(data) {
   }
 }
 
-export async function addClass(data) {
+export async function addClass(name) {
   try {
-    const response = await axios.post(`${baseURL}/class/register`, data);
+    const response = await axios.post(`${baseURL}/class/register`, { name });
     console.log(response);
     if (response.data["status"] === "error") {
-      const errorField = response.data.message["field"];
-      if (errorField) {
-        return Promise.reject(`invalid ${errorField}`);
-      } else {
-        return Promise.reject(`${response?.data?.message}`);
-      }
+      return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
       return Promise.resolve("Class Add successfully");
@@ -140,14 +135,63 @@ export async function addClass(data) {
 export async function getClass() {
   try {
     const response = await axios.get(`${baseURL}/class/class-list`);
+    // console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    return response;
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function getAllUnassignedTeacher() {
+  try {
+    const response = await axios.get(`${baseURL}/teacher/all-teachers`);
+    // console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    return response;
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function addSection(section) {
+  try {
+    const response = await axios.post(`${baseURL}/section/register`, section);
+    // console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("Section Add successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function getSection(classId) {
+  try {
+    const response = await axios.get(`${baseURL}/section/${classId}`);
     console.log(response);
     if (response.data["status"] === "error") {
-      const errorField = response.data.message["field"];
-      if (errorField) {
-        return Promise.reject(`invalid ${errorField}`);
-      } else {
-        return Promise.reject(`${response?.data?.message}`);
-      }
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    return response;
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function getAllSection(classId) {
+  try {
+    const response = await axios.patch(`${baseURL}/section/all`, { classId });
+    // console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
     }
     return response;
   } catch (error) {

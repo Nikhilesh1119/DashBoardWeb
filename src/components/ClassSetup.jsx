@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import add from "../assets/add.png";
 import students from "../assets/students.png";
 import downbtn from "../assets/downbtn.png";
@@ -6,14 +6,16 @@ import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Modal from "react-modal";
+import { addClass, getClass } from "../services/Axios.service";
+import toast, { Toaster } from "react-hot-toast";
 
-Modal.setAppElement("#root"); // Set the root element for accessibility
+Modal.setAppElement("#root");
 
 function ClassSetup() {
   const [count, setCount] = useState(0);
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const [classes, setClasses] = useState([]);
-  const [isFlipped, setIsFlipped] = useState(Array(count).fill(false));
+  const [isFlipped, setIsFlipped] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newClassName, setNewClassName] = useState("");
 
@@ -25,28 +27,15 @@ function ClassSetup() {
     });
   };
 
-  const handleNewClassSubmit = () => {
-    if (newClassName.trim() === "") {
-      return;
+  const handleNewClassSubmit = async () => {
+    try {
+      const res = await addClass(newClassName);
+      toast.success(res);
+      closeModal();
+      getAllClass();
+    } catch (error) {
+      toast.error(error);
     }
-
-    // Check if the new class name already exists
-    const isDuplicate = classes.some(
-      ([className]) => className === newClassName.trim()
-    );
-
-    if (isDuplicate) {
-      // Handle duplicate class name
-      alert("Class name already exists. Please enter a unique class name.");
-      return;
-    }
-
-    // Add the new class if it's unique
-    setClasses((prevClasses) => [...prevClasses, [newClassName.trim(), 0]]);
-    setCount(count + 1);
-    setIsFlipped((prevIsFlipped) => [...prevIsFlipped, false]);
-    setNewClassName("");
-    closeModal();
   };
 
   const openModal = () => {
@@ -75,9 +64,19 @@ function ClassSetup() {
     "12th",
   ];
 
+  const getAllClass = async () => {
+    const res = await getClass();
+    setClasses(res.data.result);
+  };
+
+  useEffect(() => {
+    getAllClass();
+  }, []);
+
   return (
     <>
       <div className={`${isDarkMode ? "bg-[#0d192f]" : "bg-white"} py-6`}>
+        <Toaster />
         <div
           className={`${
             isDarkMode
@@ -102,7 +101,7 @@ function ClassSetup() {
             >
               <div className="py-3 px-2 md:px-11 flex flex-wrap justify-center">
                 {/* Flipping Cards */}
-                {[...Array(count)].map((_, index) => (
+                {classes.map((data, index) => (
                   <ReactCardFlip
                     isFlipped={isFlipped[index]}
                     flipDirection="horizontal"
@@ -132,7 +131,7 @@ function ClassSetup() {
                             isDarkMode ? "text-white" : "text-[#01345b]"
                           } text-center font-semibold text-xs md:text-base`}
                         >
-                          {classes[index][0]}
+                          {data.name}
                         </p>
                       </div>
                     </div>
@@ -144,7 +143,7 @@ function ClassSetup() {
                     >
                       <div className="flex flex-col justify-evenly h-full">
                         <div className="px-1 pt-1 md:px-5 md:pt-3 flex flex-row flex-wrap ">
-                          {[...Array(classes[index][1])].map((_, j) => (
+                          {data.section.map((section, j) => (
                             <div
                               className={`${
                                 isDarkMode ? "border-white" : "border-rose-500"
@@ -157,26 +156,32 @@ function ClassSetup() {
                                   isDarkMode ? "text-white" : "text-rose-500"
                                 } text-xs md:text-base`}
                               >
-                                {j + 1}
+                                {section.name}
                               </Link>
                             </div>
                           ))}
                         </div>
-                        <Link
-                          to="/addsection"
-                          className="flex justify-center items-center"
-                        >
-                          <div className="bg-red-500 text-white text-center text-xs md:text-sm w-20 md:w-28 rounded-full">
-                            Add Section
-                          </div>
-                        </Link>
+                        {data.section.length < 8 ? (
+                          <>
+                            <Link
+                              to={`/addsection/${data._id}`}
+                              className="flex justify-center items-center"
+                            >
+                              <div className="bg-red-500 text-white text-center text-xs md:text-sm w-20 md:w-28 rounded-full">
+                                Add Section
+                              </div>
+                            </Link>
+                          </>
+                        ) : (
+                          <></>
+                        )}
                       </div>
                       <p
                         className={`${
                           isDarkMode ? "text-white" : "text-rose-500"
                         } text-center font-semibold text-xs md:text-base`}
                       >
-                        {classes[index][0]}
+                        {data.name}
                       </p>
                     </div>
                   </ReactCardFlip>
@@ -197,7 +202,7 @@ function ClassSetup() {
             </div>
 
             {/* No class */}
-            {count < 1 ? (
+            {classes < 1 ? (
               <div className="flex flex-col justify-center items-center mt-10 md:-translate-y-80">
                 <p
                   className={`${
