@@ -3,7 +3,7 @@ import {
   KEY_ACCESS_TOKEN,
   setItem,
   setUsername,
-  getItem
+  getItem,
 } from "./LocalStorageManager";
 // const baseURL = "http://89.116.33.150:4400";
 const baseURL = "http://localhost:4000";
@@ -97,9 +97,9 @@ export async function registerStudent(data) {
   }
 }
 
-export async function addClass(data) {
+export async function addClass(name) {
   try {
-    const response = await axios.post(`${baseURL}/class/add`, data);
+    const response = await axios.post(`${baseURL}/class/register`, { name });
     console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
@@ -114,8 +114,62 @@ export async function addClass(data) {
 
 export async function getClass() {
   try {
-    const response = await axios.get(`${baseURL}/class/get`);
+    const response = await axios.get(`${baseURL}/class/class-list`);
+    // console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    return response;
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function getAllUnassignedTeacher() {
+  try {
+    const response = await axios.get(`${baseURL}/teacher/all-teachers`);
+    // console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    return response;
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function addSection(section) {
+  try {
+    const response = await axios.post(`${baseURL}/section/register`, section);
+    // console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("Section Add successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function getSection(classId) {
+  try {
+    const response = await axios.get(`${baseURL}/section/${classId}`);
     console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    return response;
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function getAllSection(classId) {
+  try {
+    const response = await axios.patch(`${baseURL}/section/all`, { classId });
+    // console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -130,7 +184,6 @@ export async function getTeacherList(pageNo) {
     const response = await axios.get(
       `${baseURL}/teacher/teacher-list/${pageNo}`
     );
-    console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -139,5 +192,33 @@ export async function getTeacherList(pageNo) {
     }
   } catch (error) {
     return Promise.reject("some error occurred while fetching teacher list.");
+  }
+}
+
+export async function updateTeacher(teacherId, data) {
+  try {
+    const response = await axios.put(`${baseURL}/teacher/${teacherId}`, data);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("teacher updated successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while updating teacher.");
+  }
+}
+export async function deleteTeacher(teacherId) {
+  try {
+    console.log("delete teacher : ", teacherId);
+    const response = await axios.delete(`${baseURL}/teacher/${teacherId}`);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("teacher deleted successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while updating teacher.");
   }
 }
