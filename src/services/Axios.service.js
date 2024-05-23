@@ -5,8 +5,8 @@ import {
   setUsername,
   getItem,
 } from "./LocalStorageManager";
-const baseURL = "http://89.116.33.150:4400";
-// const baseURL = "http://localhost:4000";
+// const baseURL = "http://89.116.33.150:4400";
+const baseURL = "http://localhost:4000";
 
 axios.defaults.headers.common["Authorization"] = `Bearer ${getItem(
   KEY_ACCESS_TOKEN
