@@ -16,12 +16,7 @@ export async function registerAdmin(data) {
   try {
     const response = await axios.post(`${baseURL}/admin/register`, data);
     if (response.data["status"] === "error") {
-      const errorField = response.data.message["field"];
-      if (errorField) {
-        return Promise.reject(`invalid ${errorField}`);
-      } else {
-        return Promise.reject(`${response?.data?.message}`);
-      }
+      return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
       return Promise.resolve("admin signup successfully");
@@ -59,12 +54,7 @@ export async function registerTeacher(data) {
     const response = await axios.post(`${baseURL}/teacher/register`, data);
     console.log(response);
     if (response.data["status"] === "error") {
-      const errorField = response.data.message["field"];
-      if (errorField) {
-        return Promise.reject(`invalid ${errorField}`);
-      } else {
-        return Promise.reject(`${response?.data?.message}`);
-      }
+      return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
       return Promise.resolve("Teacher registered successfully");
@@ -78,12 +68,7 @@ export async function loginTeacher(data) {
   try {
     const response = await axios.post(`${baseURL}/teacher/login`, data);
     if (response.data["status"] === "error") {
-      const errorField = response.data.message["field"];
-      if (errorField) {
-        return Promise.reject(`invalid ${errorField}`);
-      } else {
-        return Promise.reject(`${response?.data?.message}`);
-      }
+      return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
       // console.log(response.data);
@@ -102,12 +87,7 @@ export async function registerStudent(data) {
     const response = await axios.post(`${baseURL}/student/register`, data);
     console.log(response);
     if (response.data["status"] === "error") {
-      const errorField = response.data.message["field"];
-      if (errorField) {
-        return Promise.reject(`invalid ${errorField}`);
-      } else {
-        return Promise.reject(`${response?.data?.message}`);
-      }
+      return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
       return Promise.resolve("Student registered successfully");
@@ -196,5 +176,49 @@ export async function getAllSection(classId) {
     return response;
   } catch (error) {
     return Promise.reject("some error occurred");
+  }
+}
+
+export async function getTeacherList(pageNo) {
+  try {
+    const response = await axios.get(
+      `${baseURL}/teacher/teacher-list/${pageNo}`
+    );
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return response;
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while fetching teacher list.");
+  }
+}
+
+export async function updateTeacher(teacherId, data) {
+  try {
+    const response = await axios.put(`${baseURL}/teacher/${teacherId}`, data);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("teacher updated successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while updating teacher.");
+  }
+}
+export async function deleteTeacher(teacherId) {
+  try {
+    console.log("delete teacher : ", teacherId);
+    const response = await axios.delete(`${baseURL}/teacher/${teacherId}`);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("teacher deleted successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while updating teacher.");
   }
 }
