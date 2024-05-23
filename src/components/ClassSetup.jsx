@@ -75,7 +75,7 @@ function ClassSetup() {
 
   return (
     <>
-      <div className={`${isDarkMode ? "bg-[#0d192f]" : "bg-white"} py-6`}>
+      <div className={${isDarkMode ? "bg-[#0d192f]" : "bg-white"} py-6}>
         <Toaster />
         <div
           className={`${
@@ -164,7 +164,7 @@ function ClassSetup() {
                         {data.section.length < 8 ? (
                           <>
                             <Link
-                              to={`/addsection/${data._id}`}
+                              to={/addsection/${data._id}}
                               className="flex justify-center items-center"
                             >
                               <div className="bg-red-500 text-white text-center text-xs md:text-sm w-20 md:w-28 rounded-full">
