@@ -50,9 +50,8 @@ export async function loginAdmin(data) {
 
 export async function registerTeacher(data) {
   try {
-    console.log("teaacher egistter");
     const response = await axios.post(`${baseURL}/teacher/register`, data);
-    console.log(response);
+    // console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -84,7 +83,7 @@ export async function loginTeacher(data) {
 export async function addClass(name) {
   try {
     const response = await axios.post(`${baseURL}/class/register`, { name });
-    console.log(response);
+    // console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
