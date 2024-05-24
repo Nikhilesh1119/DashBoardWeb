@@ -3,10 +3,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleLeft,
   faAngleRight,
-  faPlus,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import "tailwindcss/tailwind.css";
+import toast, { Toaster } from "react-hot-toast";
+import {
+  addEvent,
+  deleteHolidayEvent,
+  getEvents,
+} from "../services/Axios.service";
 
 const months = [
   "January",
@@ -50,22 +55,31 @@ const Calendar = ({ month, year, handlePrevMonth, handleNextMonth }) => {
   );
 };
 
-const Day = ({ day, isActive, hasEvent, onClick, isSunday, isToday }) => {
+const Day = ({
+  day,
+  isActive,
+  hasEvent,
+  isHoliday,
+  onClick,
+  isSunday,
+  isToday,
+}) => {
   return (
     <div
       className={`day ${
         isActive
-          ? " border-2 border-blue-900"
-          : '"bg-white text-[#01345B] border-2 border-[#B9D7F1]'
+          ? "border-2 border-blue-900"
+          : "bg-white text-[#01345B] border-2 border-[#B9D7F1]"
       } 
       ${
         isSunday
           ? "text-blue-950 bg-[#FFCF43] border-2 border-yellow-500 shadow-md shadow-yellow-500"
           : "bg-[#DCEBF8]"
       } 
-      ${hasEvent ? "bg-red-300 " : ""} 
+      ${hasEvent ? "bg-red-300" : ""} 
       ${isToday ? "bg-purple-300" : ""} 
-      cursor-pointer rounded-lg flex font-bold p-2 h-24 shadow-md shadow-[#B9D7F1]`}
+      ${isHoliday ? "bg-yellow-300" : ""} 
+      cursor-pointer rounded-lg flex font-bold p-2 h-14 justify-center shadow-md shadow-[#B9D7F1]`}
       onClick={onClick}
     >
       {day}
@@ -83,58 +97,73 @@ const EventForm = ({
   handleAddEvent,
   setShowAddEvent,
 }) => {
-  const [eventType, setEventType] = useState("Event");
-
-  const handleEventTypeChange = (e) => {
-    setEventType(e.target.value);
-    setNewEvent({ ...newEvent, type: e.target.value });
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewEvent({ ...newEvent, [name]: type === "checkbox" ? checked : value });
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-        <h2 className="text-lg font-bold mb-4">Add New {eventType}</h2>
+        <h2 className="text-lg font-bold mb-4">Add New Event</h2>
         <div className="mb-4">
-          <select
-            value={eventType}
-            onChange={handleEventTypeChange}
-            className="w-full p-2 border border-gray-300 rounded-lg"
-          >
-            <option value="Event">Event</option>
-            <option value="Holiday">Holiday</option>
-          </select>
+          <input
+            type="text"
+            name="date"
+            value={newEvent.date.toDateString()}
+            readOnly
+            className="w-full p-2 mb-2 border border-gray-300 rounded-lg"
+          />
         </div>
-        <input
-          type="text"
-          placeholder={`${eventType} Title`}
-          value={newEvent.title}
-          onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-          className="w-full p-2 mb-2 border border-gray-300 rounded-lg"
-        />
-        {eventType === "Event" && (
-          <>
+        <div className="mb-4">
+          <input
+            type="text"
+            name="title"
+            placeholder="Title"
+            value={newEvent.title}
+            onChange={handleChange}
+            className="w-full p-2 mb-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+        <div className="mb-4">
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={newEvent.description}
+            onChange={handleChange}
+            className="w-full p-2 mb-2 border border-gray-300 rounded-lg"
+          />
+        </div>
+        <div className="mb-4">
+          <label className="inline-flex items-center">
             <input
-              type="time"
-              value={newEvent.from}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, from: e.target.value })
-              }
-              className="w-full p-2 mb-2 border border-gray-300 rounded-lg"
+              type="checkbox"
+              name="teacherHoliday"
+              checked={newEvent.teacherHoliday}
+              onChange={handleChange}
+              className="form-checkbox"
             />
+            <span className="ml-2">Teacher Holiday</span>
+          </label>
+        </div>
+        <div className="mb-4">
+          <label className="inline-flex items-center">
             <input
-              type="time"
-              value={newEvent.to}
-              onChange={(e) => setNewEvent({ ...newEvent, to: e.target.value })}
-              className="w-full p-2 mb-2 border border-gray-300 rounded-lg"
+              type="checkbox"
+              name="studentHoliday"
+              checked={newEvent.studentHoliday}
+              onChange={handleChange}
+              className="form-checkbox"
             />
-          </>
-        )}
+            <span className="ml-2">Student Holiday</span>
+          </label>
+        </div>
         <div className="flex justify-between mt-4">
           <button
             className="px-4 py-2 bg-blue-900 text-white rounded-lg"
             onClick={handleAddEvent}
           >
-            Add {eventType}
+            Submit
           </button>
           <button
             className="px-4 py-2 bg-gray-300 rounded-lg"
@@ -155,21 +184,69 @@ const Event = () => {
   const [activeDay, setActiveDay] = useState(today.getDate());
   const [eventsArr, setEventsArr] = useState([]);
   const [showAddEvent, setShowAddEvent] = useState(false);
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
   const [newEvent, setNewEvent] = useState({
+    date: new Date(year, month, activeDay),
     title: "",
-    from: "",
-    to: "",
-    type: "Event",
+    description: "",
+    teacherHoliday: false,
+    studentHoliday: false,
   });
 
   useEffect(() => {
-    const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
-    setEventsArr(storedEvents);
+    fetchEvents();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("events", JSON.stringify(eventsArr));
-  }, [eventsArr]);
+  const fetchEvents = async () => {
+    try {
+      const response = await getEvents();
+      // console.log({"response":response.data.result})
+      setEventsArr(response.data.result);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+
+  const handleAddEvent = async () => {
+    try {
+      const res = await addEvent(newEvent);
+      // Resetting the form values
+      setShowAddEvent(false);
+      fetchEvents();
+      toast.success("Event created successfully");
+    } catch (error) {
+      toast.error(<b>{error}</b>);
+    } finally {
+      setNewEvent({
+        date: new Date(year, month, activeDay),
+        title: "",
+        description: "",
+        teacherHoliday: false,
+        studentHoliday: false,
+      });
+    }
+  };
+
+  // const handleAddEvent = async () => {
+  //   try {
+  //     const res = await addEvent (newEvent);
+  //     // Resetting the form values
+  //     setShowAddEvent (false);
+  //     fetchEvents ();
+  //     toast.success ('Event created successfully');
+  //   } catch (error) {
+  //     toast.error (<b>{error}</b>);
+  //   }finally{
+  //     setNewEvent ({
+  //       date: new Date (year, month, activeDay),
+  //       title: '',
+  //       description: '',
+  //       teacherHoliday: false,
+  //       studentHoliday: false,
+  //     });
+  //   }
+  // };
 
   const updateCalendar = (newMonth, newYear) => {
     setMonth(newMonth);
@@ -190,9 +267,12 @@ const Event = () => {
   };
 
   const handleToday = () => {
-    setToday(new Date());
-    setMonth(new Date().getMonth());
-    setYear(new Date().getFullYear());
+    const todayDate = new Date();
+    setToday(todayDate);
+    setMonth(todayDate.getMonth());
+    setYear(todayDate.getFullYear());
+    setActiveDay(todayDate.getDate());
+    setNewEvent({ ...newEvent, date: todayDate });
   };
 
   const handleGotoDate = (e) => {
@@ -202,90 +282,22 @@ const Event = () => {
     }
   };
 
-  const handleAddEvent = () => {
-    if (newEvent.title) {
-      const timeFrom = newEvent.from ? convertTime(newEvent.from) : "";
-      const timeTo = newEvent.to ? convertTime(newEvent.to) : "";
-      const updatedEvents = [...eventsArr];
-      let eventAdded = false;
-
-      updatedEvents.forEach((eventObj) => {
-        if (
-          eventObj.day === activeDay &&
-          eventObj.month === month + 1 &&
-          eventObj.year === year
-        ) {
-          eventObj.events.push({
-            title: newEvent.title,
-            time: `${timeFrom ? timeFrom : ""}${
-              timeFrom && timeTo ? " - " : ""
-            }${timeTo ? timeTo : ""}`,
-            type: newEvent.type,
-          });
-          eventAdded = true;
-        }
-      });
-
-      if (!eventAdded) {
-        updatedEvents.push({
-          day: activeDay,
-          month: month + 1,
-          year: year,
-          events: [
-            {
-              title: newEvent.title,
-              time: `${timeFrom ? timeFrom : ""}${
-                timeFrom && timeTo ? " - " : ""
-              }${timeTo ? timeTo : ""}`,
-              type: newEvent.type,
-            },
-          ],
-        });
-      }
-      setEventsArr(updatedEvents);
-      setShowAddEvent(false);
-      setNewEvent({ title: "", from: "", to: "", type: "Event" });
-    } else {
-      alert("Please enter the event title");
-    }
-  };
-
-  const convertTime = (time) => {
-    const [hour, minute] = time.split(":");
-    const formattedHour = hour > 12 ? hour - 12 : hour;
-    const format = hour >= 12 ? "PM" : "AM";
-    return `${formattedHour}:${minute} ${format}`;
-  };
-
   const updateActiveDay = (day) => {
     setActiveDay(day);
+    setNewEvent({ ...newEvent, date: new Date(year, month, day) });
+    setShowAddEvent(true);
   };
 
-  const getEventsForDay = (day) => {
-    const eventForDay = eventsArr.find(
-      (event) =>
-        event.day === day && event.month === month + 1 && event.year === year
-    );
-    return eventForDay ? eventForDay.events : [];
-  };
-
-  const deleteEvent = (day, index) => {
-    const updatedEvents = eventsArr
-      .map((eventObj) => {
-        if (
-          eventObj.day === day &&
-          eventObj.month === month + 1 &&
-          eventObj.year === year
-        ) {
-          return {
-            ...eventObj,
-            events: eventObj.events.filter((_, i) => i !== index),
-          };
-        }
-        return eventObj;
-      })
-      .filter((eventObj) => eventObj.events.length > 0); // Remove days with no events
-    setEventsArr(updatedEvents);
+  const deleteEvent = async (id) => {
+    // console.log(eventToDelete);
+    try {
+      const res = await deleteHolidayEvent(eventToDelete["_id"]);
+      fetchEvents();
+      toast.success("Event deleted successfully");
+    } catch (error) {
+      toast.error(<b>{error}</b>);
+    } finally {
+    }
   };
 
   const generateDays = () => {
@@ -305,6 +317,7 @@ const Event = () => {
       const isSunday = new Date(year, month, i).getDay() === 0;
       const isToday =
         new Date(year, month, i).toDateString() === today.toDateString();
+      const isHoliday = isSunday || hasEvent;
       days.push(
         <Day
           key={i}
@@ -313,6 +326,7 @@ const Event = () => {
           hasEvent={hasEvent}
           isSunday={isSunday}
           isToday={isToday}
+          isHoliday={isHoliday}
           onClick={() => updateActiveDay(i)}
         />
       );
@@ -325,12 +339,26 @@ const Event = () => {
     return days;
   };
 
+  const getEventsForDay = (day) => {
+    const eventDays = eventsArr.filter((event) => {
+      const eventDate = new Date(event.date);
+      return (
+        eventDate.getDate() === day &&
+        eventDate.getMonth() === month &&
+        eventDate.getFullYear() === year
+      );
+    });
+    // console.log({eventDays});
+    return eventDays;
+  };
+
   return (
     <div className="flex flex-col px-3 bg-blue-100">
+      <Toaster position="top-center" reverseOrder={false} />
       <div className="text-3xl font-bold text-[#303972] m-3">Calendar</div>
       <div className="flex items-center justify-center">
-        <div className="container relative w-full h-[90%] p-5 mb-3 mx-auto flex rounded-lg bg-white text-blue-900">
-          <div className="left w-3/5 p-5">
+        <div className="container relative w-full p-5 mb-3 mx-auto flex flex-col-reverse lg:flex-row rounded-lg bg-white text-blue-900">
+          <div className="left lg:w-3/5 p-5">
             <Calendar
               month={month}
               year={year}
@@ -358,43 +386,43 @@ const Event = () => {
               </button>
             </div>
           </div>
-          <div className="right w-2/5 p-5 border-2 border-[#B9D7F1] shadow-md shadow-[#B9D7F1] rounded-lg">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold bg-white p-1 rounded-md border-2 border-[#B9D7F1] h-11 shadow-md">
-                Events on {activeDay} {months[month]} {year}
-              </h2>
-              <FontAwesomeIcon
-                icon={faPlus}
-                className="cursor-pointer p-4 rounded-md text-blue-900 hover:bg-blue-900 hover:text-white"
-                onClick={() => setShowAddEvent(true)}
-              />
-            </div>
-            <div className="events">
-              {getEventsForDay(activeDay).map((event, index) => (
+          <div className="right lg:w-2/5 p-5 border-2 border-[#B9D7F1] shadow-md shadow-[#B9D7F1] rounded-lg max-h-[32rem] overflow-scroll">
+            <div className="grid grid-cols-1 gap-3">
+              {eventsArr.map((itm) => (
                 <div
-                  key={index}
-                  className="event bg-white text-gray-800 p-3 mb-2 rounded-lg shadow flex justify-between items-center"
+                  key={itm["_id"]}
+                  className="border border-gray-300 shadow-lg rounded-lg overflow-hidden"
                 >
-                  <div>
-                    <h3 className="text-lg font-semibold">{event.title}</h3>
-                    <p className="text-sm">{event.time}</p>
-                    <p className="text-sm">
-                      <span
-                        className={`inline-block px-2 py-1 rounded-full text-white ${
-                          event.type === "Event"
-                            ? "bg-green-500"
-                            : "bg-blue-500"
-                        }`}
-                      >
-                        {event.type}
-                      </span>
-                    </p>
+                  <div className="flex justify-between items-center bg-[#172554] text-white py-2 px-4 text-lg">
+                    <div>{itm.day}</div>
+                    <div>{itm.date}</div>
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      onClick={() => {
+                        setEventToDelete(itm);
+                        setShowDeleteConfirmation(true);
+                      }}
+                      className="cursor-pointer"
+                    />
                   </div>
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    className="cursor-pointer text-red-600"
-                    onClick={() => deleteEvent(activeDay, index)}
-                  />
+                  <div className="bg-white py-2 px-4 text-2xl font-bold text-center text-[#172554]">
+                    {itm.title}
+                  </div>
+                  <div className="bg-gray-50 py-1 px-4 text-center text-gray-600">
+                    {itm.description}
+                  </div>
+                  <div className="flex justify-around space-x-2 p-4 bg-white">
+                    {itm.teacherHoliday && (
+                      <div className="bg-green-600 text-white py-1 px-3 rounded-full text-sm">
+                        Teacher Holiday
+                      </div>
+                    )}
+                    {itm.studentHoliday && (
+                      <div className="bg-yellow-600 text-white py-1 px-3 rounded-full text-sm">
+                        Student Holiday
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -408,376 +436,34 @@ const Event = () => {
             setShowAddEvent={setShowAddEvent}
           />
         )}
+        {showDeleteConfirmation && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+              <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
+              <p>Are you sure you want to delete this event?</p>
+              <div className="flex justify-between mt-4">
+                <button
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg"
+                  onClick={() => {
+                    deleteEvent(eventToDelete.id);
+                    setShowDeleteConfirmation(false);
+                  }}
+                >
+                  Yes
+                </button>
+                <button
+                  className="px-4 py-2 bg-gray-300 rounded-lg"
+                  onClick={() => setShowDeleteConfirmation(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default Event;
-
-//dark mode code below
-
-// import React, { useState, useEffect } from "react";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import {
-//   faAngleLeft,
-//   faAngleRight,
-//   faPlus,
-// } from "@fortawesome/free-solid-svg-icons";
-// import "tailwindcss/tailwind.css";
-
-// const months = [
-//   "January",
-//   "February",
-//   "March",
-//   "April",
-//   "May",
-//   "June",
-//   "July",
-//   "August",
-//   "September",
-//   "October",
-//   "November",
-//   "December",
-// ];
-
-// const Calendar = ({ month, year, handlePrevMonth, handleNextMonth }) => {
-//   return (
-//     <div className="calendar bg-gray-900 text-gray-100 rounded-lg w-full">
-//       <div className="month flex items-center justify-between p-4 text-xl font-semibold rounded-lg h-11 capitalize border-2 border-gray-700">
-//         <FontAwesomeIcon
-//           icon={faAngleLeft}
-//           className="cursor-pointer text-red-400"
-//           onClick={handlePrevMonth}
-//         />
-//         <div className="date">{`${months[month]} ${year}`}</div>
-//         <FontAwesomeIcon
-//           icon={faAngleRight}
-//           className="cursor-pointer text-red-400"
-//           onClick={handleNextMonth}
-//         />
-//       </div>
-//       <div className="weekdays grid grid-cols-7 text-lg font-semibold capitalize">
-//         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-//           <div key={day} className="text-center">
-//             {day}
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// const Day = ({ day, isActive, hasEvent, onClick, isSunday, isToday }) => {
-//   return (
-//     <div
-//       className={`day ${
-//         isActive ? "border-2 border-blue-500" : "bg-gray-800 text-gray-100 border-2 border-gray-700"
-//       } ${
-//         isSunday ? "text-red-400 bg-gray-700 border-2 border-red-400 shadow-md shadow-red-400" : "bg-gray-900"
-//       } ${
-//         hasEvent ? "bg-red-600 text-white" : ""
-//       } ${
-//         isToday ? "bg-purple-600" : ""
-//       } cursor-pointer rounded-lg flex font-bold p-2 h-24 shadow-md shadow-gray-700`}
-//       onClick={onClick}
-//     >
-//       {day}
-//     </div>
-//   );
-// };
-
-// const DaysGrid = ({ days }) => {
-//   return <div className="days grid grid-cols-7 gap-3 p-4">{days}</div>;
-// };
-
-// const EventForm = ({
-//   newEvent,
-//   setNewEvent,
-//   handleAddEvent,
-//   setShowAddEvent,
-// }) => {
-//   const [eventType, setEventType] = useState("Event");
-
-//   const handleEventTypeChange = (e) => {
-//     setEventType(e.target.value);
-//   };
-
-//   return (
-//     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75">
-//       <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
-//         <h2 className="text-lg font-bold mb-4 text-gray-100">Add New {eventType}</h2>
-//         <div className="mb-4">
-//           <select
-//             value={eventType}
-//             onChange={handleEventTypeChange}
-//             className="w-full p-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-100"
-//           >
-//             <option value="Event">Event</option>
-//             <option value="Holiday">Holiday</option>
-//           </select>
-//         </div>
-//         <input
-//           type="text"
-//           placeholder={`${eventType} Title`}
-//           value={newEvent.title}
-//           onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-//           className="w-full p-2 mb-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-100"
-//         />
-//         {eventType === "Event" && (
-//           <>
-//             <input
-//               type="time"
-//               value={newEvent.from}
-//               onChange={(e) => setNewEvent({ ...newEvent, from: e.target.value })}
-//               className="w-full p-2 mb-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-100"
-//             />
-//             <input
-//               type="time"
-//               value={newEvent.to}
-//               onChange={(e) => setNewEvent({ ...newEvent, to: e.target.value })}
-//               className="w-full p-2 mb-2 border border-gray-600 rounded-lg bg-gray-700 text-gray-100"
-//             />
-//           </>
-//         )}
-//         <div className="flex justify-between mt-4">
-//           <button
-//             className="px-4 py-2 bg-blue-500 text-white rounded-lg"
-//             onClick={handleAddEvent}
-//           >
-//             Add {eventType}
-//           </button>
-//           <button
-//             className="px-4 py-2 bg-gray-600 text-gray-100 rounded-lg"
-//             onClick={() => setShowAddEvent(false)}
-//           >
-//             Cancel
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// const Event = () => {
-//   const [today, setToday] = useState(new Date());
-//   const [month, setMonth] = useState(today.getMonth());
-//   const [year, setYear] = useState(today.getFullYear());
-//   const [activeDay, setActiveDay] = useState(today.getDate());
-//   const [eventsArr, setEventsArr] = useState([]);
-//   const [showAddEvent, setShowAddEvent] = useState(false);
-//   const [newEvent, setNewEvent] = useState({ title: "", from: "", to: "" });
-
-//   useEffect(() => {
-//     const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
-//     setEventsArr(storedEvents);
-//   }, []);
-
-//   useEffect(() => {
-//     localStorage.setItem("events", JSON.stringify(eventsArr));
-//   }, [eventsArr]);
-
-//   const updateCalendar = (newMonth, newYear) => {
-//     setMonth(newMonth);
-//     setYear(newYear);
-//     setToday(new Date(newYear, newMonth, 1));
-//   };
-
-//   const handlePrevMonth = () => {
-//     const newMonth = month === 0 ? 11 : month - 1;
-//     const newYear = month === 0 ? year - 1 : year;
-//     updateCalendar(newMonth, newYear);
-//   };
-
-//   const handleNextMonth = () => {
-//     const newMonth = month === 11 ? 0 : month + 1;
-//     const newYear = month === 11 ? year + 1 : year;
-//     updateCalendar(newMonth, newYear);
-//   };
-
-//   const handleToday = () => {
-//     setToday(new Date());
-//     setMonth(new Date().getMonth());
-//     setYear(new Date().getFullYear());
-//   };
-
-//   const handleGotoDate = (e) => {
-//     const [mm, yyyy] = e.target.value.split("/");
-//     if (mm && yyyy && mm > 0 && mm < 13 && yyyy.length === 4) {
-//       updateCalendar(mm - 1, parseInt(yyyy));
-//     }
-//   };
-
-//   const handleAddEvent = () => {
-//     if (newEvent.title) {
-//       const timeFrom = newEvent.from ? convertTime(newEvent.from) : "";
-//       const timeTo = newEvent.to ? convertTime(newEvent.to) : "";
-//       const updatedEvents = [...eventsArr];
-//       let eventAdded = false;
-
-//       updatedEvents.forEach((eventObj) => {
-//         if (
-//           eventObj.day === activeDay &&
-//           eventObj.month === month + 1 &&
-//           eventObj.year === year
-//         ) {
-//           eventObj.events.push({
-//             title: newEvent.title,
-//             time: `${timeFrom ? timeFrom : ""}${
-//               timeFrom && timeTo ? " - " : ""
-//             }${timeTo ? timeTo : ""}`,
-//           });
-//           eventAdded = true;
-//         }
-//       });
-
-//       if (!eventAdded) {
-//         updatedEvents.push({
-//           day: activeDay,
-//           month: month + 1,
-//           year: year,
-//           events: [
-//             {
-//               title: newEvent.title,
-//               time: `${timeFrom ? timeFrom : ""}${
-//                 timeFrom && timeTo ? " - " : ""
-//               }${timeTo ? timeTo : ""}`,
-//             },
-//           ],
-//         });
-//       }
-//       setEventsArr(updatedEvents);
-//       setShowAddEvent(false);
-//       setNewEvent({ title: "", from: "", to: "" });
-//     } else {
-//       alert("Please enter the event title");
-//     }
-//   };
-
-//   const convertTime = (time) => {
-//     const [hour, minute] = time.split(":");
-//     const formattedHour = hour > 12 ? hour - 12 : hour;
-//     const format = hour >= 12 ? "PM" : "AM";
-//     return `${formattedHour}:${minute} ${format}`;
-//   };
-
-//   const updateActiveDay = (day) => {
-//     setActiveDay(day);
-//   };
-
-//   const getEventsForDay = (day) => {
-//     const eventForDay = eventsArr.find(
-//       (event) =>
-//         event.day === day && event.month === month + 1 && event.year === year
-//     );
-//     return eventForDay ? eventForDay.events : [];
-//   };
-
-//   const generateDays = () => {
-//     const firstDay = new Date(year, month, 1).getDay();
-//     const lastDay = new Date(year, month + 1, 0).getDate();
-//     const prevLastDay = new Date(year, month, 0).getDate();
-//     const nextDays = 7 - new Date(year, month + 1, 0).getDay() - 1;
-
-//     let days = [];
-
-//     for (let x = firstDay; x > 0; x--) {
-//       days.push(<Day key={`prev-${x}`} day={prevLastDay - x + 1} />);
-//     }
-
-//     for (let i = 1; i <= lastDay; i++) {
-//       const hasEvent = getEventsForDay(i).length > 0;
-//       const isSunday = new Date(year, month, i).getDay() === 0;
-//       const isToday =
-//         new Date(year, month, i).toDateString() === today.toDateString();
-//       days.push(
-//         <Day
-//           key={i}
-//           day={i}
-//           isActive={i === activeDay}
-//           hasEvent={hasEvent}
-//           isSunday={isSunday}
-//           isToday={isToday}
-//           onClick={() => updateActiveDay(i)}
-//         />
-//       );
-//     }
-
-//     for (let j = 1; j <= nextDays; j++) {
-//       days.push(<Day key={`next-${j}`} day={j} />);
-//     }
-
-//     return days;
-//   };
-
-//   return (
-//     <div className="flex flex-col px-3 bg-gray-900 text-gray-100 min-h-screen">
-//       <div className="text-3xl font-bold text-gray-200 m-3">Calendar</div>
-//       <div className="flex items-center justify-center">
-//         <div className="container relative w-full h-[90%] p-5 mb-3 mx-auto flex rounded-lg bg-gray-800 text-gray-100">
-//           <div className="left w-3/5 p-5">
-//             <Calendar
-//               month={month}
-//               year={year}
-//               handlePrevMonth={handlePrevMonth}
-//               handleNextMonth={handleNextMonth}
-//             />
-//             <DaysGrid days={generateDays()} />
-//             <div className="goto-today flex items-center justify-between p-4 text-gray-300">
-//               <div className="goto flex items-center border border-gray-600 rounded-md overflow-hidden">
-//                 <input
-//                   type="text"
-//                   placeholder="mm/yyyy"
-//                   className="date-input w-full h-8 outline-none px-2 bg-gray-700 text-gray-100"
-//                   onBlur={handleGotoDate}
-//                 />
-//                 <button className="goto-btn px-3 py-1 bg-blue-500 text-white">
-//                   Go
-//                 </button>
-//               </div>
-//               <button
-//                 className="today-btn px-3 py-1 bg-blue-500 text-white rounded-md"
-//                 onClick={handleToday}
-//               >
-//                 Today
-//               </button>
-//             </div>
-//           </div>
-//           <div className="right w-2/5 p-5 border-2 border-gray-700 shadow-md shadow-gray-700 rounded-lg">
-//             <div className="flex justify-between items-center mb-4">
-//               <h2 className="text-2xl font-bold bg-gray-800 p-2 rounded-md border-2 border-gray-700 shadow-md">
-//                 Events on {activeDay} {months[month]} {year}
-//               </h2>
-//               <FontAwesomeIcon
-//                 icon={faPlus}
-//                 className="cursor-pointer p-4 rounded-md text-blue-500 hover:bg-blue-500 hover:text-white"
-//                 onClick={() => setShowAddEvent(true)}
-//               />
-//             </div>
-//             <div className="events">
-//               {getEventsForDay(activeDay).map((event, index) => (
-//                 <div
-//                   key={index}
-//                   className="event bg-gray-700 text-gray-100 p-3 mb-2 rounded-lg shadow"
-//                 >
-//                   <h3 className="text-lg font-semibold">{event.title}</h3>
-//                   <p className="text-sm">{event.time}</p>
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-//         </div>
-//         {showAddEvent && (
-//           <EventForm
-//             newEvent={newEvent}
-//             setNewEvent={setNewEvent}
-//             handleAddEvent={handleAddEvent}
-//             setShowAddEvent={setShowAddEvent}
-//           />
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Event;

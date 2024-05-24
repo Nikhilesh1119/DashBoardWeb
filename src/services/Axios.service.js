@@ -271,3 +271,50 @@ export async function deleteStudent(studentId) {
     return Promise.reject("some error occurred while deleting student.");
   }
 }
+
+export async function addEvent(data) {
+  try {
+    const response = await axios.post(
+      `${baseURL}/holiday-event/create-event/`,
+      data
+    );
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("event added successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while creating event.");
+  }
+}
+
+export async function getEvents() {
+  try {
+    const response = await axios.get(`${baseURL}/holiday-event`);
+    // console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return response;
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while fetching event list.");
+  }
+}
+
+export async function deleteHolidayEvent(eventId) {
+  try {
+    // console.log("delete teacher : ", teacherId);
+    const response = await axios.delete(`${baseURL}/holiday-event/${eventId}`);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("holiday event deleted successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while deleting event.");
+  }
+}
