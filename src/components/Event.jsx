@@ -12,7 +12,7 @@ import {
   deleteHolidayEvent,
   getEvents,
 } from "../services/Axios.service";
-
+import { useSelector } from "react-redux";
 const months = [
   "January",
   "February",
@@ -29,22 +29,37 @@ const months = [
 ];
 
 const Calendar = ({ month, year, handlePrevMonth, handleNextMonth }) => {
+  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   return (
-    <div className="calendar bg-white text-[#0F4189] rounded-lg w-full">
+    <div
+      className={`${
+        isDarkMode ? "bg-[#102945] " : "bg-white  "
+      } calendar rounded-lg w-full`}
+    >
       <div className="month flex items-center justify-between p-4 text-xl font-semibold rounded-lg h-11 capitalize border-2 border-[#DCEBF8]">
         <FontAwesomeIcon
           icon={faAngleLeft}
-          className="cursor-pointer text-red-600 size-10"
+          className={`${
+            isDarkMode ? "text-white" : "text-red-600"
+          } cursor-pointer size-10`}
           onClick={handlePrevMonth}
         />
-        <div className="date">{`${months[month]} ${year}`}</div>
+        <div
+          className={`${isDarkMode ? "text-white" : ""} date`}
+        >{`${months[month]} ${year}`}</div>
         <FontAwesomeIcon
           icon={faAngleRight}
-          className="cursor-pointer text-red-600 size-10"
+          className={`${
+            isDarkMode ? "text-white" : "text-red-600"
+          } cursor-pointer size-10`}
           onClick={handleNextMonth}
         />
       </div>
-      <div className="weekdays grid grid-cols-7 text-lg font-semibold capitalize">
+      <div
+        className={`${
+          isDarkMode ? "text-white" : ""
+        } weekdays grid grid-cols-7 text-lg font-semibold capitalize`}
+      >
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
           <div key={day} className="text-center">
             {day}
@@ -64,20 +79,29 @@ const Day = ({
   isSunday,
   isToday,
 }) => {
+  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   return (
     <div
       className={`day ${
         isActive
-          ? "border-2 border-blue-900"
+          ? isDarkMode
+            ? "bg-[#b9d7f1] text-gray-800 border border-white "
+            : "border-2 border-blue-900"
+          : isDarkMode
+          ? "bg-[#102946]"
           : "bg-white text-[#01345B] border-2 border-[#B9D7F1]"
       } 
       ${
         isSunday
-          ? "text-blue-950 bg-[#FFCF43] border-2 border-yellow-500 shadow-md shadow-yellow-500"
-          : "bg-[#DCEBF8]"
+          ? isDarkMode
+            ? "text-blue-900 bg-[#FFD65C] "
+            : "text-blue-950 bg-[#FFCF43] border-2 border-yellow-500 shadow-md shadow-yellow-500 "
+          : isDarkMode
+          ? "text-white "
+          : "bg-[#DCEBF8] "
       } 
       ${hasEvent ? "bg-red-300" : ""} 
-      ${isToday ? "bg-purple-300" : ""} 
+      ${isToday ? (isDarkMode ? "bg-blue-900 " : "bg-purple-300 ") : ""} 
       ${isHoliday ? "bg-yellow-300" : ""} 
       cursor-pointer rounded-lg flex font-bold p-2 h-14 justify-center shadow-md shadow-[#B9D7F1]`}
       onClick={onClick}
@@ -178,6 +202,7 @@ const EventForm = ({
 };
 
 const Event = () => {
+  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const [today, setToday] = useState(new Date());
   const [month, setMonth] = useState(today.getMonth());
   const [year, setYear] = useState(today.getFullYear());
@@ -353,11 +378,25 @@ const Event = () => {
   };
 
   return (
-    <div className="flex flex-col px-3 bg-blue-100">
+    <div
+      className={`${
+        isDarkMode ? "bg-[#112138]" : "bg-blue-100"
+      } flex flex-col px-3 `}
+    >
       <Toaster position="top-center" reverseOrder={false} />
-      <div className="text-3xl font-bold text-[#303972] m-3">Calendar</div>
+      <div
+        className={`${
+          isDarkMode ? "text-white" : "text-[#303972]"
+        } text-3xl font-bold  m-3`}
+      >
+        Calendar
+      </div>
       <div className="flex items-center justify-center">
-        <div className="container relative w-full p-5 mb-3 mx-auto flex flex-col-reverse lg:flex-row rounded-lg bg-white text-blue-900">
+        <div
+          className={`${
+            isDarkMode ? "bg-[#0D192F] text-red-700" : "bg-white text-blue-900"
+          } container relative w-full p-5 mb-3 mx-auto flex flex-col-reverse lg:flex-row rounded-lg `}
+        >
           <div className="left lg:w-3/5 p-5">
             <Calendar
               month={month}
@@ -366,15 +405,29 @@ const Event = () => {
               handleNextMonth={handleNextMonth}
             />
             <DaysGrid days={generateDays()} />
-            <div className="goto-today flex items-center justify-between p-4 text-blue-950">
-              <div className="goto flex items-center border border-blue-950 rounded-md overflow-hidden">
+            <div
+              className={`${
+                isDarkMode ? "bg-[#102945]" : "text-blue-900"
+              } goto-today flex items-center justify-between p-4 rounded-xl`}
+            >
+              <div
+                className={`${
+                  isDarkMode ? "border-purple-900" : "border-blue-950 "
+                } goto flex items-center border rounded-md overflow-hidden`}
+              >
                 <input
                   type="text"
                   placeholder="mm/yyyy"
-                  className="date-input w-full h-8 outline-none px-2"
+                  className={`${
+                    isDarkMode ? "bg-gray-800 text-white" : ""
+                  } date-input w-full h-8 outline-none px-2`}
                   onBlur={handleGotoDate}
                 />
-                <button className="goto-btn px-3 py-1 bg-blue-900 text-white">
+                <button
+                  className={`${
+                    isDarkMode ? "bg-blue-900" : "bg-blue-900"
+                  } goto-btn px-3 py-1  text-white`}
+                >
                   Go
                 </button>
               </div>
@@ -386,7 +439,13 @@ const Event = () => {
               </button>
             </div>
           </div>
-          <div className="right lg:w-2/5 p-5 border-2 border-[#B9D7F1] shadow-md shadow-[#B9D7F1] rounded-lg max-h-[32rem] overflow-scroll">
+          <div
+            className={`${
+              isDarkMode
+                ? "shadow-blue-600"
+                : "shadow-[#B9D7F1] border-[#B9D7F1] "
+            } right lg:w-2/5 p-5 border-2 shadow-md  rounded-lg max-h-[32rem] overflow-y-scroll`}
+          >
             <div className="grid grid-cols-1 gap-3">
               {eventsArr.map((itm) => (
                 <div
@@ -405,13 +464,29 @@ const Event = () => {
                       className="cursor-pointer"
                     />
                   </div>
-                  <div className="bg-white py-2 px-4 text-2xl font-bold text-center text-[#172554]">
+                  <div
+                    className={`${
+                      isDarkMode
+                        ? "bg-[#102945] text-white"
+                        : "bg-white  text-[#172554]"
+                    } py-2 px-4 text-2xl font-bold text-center `}
+                  >
                     {itm.title}
                   </div>
-                  <div className="bg-gray-50 py-1 px-4 text-center text-gray-600">
+                  <div
+                    className={`${
+                      isDarkMode
+                        ? "bg-[#102945] text-gray-50"
+                        : "bg-gray-50  text-gray-600"
+                    } py-1 px-4 text-center `}
+                  >
                     {itm.description}
                   </div>
-                  <div className="flex justify-around space-x-2 p-4 bg-white">
+                  <div
+                    className={`${
+                      isDarkMode ? "bg-blue-950" : "bg-white"
+                    } flex justify-around space-x-2 p-4 `}
+                  >
                     {itm.teacherHoliday && (
                       <div className="bg-green-600 text-white py-1 px-3 rounded-full text-sm">
                         Teacher Holiday
@@ -438,9 +513,21 @@ const Event = () => {
         )}
         {showDeleteConfirmation && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-              <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
-              <p>Are you sure you want to delete this event?</p>
+            <div
+              className={`${
+                isDarkMode ? "bg-gray-800" : "bg-white"
+              }  p-6 rounded-lg shadow-lg w-80`}
+            >
+              <h2
+                className={`${
+                  isDarkMode ? "text-white" : "font-bold"
+                } text-lg  mb-4`}
+              >
+                Confirm Deletion
+              </h2>
+              <p className={`${isDarkMode ? "text-white" : ""}`}>
+                Are you sure you want to delete this event?
+              </p>
               <div className="flex justify-between mt-4">
                 <button
                   className="px-4 py-2 bg-red-600 text-white rounded-lg"

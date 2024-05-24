@@ -112,7 +112,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.firstname &&
@@ -141,7 +141,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.lastname && formik.errors.lastname && (
@@ -171,7 +171,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.rollNumber &&
@@ -199,7 +199,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         >
                           <option
@@ -254,7 +254,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.age && formik.errors.age && (
@@ -282,7 +282,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.phone && formik.errors.phone && (
@@ -312,7 +312,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.email && formik.errors.email && (
@@ -340,7 +340,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.address && formik.errors.address && (
