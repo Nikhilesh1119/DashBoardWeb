@@ -35,6 +35,10 @@ export default function RegisterTeacher() {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         console.log(values);
+        if(formik.isValid){
+          toast.error("invalid form data");
+          return;
+        }
         const response = await registerTeacher(values);
         console.log(response);
         toast.success(<b>register Successfully</b>);

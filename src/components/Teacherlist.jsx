@@ -133,7 +133,7 @@ function Teacherlist() {
       getTeacher();
       toast.success("Teacher updated successfully!");
     } catch (error) {
-      toast.error("Failed to update teacher!");
+      toast.error(<b>{error}</b>);
     }
     setOpenModal(false);
     setSelectedTeacher(null);

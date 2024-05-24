@@ -12,6 +12,8 @@ axios.defaults.headers.common["Authorization"] = `Bearer ${getItem(
   KEY_ACCESS_TOKEN
 )}`;
 
+
+
 export async function registerAdmin(data) {
   try {
     const response = await axios.post(`${baseURL}/admin/register`, data);
@@ -50,9 +52,9 @@ export async function loginAdmin(data) {
 
 export async function registerTeacher(data) {
   try {
-    console.log("teaacher egistter");
+    // console.log("teaacher egistter");
     const response = await axios.post(`${baseURL}/teacher/register`, data);
-    console.log(response);
+    // console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -83,9 +85,9 @@ export async function loginTeacher(data) {
 
 export async function registerStudent(data) {
   try {
-    console.log("teaacher egistter");
+    // console.log("teaacher egistter");
     const response = await axios.post(`${baseURL}/student/register`, data);
-    console.log(response);
+    // console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -100,7 +102,7 @@ export async function registerStudent(data) {
 export async function addClass(data) {
   try {
     const response = await axios.post(`${baseURL}/class/add`, data);
-    console.log(response);
+    // console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -115,7 +117,7 @@ export async function addClass(data) {
 export async function getClass() {
   try {
     const response = await axios.get(`${baseURL}/class/get`);
-    console.log(response);
+    // console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -141,11 +143,9 @@ export async function getTeacherList(pageNo) {
   }
 }
 
-export async function updateTeacher(teacherId,data){
+export async function updateTeacher(teacherId, data) {
   try {
-    const response = await axios.put(
-      `${baseURL}/teacher/${teacherId}`,data
-    );
+    const response = await axios.put(`${baseURL}/teacher/${teacherId}`, data);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -156,11 +156,58 @@ export async function updateTeacher(teacherId,data){
     return Promise.reject("some error occurred while updating teacher.");
   }
 }
-export async function deleteTeacher(teacherId){
+
+export async function deleteTeacher(teacherId) {
   try {
-    console.log("delete teacher : ",teacherId)
-    const response = await axios.delete(
-      `${baseURL}/teacher/${teacherId}`);
+    // console.log("delete teacher : ", teacherId);
+    const response = await axios.delete(`${baseURL}/teacher/${teacherId}`);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("teacher deleted successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while updating teacher.");
+  }
+}
+
+export async function addEvent(data) {
+  try {
+    const response = await axios.post(
+      `${baseURL}/holiday-event/create-event/`,
+      data
+    );
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("event added successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while creating event.");
+  }
+}
+
+export async function getEvents() {
+  try {
+    const response = await axios.get(`${baseURL}/holiday-event`);
+    // console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return response;
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while fetching event list.");
+  }
+}
+
+export async function deleteHolidayEvent(eventId) {
+  try {
+    // console.log("delete teacher : ", teacherId);
+    const response = await axios.delete(`${baseURL}/holiday-event/${eventId}`);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
