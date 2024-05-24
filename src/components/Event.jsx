@@ -216,6 +216,26 @@ const Event = () => {
     }
   };
 
+  // const handleAddEvent = async () => {
+  //   try {
+  //     const res = await addEvent (newEvent);
+  //     // Resetting the form values
+  //     setShowAddEvent (false);
+  //     fetchEvents ();
+  //     toast.success ('Event created successfully');
+  //   } catch (error) {
+  //     toast.error (<b>{error}</b>);
+  //   }finally{
+  //     setNewEvent ({
+  //       date: new Date (year, month, activeDay),
+  //       title: '',
+  //       description: '',
+  //       teacherHoliday: false,
+  //       studentHoliday: false,
+  //     });
+  //   }
+  // };
+
   const updateCalendar = (newMonth, newYear) => {
     setMonth (newMonth);
     setYear (newYear);

@@ -87,8 +87,8 @@ function Addsection() {
                     } text-lg`}
                   >
                     Section will appear here after you create it using add section button above
-                    above
                   </p>
+                  
                 </div>
               ) : (
                 <div className="mt-8 flex flex-wrap gap-4">
@@ -183,6 +183,38 @@ function Addsection() {
                 </div>
               )}
             </div>
+            <div className="flex justify-center mt-6">
+              <Link
+                to="/class-setup"
+                className={`${
+                  isDarkMode ? "bg-blue-950" : "bg-blue-50"
+                } p-4 rounded shadow-md w-full sm:w-auto text-center`}
+              >
+                <button
+                  className={`${
+                    isDarkMode ? "text-white" : "text-[#01345b]"
+                  } text-xl md:text-2xl font-bold`}
+                >
+                  Go to Classroom
+                </button>
+              </Link>
+            </div>
+          </div>
+          <div className="flex justify-center mt-6">
+            <Link
+              to="/class-setup"
+              className={`${
+                isDarkMode ? "bg-blue-950" : "bg-blue-50"
+              } p-4 rounded shadow-md w-full sm:w-auto text-center`}
+            >
+              <button
+                className={`${
+                  isDarkMode ? "text-white" : "text-[#01345b]"
+                } text-xl md:text-2xl font-bold`}
+              >
+                Go to Classroom
+              </button>
+            </Link>
           </div>
         </div>
       </div>

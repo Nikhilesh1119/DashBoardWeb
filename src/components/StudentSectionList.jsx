@@ -1,66 +1,84 @@
 import React, { useEffect, useState } from "react";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import noteacher from "../assets/noteacher.png";
+import nostudent from "../assets/nostudent.png";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
-import {
-  getTeacherList,
-  updateTeacher,
-  deleteTeacher,
-} from "../services/Axios.service"; // Add deleteTeacher function
 import Popover from "@mui/material/Popover";
-import Button from "@mui/material/Button";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
+import {
+  Modal,
+  Box,
+  TextField,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Button,
+  Grid,
+  FormLabel,
+} from "@mui/material";
+import { useMediaQuery, useTheme } from "@mui/material";
+import {
+  getStudentList,
+  updateStudent,
+  deleteStudent,
+} from "../services/Axios.service";
 
-function Teacherlist() {
+function StudentSectionList({ sectionId }) {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const [pageNo, setPageNo] = useState(1);
-  const [totalTeacherCount, setTotalTeacherCount] = useState(5);
+  const [totalStudentCount, setTotalStudentCount] = useState(5);
   const [limit, setLimit] = useState(5);
-  const [teacherData, setTeacherData] = useState([]);
-  const [teacherList, setTeacherList] = useState([]);
+  const [StudentData, setStudentData] = useState([]);
+  const [studentList, setStudentList] = useState([]);
   const [searchInput, setSearchInput] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedTeacher, setSelectedTeacher] = useState(null);
+  const [selectedStudent, setSelectedStudent] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [formValues, setFormValues] = useState({
     _id: "",
-    username: "",
     firstname: "",
     lastname: "",
+    rollNumber: "",
+    gender: "",
+    age: "",
     phone: "",
     email: "",
+    address: "",
   });
-  const [deleteConfirmModal, setDeleteConfirmModal] = useState(false); // New state for delete confirmation modal
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
   const [idForDelete, setIdForDelete] = useState();
 
-  const getTeacher = async () => {
-    const teacherList = await getTeacherList(pageNo);
-    setTotalTeacherCount(teacherList.data.result.totalCount);
-    setLimit(teacherList.data.result.limit);
-    setTeacherData(teacherList.data.result.teacherList);
-    setTeacherList(teacherList.data.result.teacherList);
+  const getStudent = async () => {
+    const studentList = await getStudentList(sectionId, pageNo);
+    // console.log(studentList);
+    setTotalStudentCount(studentList.data.result.totalCount);
+    setLimit(studentList.data.result.limit);
+    setStudentData(studentList.data.result.studentList);
+    setStudentList(studentList.data.result.studentList);
   };
 
   useEffect(() => {
-    getTeacher();
+    getStudent();
   }, [pageNo]);
 
   useEffect(() => {
-    if (selectedTeacher) {
+    if (selectedStudent) {
       setFormValues({
-        _id: selectedTeacher["_id"],
-        username: selectedTeacher.username,
-        firstname: selectedTeacher.firstname,
-        lastname: selectedTeacher.lastname,
-        phone: selectedTeacher.phone,
-        email: selectedTeacher.email,
+        _id: selectedStudent["_id"],
+        firstname: selectedStudent.firstname,
+        lastname: selectedStudent.lastname,
+        rollNumber: selectedStudent.rollNumber,
+        gender: selectedStudent.gender,
+        age: selectedStudent.age,
+        phone: selectedStudent.phone,
+        email: selectedStudent.email,
+        address: selectedStudent.address,
       });
     }
-  }, [selectedTeacher]);
+  }, [selectedStudent]);
 
   const handlePageChange = (event, value) => {
     setPageNo(value);
@@ -68,28 +86,28 @@ function Teacherlist() {
 
   const handleSearch = () => {
     const searchInputLower = searchInput.toLowerCase();
-    const searchedTeacher = teacherList.filter(
+    const searchedStudent = studentList.filter(
       (itm) =>
         itm.firstname.toLowerCase() === searchInputLower ||
         itm.username.toLowerCase() === searchInputLower
     );
-    setTeacherData(searchedTeacher);
+    setStudentData(searchedStudent);
   };
 
   const handleClear = () => {
     setSearchInput("");
-    setTeacherData(teacherList);
+    setStudentData(studentList);
   };
 
-  const handleClick = (event, teacher) => {
+  const handleClick = (event, student) => {
     setAnchorEl(event.currentTarget);
-    setSelectedTeacher(teacher);
-    setIdForDelete(teacher["_id"]);
+    setSelectedStudent(student);
+    setIdForDelete(student["_id"]);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
-    setSelectedTeacher(null);
+    setSelectedStudent(null);
   };
 
   const handleDelete = () => {
@@ -99,14 +117,14 @@ function Teacherlist() {
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteTeacher(idForDelete);
-      getTeacher();
-      toast.success("Teacher deleted successfully!");
+      await deleteStudent(idForDelete);
+      getStudent();
+      toast.success("Student deleted successfully!");
     } catch (error) {
-      toast.error("Failed to delete teacher!");
+      toast.error("Failed to delete student!");
     }
     setDeleteConfirmModal(false);
-    setSelectedTeacher(null);
+    setSelectedStudent(null);
   };
 
   const handleUpdate = () => {
@@ -116,7 +134,7 @@ function Teacherlist() {
 
   const handleModalClose = () => {
     setOpenModal(false);
-    setSelectedTeacher(null);
+    setSelectedStudent(null);
   };
 
   const handleInputChange = (event) => {
@@ -129,18 +147,18 @@ function Teacherlist() {
 
   const handleModalSubmit = async (event) => {
     event.preventDefault();
-    const updatedTeacher = {
+    const updatedStudent = {
       ...formValues,
     };
     try {
-      await updateTeacher(updatedTeacher["_id"], updatedTeacher);
-      getTeacher();
-      toast.success("Teacher updated successfully!");
+      await updateStudent(updatedStudent["_id"], updatedStudent);
+      getStudent();
+      toast.success("Student updated successfully!");
     } catch (error) {
-      toast.error(<b>{error}</b>);
+      toast.error("Failed to update student!");
     }
     setOpenModal(false);
-    setSelectedTeacher(null);
+    setSelectedStudent(null);
   };
 
   const open = Boolean(anchorEl);
@@ -189,29 +207,32 @@ function Teacherlist() {
             </div>
           </div>
         </div>
-        {teacherData.length > 0 ? (
+        {StudentData.length > 0 ? (
           <>
             <div className="w-full max-md:max-w-full px-3">
               <table className="w-full bg-white max-md:px-5 max-md:max-w-full mt-6">
                 <thead>
                   <tr className="text-base font-medium text-indigo-900">
-                    <th className="text-left px-4 py-2">UserName</th>
+                    <th className="text-left px-4 py-2 ">RollNumber</th>
                     <th className="text-left px-4 py-2">FirstName</th>
-                    <th className="text-left px-4 py-2">Phone</th>
-                    <th className="text-left px-4 py-2">Email</th>
+                    <th className="text-left px-4 py-2 max-xl:hidden">
+                      Gender
+                    </th>
+                    <th className="text-left px-4 py-2 max-md:hidden">Phone</th>
+                    <th className="text-left px-4 py-2 max-lg:hidden">Email</th>
                     <th className="text-left px-4 py-2">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {teacherData.map((data, i) => (
+                  {StudentData.map((data, i) => (
                     <tr className="border-t" key={i}>
-                      <td className="flex items-center px-4 py-2">
-                        <div className="bg-amber-300 h-[30px] rounded-[40px] w-[30px]" />
-                        <span className="ml-2">{data.username}</span>
-                      </td>
+                      <td className="px-4 py-2">#{data.rollNumber}</td>
                       <td className="px-4 py-2">{data.firstname}</td>
-                      <td className="px-4 py-2">{data.phone}</td>
-                      <td className="px-4 py-2">{data.email}</td>
+                      <td className="px-4 py-2 text-blue-950 max-xl:hidden">
+                        {data.gender}
+                      </td>
+                      <td className="px-4 py-2 max-md:hidden">{data.phone}</td>
+                      <td className="px-4 py-2 max-lg:hidden">{data.email}</td>
                       <td className="px-4 py-2">
                         <Button
                           aria-describedby={id}
@@ -230,17 +251,17 @@ function Teacherlist() {
                   <span className="leading-5 text-slate-400">Showing</span>{" "}
                   <span className="leading-5 text-blue-950">
                     {pageNo * limit - (limit - 1)} -{" "}
-                    {Math.min(totalTeacherCount, pageNo * limit)}
-                  </span>{" "}
+                    {Math.min(totalStudentCount, pageNo * limit)}
+                  </span>
                   <span className="leading-5 text-slate-400">from</span>{" "}
                   <span className="leading-5 text-blue-950">
-                    {totalTeacherCount}
-                  </span>{" "}
+                    {totalStudentCount}
+                  </span>
                   <span className="leading-5 text-slate-400">data</span>
                 </div>
                 <Stack spacing={2}>
                   <Pagination
-                    count={Math.ceil(totalTeacherCount / limit)}
+                    count={Math.ceil(totalStudentCount / limit)}
                     variant="outlined"
                     shape="rounded"
                     page={pageNo}
@@ -251,23 +272,25 @@ function Teacherlist() {
             </div>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center text-center mb-6">
-            <img src={noteacher} className="mb-4 size-52" />
-            <p
-              className={`${
-                isDarkMode ? "text-white" : "text-blue-950"
-              } text-2xl font-bold `}
-            >
-              No Teachers found
-            </p>
-            <p
-              className={`${
-                isDarkMode ? "text-white" : "text-blue-950"
-              } text-sm`}
-            >
-              Please try another search term
-            </p>
-          </div>
+          <>
+            <div className="flex flex-col items-center justify-center text-center pb-6">
+              <img src={nostudent} className="mb-4 size-52" />
+              <p
+                className={`${
+                  isDarkMode ? "text-white" : "text-blue-950"
+                } text-2xl font-bold `}
+              >
+                No Student at this time
+              </p>
+              <p
+                className={`${
+                  isDarkMode ? "text-white" : "text-blue-950"
+                }  text-sm`}
+              >
+                Student will be appear here after they enroll in your School
+              </p>
+            </div>
+          </>
         )}
       </div>
       <Popover
@@ -306,65 +329,129 @@ function Teacherlist() {
             position: "absolute",
             top: "50%",
             left: "50%",
+            marginTop: "20px",
+            marginBottom: "20px",
+            maxHeight: "90vh",
             transform: "translate(-50%, -50%)",
-            width: 400,
+            width: isSmallScreen ? "80%" : 700,
             bgcolor: "background.paper",
             border: "2px solid #000",
             boxShadow: 24,
-            p: 4,
+            p: isSmallScreen ? 2 : 4,
+            overflow: "auto",
           }}
         >
-          <h2 id="modal-title">Update Teacher</h2>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            value={formValues.username}
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="firstname"
-            label="First Name"
-            name="firstname"
-            value={formValues.firstname}
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="lastname"
-            label="Last Name"
-            name="lastname"
-            value={formValues.lastname}
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="phone"
-            label="Phone"
-            name="phone"
-            value={formValues.phone}
-            onChange={handleInputChange}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email"
-            name="email"
-            value={formValues.email}
-            onChange={handleInputChange}
-          />
+          <h2 id="modal-title">Update Student</h2>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="firstname"
+                label="Firstname"
+                name="firstname"
+                value={formValues.firstname}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="lastname"
+                label="Lastname"
+                name="lastname"
+                value={formValues.lastname}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="rollNumber"
+                label="rollNumber"
+                name="rollNumber"
+                value={formValues.rollNumber}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="age"
+                label="Age"
+                name="age"
+                value={formValues.age}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormLabel component="legend">Gender</FormLabel>
+              <RadioGroup
+                row
+                name="gender"
+                id="gender"
+                value={formValues.gender}
+                onChange={handleInputChange}
+              >
+                <FormControlLabel
+                  value="Female"
+                  control={<Radio />}
+                  checked={formValues.gender === "Female"}
+                  label="Female"
+                />
+                <FormControlLabel
+                  value="Male"
+                  control={<Radio />}
+                  checked={formValues.gender === "Male"}
+                  label="Male"
+                />
+              </RadioGroup>
+            </Grid>
+
+            <Grid item xs={12} sm={6}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="phone"
+                label="Phone"
+                name="phone"
+                value={formValues.phone}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email"
+                name="email"
+                value={formValues.email}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="address"
+                label="Address"
+                name="address"
+                value={formValues.address}
+                onChange={handleInputChange}
+              />
+            </Grid>
+          </Grid>
           <div className="flex justify-end mt-4">
             <Button type="button" onClick={handleModalClose} sx={{ mr: 2 }}>
               Close
@@ -396,7 +483,7 @@ function Teacherlist() {
         >
           {/* <h2 id="delete-confirmation-title">Confirm Delete</h2> */}
           <p id="delete-confirmation-description">
-            Are you sure you want to delete this teacher?
+            Are you sure you want to delete this student?
           </p>
           <div className="flex justify-end mt-4">
             <Button onClick={() => setDeleteConfirmModal(false)} sx={{ mr: 2 }}>
@@ -416,4 +503,4 @@ function Teacherlist() {
   );
 }
 
-export default Teacherlist;
+export default StudentSectionList;

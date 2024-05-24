@@ -2,10 +2,11 @@ import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { registerStudent } from "../services/Axios.service";
 import { Toaster, toast } from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function StudentRegister() {
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
-
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       firstname: "",
@@ -16,6 +17,8 @@ export default function StudentRegister() {
       phone: "",
       email: "",
       address: "",
+      classId: useParams().classId,
+      sectionId: useParams().sectionId,
     },
     validateOnBlur: true,
     validateOnChange: false,
@@ -25,7 +28,7 @@ export default function StudentRegister() {
       if (!value.lastname.length) error.lastname = "Lastname required";
       if (value.rollNumber.length < 5 || value.rollNumber.length > 20)
         error.rollNumber = "RollNumber length should lie in 5 to 20 characters";
-      if (!["male", "female"].includes(value.gender))
+      if (!["Male", "Female"].includes(value.gender))
         error.gender = "Please select Gender";
       if (value.age < 1 || value.age > 100)
         error.age = "Enter age between 0 and 100";
@@ -43,7 +46,7 @@ export default function StudentRegister() {
         console.log(response);
         toast.success(<b>register Successfully</b>);
         setTimeout(() => {
-          navigate("/student");
+          navigate(`/student-section/${values.classId}/${values.sectionId}`);
         }, 2000);
         resetForm();
       } catch (error) {
@@ -211,7 +214,7 @@ export default function StudentRegister() {
                             className={`${
                               isDarkMode ? "text-white bg-[#152f54]" : ""
                             }`}
-                            value="male"
+                            value="Male"
                           >
                             Male
                           </option>
@@ -219,7 +222,7 @@ export default function StudentRegister() {
                             className={`${
                               isDarkMode ? "text-white bg-[#152f54]" : ""
                             }`}
-                            value="female"
+                            value="Female"
                           >
                             Female
                           </option>
