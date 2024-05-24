@@ -1,39 +1,68 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import {
+  addSection,
+  getAllUnassignedTeacher,
+  getSection,
+} from "../services/Axios.service";
+import toast, { Toaster } from "react-hot-toast";
 
 function Addsection() {
+  const classId = useParams().id;
+  const [newSection, setNewSection] = useState({
+    name: "",
+    teacherId: "",
+    classId: classId,
+  });
   const [sections, setSections] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [showPopover, setShowPopover] = useState(false);
-  const [selectedSection, setSelectedSection] = useState("");
-  const [selectedTeacher, setSelectedTeacher] = useState("");
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
-
-  const teachers = ["Teacher A", "Teacher B", "Teacher C"];
 
   const handleAddSectionClick = () => {
     setShowPopover(true);
   };
 
-  const handleSaveSection = () => {
-    if (selectedSection && selectedTeacher) {
-      const isDuplicate = sections.some((section) => section.name === selectedSection);
-      if (isDuplicate) {
-        alert("Section name already exists. Please choose a different section name.");
-        return;
-      }
+  const getUnassignedTeacher = async () => {
+    const res = await getAllUnassignedTeacher();
+    setTeachers(res.data.result);
+  };
 
-      const newSection = { name: selectedSection, teacher: selectedTeacher };
-      setSections([...sections, newSection]);
+  const handleTeacherChange = async (teacherId) => {
+    setNewSection((prevState) => ({
+      ...prevState,
+      teacherId: teacherId,
+    }));
+  };
+
+  const handleSaveSection = async () => {
+    try {
+      const res = await addSection(newSection);
+      toast.success(res);
       setShowPopover(false);
-      setSelectedSection("");
-      setSelectedTeacher("");
+      getsection();
+    } catch (error) {
+      toast.error(error);
     }
   };
+
+  const getsection = async () => {
+    const res = await getSection(classId);
+    console.log(res.data.result);
+    setSections(res.data.result);
+  };
+
+  useEffect(() => {
+    getUnassignedTeacher();
+    getsection();
+  }, []);
 
   return (
     <>
       <div className={`${isDarkMode ? "bg-[#0d192f]" : "bg-white"} py-6`}>
+        <Toaster />
         <div
           className={`${
             isDarkMode
@@ -86,9 +115,9 @@ function Addsection() {
                       isDarkMode ? "text-white" : "text-[#01345b]"
                     } text-lg`}
                   >
-                    Section will appear here after you create it using add section button above
+                    Section will appear here after you create it using add
+                    section button above above
                   </p>
-                  
                 </div>
               ) : (
                 <div className="mt-8 flex flex-wrap gap-4">
@@ -107,13 +136,6 @@ function Addsection() {
                       >
                         {section.name}
                       </h4>
-                      <p
-                        className={`${
-                          isDarkMode ? "text-white" : "text-[#01345b]"
-                        }`}
-                      >
-                        Teacher: {section.teacher}
-                      </p>
                     </Link>
                   ))}
                 </div>
@@ -123,7 +145,9 @@ function Addsection() {
                 <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
                   <div
                     className={`${
-                      isDarkMode ? "bg-[#0d192f] text-white" : "bg-white text-gray-700"
+                      isDarkMode
+                        ? "bg-[#0d192f] text-white"
+                        : "bg-white text-gray-700"
                     } p-6 rounded shadow-lg max-w-sm w-full`}
                   >
                     <h2 className="text-2xl mb-4">Add Section</h2>
@@ -132,18 +156,27 @@ function Addsection() {
                         Section Name
                       </label>
                       <select
-                        value={selectedSection}
-                        onChange={(e) => setSelectedSection(e.target.value)}
+                        value={newSection.sectionName}
+                        onChange={(e) =>
+                          setNewSection((prevState) => ({
+                            ...prevState,
+                            name: e.target.value,
+                          }))
+                        }
                         className={`shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline ${
-                          isDarkMode ? "bg-[#152f54] text-white" : "text-gray-700"
+                          isDarkMode
+                            ? "bg-[#152f54] text-white"
+                            : "text-gray-700"
                         }`}
                       >
                         <option value="">Select a section</option>
-                        {['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].map((section) => (
-                          <option key={section} value={section}>
-                            {section}
-                          </option>
-                        ))}
+                        {["A", "B", "C", "D", "E", "F", "G", "H"].map(
+                          (section) => (
+                            <option key={section} value={section}>
+                              {section}
+                            </option>
+                          )
+                        )}
                       </select>
                     </div>
                     <div className="mb-4">
@@ -151,16 +184,18 @@ function Addsection() {
                         Assign ClassTeacher
                       </label>
                       <select
-                        value={selectedTeacher}
-                        onChange={(e) => setSelectedTeacher(e.target.value)}
+                        value={newSection.teacherId}
+                        onChange={(e) => handleTeacherChange(e.target.value)}
                         className={`shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline ${
-                          isDarkMode ? "bg-[#152f54] text-white" : "text-gray-700"
+                          isDarkMode
+                            ? "bg-[#152f54] text-white"
+                            : "text-gray-700"
                         }`}
                       >
                         <option value="">Select a teacher</option>
-                        {teachers.map((teacher) => (
-                          <option key={teacher} value={teacher}>
-                            {teacher}
+                        {teachers.map((teacher, i) => (
+                          <option key={i} value={teacher._id}>
+                            {teacher.username}
                           </option>
                         ))}
                       </select>
@@ -183,38 +218,6 @@ function Addsection() {
                 </div>
               )}
             </div>
-            <div className="flex justify-center mt-6">
-              <Link
-                to="/class-setup"
-                className={`${
-                  isDarkMode ? "bg-blue-950" : "bg-blue-50"
-                } p-4 rounded shadow-md w-full sm:w-auto text-center`}
-              >
-                <button
-                  className={`${
-                    isDarkMode ? "text-white" : "text-[#01345b]"
-                  } text-xl md:text-2xl font-bold`}
-                >
-                  Go to Classroom
-                </button>
-              </Link>
-            </div>
-          </div>
-          <div className="flex justify-center mt-6">
-            <Link
-              to="/class-setup"
-              className={`${
-                isDarkMode ? "bg-blue-950" : "bg-blue-50"
-              } p-4 rounded shadow-md w-full sm:w-auto text-center`}
-            >
-              <button
-                className={`${
-                  isDarkMode ? "text-white" : "text-[#01345b]"
-                } text-xl md:text-2xl font-bold`}
-              >
-                Go to Classroom
-              </button>
-            </Link>
           </div>
         </div>
       </div>
