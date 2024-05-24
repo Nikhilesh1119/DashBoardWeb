@@ -151,7 +151,7 @@ function ClassSetup() {
                               key={j}
                             >
                               <Link
-                                to={"/student-list"}
+                                to={`/student-section/${data._id}/${section._id}`}
                                 className={`${
                                   isDarkMode ? "text-white" : "text-rose-500"
                                 } text-xs md:text-base`}

@@ -13,6 +13,7 @@ import TeacherPage from "./components/Teacher";
 import Event from "./components/Event";
 import Addsection from "./components/Addsection";
 import Studentlist from "./components/Studentlist";
+import StudentSection from "./components/StudentSection";
 
 function App() {
   return (
@@ -23,12 +24,19 @@ function App() {
             <Route path="" element={<DashBoard />} />
             <Route path="student-list" element={<Studentlist />} />
             <Route path="student" element={<StudentPage />} />
-            <Route path="register-student" element={<StudentRegister />} />
+            <Route
+              path="register-student/:classId/:sectionId"
+              element={<StudentRegister />}
+            />
             <Route path="teacher" element={<TeacherPage />} />
             <Route path="register-teacher" element={<RegisterTeacher />} />
             <Route path="class-setup" element={<ClassSetup />} />
             <Route path="event" element={<Event />} />
             <Route path="addsection/:id" element={<Addsection />} />
+            <Route
+              path="student-section/:classId/:sectionId"
+              element={<StudentSection />}
+            />
           </Route>
         </Route>
 

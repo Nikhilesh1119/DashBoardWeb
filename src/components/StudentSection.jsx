@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Studentlist from "./Studentlist";
-
-function StudentPage() {
+import StudentSectionList from "./StudentSectionList";
+function StudentSection() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
+
+  const classId = useParams().classId;
+  const sectionId = useParams().sectionId;
 
   const handleOpenForm = () => {
     setIsFormOpen(true);
@@ -36,7 +38,7 @@ function StudentPage() {
               } text-red-500 font-bold p-2 `}
             >
               <Link
-                to="/register-student"
+                to={`/register-student/${classId}/${sectionId}`}
                 className="text-red-500 no-underline"
               >
                 + new Student
@@ -44,30 +46,12 @@ function StudentPage() {
             </button>
           </div>
         </div>
-        <div className="mb-4 flex  items-center">
-          <input
-            type="text"
-            placeholder="Search here..."
-            className={`${
-              isDarkMode
-                ? "bg-[#0d192f] text-white hover:text-[#0d192f] hover:bg-gray-200"
-                : "bg-white text-gray-600 "
-            } py-2 px-4 ml-4 rounded-md w-full  border  shadow-sm`}
-          />
-          <button
-            className="bg-[#0d192f]  text-white hover:text-blue-950  hover:bg-white
-             py-2 px-4 ml-2 w-40 text-lg rounded-md"
-            onClick={() => alert("Add Search")}
-          >
-            Search
-          </button>
-        </div>
         <div
           className={`${
             isDarkMode ? "bg-[#0d192f]" : "bg-white"
           }  shadow-md rounded-lg p-5`}
         >
-          <Studentlist />
+          <StudentSectionList sectionId={sectionId} />
           <div className="flex justify-end">
             <button
               className=" mt-4 bg-blue-950 w-36 hover:bg-blue-900 text-white py-2 px-4 rounded-full"
@@ -82,4 +66,4 @@ function StudentPage() {
   );
 }
 
-export default StudentPage;
+export default StudentSection;

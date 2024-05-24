@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleLeft,
+  faAngleRight,
+  faPlus,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import "tailwindcss/tailwind.css";
 
 const months = [
@@ -72,7 +77,12 @@ const DaysGrid = ({ days }) => {
   return <div className="days grid grid-cols-7 gap-3 p-4">{days}</div>;
 };
 
-const EventForm = ({ newEvent, setNewEvent, handleAddEvent, setShowAddEvent }) => {
+const EventForm = ({
+  newEvent,
+  setNewEvent,
+  handleAddEvent,
+  setShowAddEvent,
+}) => {
   const [eventType, setEventType] = useState("Event");
 
   const handleEventTypeChange = (e) => {
@@ -106,7 +116,9 @@ const EventForm = ({ newEvent, setNewEvent, handleAddEvent, setShowAddEvent }) =
             <input
               type="time"
               value={newEvent.from}
-              onChange={(e) => setNewEvent({ ...newEvent, from: e.target.value })}
+              onChange={(e) =>
+                setNewEvent({ ...newEvent, from: e.target.value })
+              }
               className="w-full p-2 mb-2 border border-gray-300 rounded-lg"
             />
             <input
@@ -143,7 +155,12 @@ const Event = () => {
   const [activeDay, setActiveDay] = useState(today.getDate());
   const [eventsArr, setEventsArr] = useState([]);
   const [showAddEvent, setShowAddEvent] = useState(false);
-  const [newEvent, setNewEvent] = useState({ title: "", from: "", to: "", type: "Event" });
+  const [newEvent, setNewEvent] = useState({
+    title: "",
+    from: "",
+    to: "",
+    type: "Event",
+  });
 
   useEffect(() => {
     const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
@@ -364,7 +381,9 @@ const Event = () => {
                     <p className="text-sm">
                       <span
                         className={`inline-block px-2 py-1 rounded-full text-white ${
-                          event.type === "Event" ? "bg-green-500" : "bg-blue-500"
+                          event.type === "Event"
+                            ? "bg-green-500"
+                            : "bg-blue-500"
                         }`}
                       >
                         {event.type}
@@ -396,10 +415,8 @@ const Event = () => {
 
 export default Event;
 
+//dark mode code below
 
-      //dark mode code below
-
-      
 // import React, { useState, useEffect } from "react";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import {

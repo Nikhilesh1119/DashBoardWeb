@@ -81,22 +81,6 @@ export async function loginTeacher(data) {
   }
 }
 
-export async function registerStudent(data) {
-  try {
-    console.log("teaacher egistter");
-    const response = await axios.post(`${baseURL}/student/register`, data);
-    console.log(response);
-    if (response.data["status"] === "error") {
-      return Promise.reject(`${response?.data?.message}`);
-    }
-    if (response.data["status"] === "ok") {
-      return Promise.resolve("Student registered successfully");
-    }
-  } catch (error) {
-    return Promise.reject("some error occurred");
-  }
-}
-
 export async function addClass(name) {
   try {
     const response = await axios.post(`${baseURL}/class/register`, { name });
@@ -219,6 +203,72 @@ export async function deleteTeacher(teacherId) {
       return Promise.resolve("teacher deleted successfully");
     }
   } catch (error) {
-    return Promise.reject("some error occurred while updating teacher.");
+    return Promise.reject("some error occurred while deleting teacher.");
+  }
+}
+
+export async function registerStudent(data) {
+  try {
+    const response = await axios.post(
+      `${baseURL}/student/admin-register`,
+      data
+    );
+    console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("Student registered successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function getStudentList(sectionId, pageNo) {
+  try {
+    const response = await axios.get(
+      `${baseURL}/student/admin-student-list/${sectionId}/${pageNo}`
+    );
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return response;
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while fetching student list.");
+  }
+}
+
+export async function updateStudent(studentId, data) {
+  try {
+    const response = await axios.put(
+      `${baseURL}/student/admin-update-student/${studentId}`,
+      data
+    );
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("student updated successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while updating student.");
+  }
+}
+
+export async function deleteStudent(studentId) {
+  try {
+    // console.log("delete student : ", studentId);
+    const response = await axios.delete(`${baseURL}/student/${studentId}`);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("student deleted successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while deleting student.");
   }
 }
