@@ -85,7 +85,7 @@ const Day = ({
       className={`day ${
         isActive
           ? isDarkMode
-            ? "bg-[#b9d7f1] text-gray-800 border border-white "
+            ? "bg-[#b9d7f1] text-gray-900 border border-slate-600 "
             : "border-2 border-blue-900"
           : isDarkMode
           ? "bg-[#102946]"
@@ -100,7 +100,7 @@ const Day = ({
           ? "text-white "
           : "bg-[#DCEBF8] "
       } 
-      ${hasEvent ? "bg-red-300" : ""} 
+      ${hasEvent ? "bg-red-400" : ""} 
       ${isToday ? (isDarkMode ? "bg-blue-900 " : "bg-purple-300 ") : ""} 
       ${isHoliday ? "bg-yellow-300" : ""} 
       cursor-pointer rounded-lg flex font-bold p-2 h-14 justify-center shadow-md shadow-[#B9D7F1]`}
@@ -226,7 +226,7 @@ const Event = () => {
   const fetchEvents = async () => {
     try {
       const response = await getEvents();
-      // console.log({"response":response.data.result})
+      // console.log(response.data.result)
       setEventsArr(response.data.result);
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -339,6 +339,7 @@ const Event = () => {
 
     for (let i = 1; i <= lastDay; i++) {
       const hasEvent = getEventsForDay(i).length > 0;
+      // console.log(hasEvent);
       const isSunday = new Date(year, month, i).getDay() === 0;
       const isToday =
         new Date(year, month, i).toDateString() === today.toDateString();
@@ -367,13 +368,14 @@ const Event = () => {
   const getEventsForDay = (day) => {
     const eventDays = eventsArr.filter((event) => {
       const eventDate = new Date(event.date);
+      // console.log(event);
       return (
         eventDate.getDate() === day &&
         eventDate.getMonth() === month &&
         eventDate.getFullYear() === year
       );
     });
-    // console.log({eventDays});
+    // console.log(eventDays);
     return eventDays;
   };
 
