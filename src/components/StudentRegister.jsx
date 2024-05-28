@@ -1,11 +1,15 @@
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
-import { registerStudent } from "../services/Axios.service";
+import {
+  adminRegisterStudent,
+  teacherRegisterStudent,
+} from "../services/Axios.service";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function StudentRegister() {
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
+  const role = useSelector((state) => state.appAuth.role);
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -41,8 +45,12 @@ export default function StudentRegister() {
     },
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        console.log(values);
-        const response = await registerStudent(values);
+        let response;
+        if (role === "teacher") {
+          response = await teacherRegisterStudent(values);
+        } else {
+          response = await adminRegisterStudent(values);
+        }
         console.log(response);
         toast.success(<b>register Successfully</b>);
         setTimeout(() => {

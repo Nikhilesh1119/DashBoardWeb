@@ -202,6 +202,7 @@ const EventForm = ({
 };
 
 const Event = () => {
+  const role = useSelector((state) => state.appAuth.role);
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const [today, setToday] = useState(new Date());
   const [month, setMonth] = useState(today.getMonth());
@@ -457,14 +458,21 @@ const Event = () => {
                   <div className="flex justify-between items-center bg-[#172554] text-white py-2 px-4 text-lg">
                     <div>{itm.day}</div>
                     <div>{itm.date}</div>
-                    <FontAwesomeIcon
-                      icon={faTrash}
-                      onClick={() => {
-                        setEventToDelete(itm);
-                        setShowDeleteConfirmation(true);
-                      }}
-                      className="cursor-pointer"
-                    />
+                    {role === "teacher" ? (
+                      <></>
+                    ) : (
+                      <>
+                        {" "}
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          onClick={() => {
+                            setEventToDelete(itm);
+                            setShowDeleteConfirmation(true);
+                          }}
+                          className="cursor-pointer"
+                        />
+                      </>
+                    )}
                   </div>
                   <div
                     className={`${
@@ -505,50 +513,57 @@ const Event = () => {
             </div>
           </div>
         </div>
-        {showAddEvent && (
-          <EventForm
-            newEvent={newEvent}
-            setNewEvent={setNewEvent}
-            handleAddEvent={handleAddEvent}
-            setShowAddEvent={setShowAddEvent}
-          />
-        )}
-        {showDeleteConfirmation && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div
-              className={`${
-                isDarkMode ? "bg-gray-800" : "bg-white"
-              }  p-6 rounded-lg shadow-lg w-80`}
-            >
-              <h2
-                className={`${
-                  isDarkMode ? "text-white" : "font-bold"
-                } text-lg  mb-4`}
-              >
-                Confirm Deletion
-              </h2>
-              <p className={`${isDarkMode ? "text-white" : ""}`}>
-                Are you sure you want to delete this event?
-              </p>
-              <div className="flex justify-between mt-4">
-                <button
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg"
-                  onClick={() => {
-                    deleteEvent(eventToDelete.id);
-                    setShowDeleteConfirmation(false);
-                  }}
+        {role === "teacher" ? (
+          <></>
+        ) : (
+          <>
+            {" "}
+            {showAddEvent && (
+              <EventForm
+                newEvent={newEvent}
+                setNewEvent={setNewEvent}
+                handleAddEvent={handleAddEvent}
+                setShowAddEvent={setShowAddEvent}
+              />
+            )}
+            {showDeleteConfirmation && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div
+                  className={`${
+                    isDarkMode ? "bg-gray-800" : "bg-white"
+                  }  p-6 rounded-lg shadow-lg w-80`}
                 >
-                  Yes
-                </button>
-                <button
-                  className="px-4 py-2 bg-gray-300 rounded-lg"
-                  onClick={() => setShowDeleteConfirmation(false)}
-                >
-                  Cancel
-                </button>
+                  <h2
+                    className={`${
+                      isDarkMode ? "text-white" : "font-bold"
+                    } text-lg  mb-4`}
+                  >
+                    Confirm Deletion
+                  </h2>
+                  <p className={`${isDarkMode ? "text-white" : ""}`}>
+                    Are you sure you want to delete this event?
+                  </p>
+                  <div className="flex justify-between mt-4">
+                    <button
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg"
+                      onClick={() => {
+                        deleteEvent(eventToDelete.id);
+                        setShowDeleteConfirmation(false);
+                      }}
+                    >
+                      Yes
+                    </button>
+                    <button
+                      className="px-4 py-2 bg-gray-300 rounded-lg"
+                      onClick={() => setShowDeleteConfirmation(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -66,8 +66,14 @@ export async function registerTeacher(data) {
 export async function loginTeacher(data) {
   try {
     const response = await axios.post(`${baseURL}/teacher/login`, data);
+    // console.log(response);
     if (response.data["status"] === "error") {
-      return Promise.reject(`${response?.data?.message}`);
+      const errorField = response.data.message["field"];
+      if (errorField) {
+        return Promise.reject(`invalid ${errorField}`);
+      } else {
+        return Promise.reject(`${response?.data?.message}`);
+      }
     }
     if (response.data["status"] === "ok") {
       // console.log(response.data);
@@ -206,13 +212,29 @@ export async function deleteTeacher(teacherId) {
   }
 }
 
-export async function registerStudent(data) {
+export async function adminRegisterStudent(data) {
   try {
     const response = await axios.post(
       `${baseURL}/student/admin-register`,
       data
     );
-    console.log(response);
+    // console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("Student registered successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+export async function teacherRegisterStudent(data) {
+  try {
+    const response = await axios.post(
+      `${baseURL}/student/register`,
+      data
+    );
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
