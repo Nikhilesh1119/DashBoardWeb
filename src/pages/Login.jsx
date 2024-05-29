@@ -2,7 +2,8 @@
 import {useFormik} from 'formik';
 import { Link, useNavigate } from 'react-router-dom';
 import { Toaster, toast } from "react-hot-toast";
-import { loginAdmin } from '../services/Axios.service';
+import { axiosClient } from '../services/axiosClient';
+import { setItem, setUsername } from '../services/LocalStorageManager';
 
 function Login () {
   const navigate = useNavigate();
@@ -19,8 +20,11 @@ function Login () {
     onSubmit: async (values, { setSubmitting,resetForm }) => {
       try {
           console.log(values);
-          const response = await loginAdmin(values);
+          // const response = await loginAdmin(values);
+          const response = await axiosClient.post("/admin/login",values);
           console.log(response);
+          setItem(response?.result.accessToken);
+          setUsername(response?.result.username);
           toast.success(<b>Login Successfully</b>);
           resetForm();
           navigate("/");

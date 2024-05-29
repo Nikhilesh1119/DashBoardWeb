@@ -8,8 +8,49 @@ import { Link } from "react-router-dom";
 import Modal from "react-modal";
 import { addClass, getClass } from "../services/Axios.service";
 import toast, { Toaster } from "react-hot-toast";
+import Addsection from "./Addsection";
 
 Modal.setAppElement("#root");
+const classOptions = [
+  "Pre-Nursery",
+  "Nursery",
+  "LKG",
+  "UKG",
+  "1st",
+  "2nd",
+  "3rd",
+  "4th",
+  "5th",
+  "6th",
+  "7th",
+  "8th",
+  "9th",
+  "10th",
+  "11th",
+  "12th",
+];
+const getNextClassName=(classes)=>{
+  if(classes.length==0)return classOptions[0];
+  const lastClass = classes[classes.length-1].name;
+  console.log({lastClass})
+  switch(lastClass){
+    case "Pre-Nursery":{return classOptions[1]; break;}
+    case "Nursery":{return classOptions[2]; break;}
+    case "LKG":{return classOptions[3]; break;}
+    case "UKG":{return classOptions[4]; break;}
+    case "1st":{return classOptions[5]; break;}
+    case "2nd":{return classOptions[6]; break;}
+    case "3rd":{return classOptions[7]; break;}
+    case "4th":{return classOptions[8]; break;}
+    case "5th":{return classOptions[9]; break;}
+    case "6th":{return classOptions[10]; break;}
+    case "7th":{return classOptions[11]; break;}
+    case "8th":{return classOptions[12]; break;}
+    case "9th":{return classOptions[13]; break;}
+    case "10th":{return classOptions[14]; break;}
+    case "11th":{return classOptions[15]; break;}
+  }
+}
 
 function ClassSetup() {
   const [count, setCount] = useState(0);
@@ -18,6 +59,8 @@ function ClassSetup() {
   const [isFlipped, setIsFlipped] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newClassName, setNewClassName] = useState("");
+  const[clickedClassId ,setClickedClassId] = useState("");
+  const [addSectionModelOpen,setAddSectionModelOpen] = useState(false);
 
   const handleCardClick = (index) => {
     setIsFlipped((prevIsFlipped) => {
@@ -27,47 +70,28 @@ function ClassSetup() {
     });
   };
 
+  const getAllClass = async () => {
+    const res = await getClass();
+    setClasses(res.data.result);
+  };
+
   const handleNewClassSubmit = async () => {
     try {
-      const res = await addClass(newClassName);
+      if(classes.length===16){
+        return toast.error("Classroom is full of classes.");
+      }
+      const name = getNextClassName(classes);
+      console.log({"next class name : ":name});
+      const res = await addClass(name);
+      getAllClass();
       toast.success(res);
-      closeModal();
+      // closeModal();
       getAllClass();
     } catch (error) {
       toast.error(error);
     }
   };
-
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalIsOpen(false);
-  };
-
-  const classOptions = [
-    "Pre-Nursery",
-    "Nursery",
-    "KG",
-    "1st",
-    "2nd",
-    "3rd",
-    "4th",
-    "5th",
-    "6th",
-    "7th",
-    "8th",
-    "9th",
-    "10th",
-    "11th",
-    "12th",
-  ];
-
-  const getAllClass = async () => {
-    const res = await getClass();
-    setClasses(res.data.result);
-  };
+  
 
   useEffect(() => {
     getAllClass();
@@ -141,7 +165,7 @@ function ClassSetup() {
                         isDarkMode ? "bg-[#152f54] bg-opacity-70" : "bg-white"
                       } mt-3 mx-3 md:mt-6 md:mx-6 w-16 h-16 md:w-36 md:h-36 border border-yellow-400 rounded-3xl cursor-pointer`}
                     >
-                      <div className="flex flex-col justify-evenly h-full">
+                      <div className="flex flex-col justify-evenly h-full" onClick={() => handleCardClick(index)}>
                         <div className="px-1 pt-1 md:px-5 md:pt-3 flex flex-row flex-wrap ">
                           {data.section.map((section, j) => (
                             <div
@@ -164,8 +188,9 @@ function ClassSetup() {
                         {data.section.length < 8 ? (
                           <>
                             <Link
-                              to={`/addsection/${data._id}`}
+                              // to={`/addsection/${data._id}`}
                               className="flex justify-center items-center"
+                              onClick={()=>{setClickedClassId(data["_id"]); setAddSectionModelOpen(true)}}
                             >
                               <div className="bg-red-500 text-white text-center text-xs md:text-sm w-20 md:w-28 rounded-full">
                                 Add Section
@@ -193,7 +218,7 @@ function ClassSetup() {
                     className={`${
                       isDarkMode ? "bg-[#152f54] bg-opacity-70" : "bg-white"
                     } m-3 md:m-6 w-16 h-16 md:w-36 md:h-36 flex justify-center items-center border border-yellow-400 rounded-3xl cursor-pointer`}
-                    onClick={openModal}
+                    onClick={handleNewClassSubmit}
                   >
                     <img src={add} alt="" className="w-6 h-6 md:w-10 md:h-10" />
                   </div>
@@ -225,8 +250,25 @@ function ClassSetup() {
         </div>
       </div>
 
-      {/* Modal for adding new class */}
-      <Modal
+      {/* Modal for adding new sections */}
+      {
+        addSectionModelOpen&&<Addsection setAddSectionModelOpen={setAddSectionModelOpen} clickedClassId = {clickedClassId} getAllClass={getAllClass}/>
+        // <div className="fixed inset-0 flex justify-center items-center flex-col bg-black bg-opacity-50">
+        //   <div className="w-2/3 flex justify-end">
+        //    <div 
+        //    onClick={()=>{setAddSectionModelOpen(false)}}
+        //    className="text-3xl font-semibold text-black bg-white px-2  rounded-full hover:bg-slate-200 hover:text-slate-900 cursor-pointer justify-end"
+        //    >
+        //     X
+        //   </div>
+        //   </div>
+        //   <div className="bg-white h-3/4 w-2/3">
+
+        //   </div>
+        //   {/* <button onClick={()=>{setAddSectionModelOpen(false)}}>remove inset</button> */}
+        // </div>
+      }
+      {/* <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Add New Class"
@@ -255,7 +297,7 @@ function ClassSetup() {
             Add
           </button>
         </div>
-      </Modal>
+      </Modal> */}
 
       {/* Modal styling */}
       <style jsx>{`

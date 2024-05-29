@@ -3,7 +3,7 @@ import {
   KEY_ACCESS_TOKEN,
   setItem,
   setUsername,
-  getItem,
+  getItem
 } from "./LocalStorageManager";
 // const baseURL = "http://89.116.33.150:4400";
 const baseURL = "http://localhost:4000";
@@ -11,8 +11,6 @@ const baseURL = "http://localhost:4000";
 axios.defaults.headers.common["Authorization"] = `Bearer ${getItem(
   KEY_ACCESS_TOKEN
 )}`;
-
-
 
 export async function registerAdmin(data) {
   try {
@@ -52,9 +50,8 @@ export async function loginAdmin(data) {
 
 export async function registerTeacher(data) {
   try {
-    console.log("teaacher egistter");
     const response = await axios.post(`${baseURL}/teacher/register`, data);
-    console.log(response);
+    // console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -85,14 +82,13 @@ export async function loginTeacher(data) {
 
 export async function addClass(name) {
   try {
-    // console.log("teaacher egistter");
-    const response = await axios.post(`${baseURL}/class/register`, {name});
+    const response = await axios.post(`${baseURL}/class/register`, { name });
     // console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
-      return Promise.resolve("Class Add successfully");
+      return Promise.resolve("Class added successfully");
     }
   } catch (error) {
     return Promise.reject("some error occurred");
@@ -196,7 +192,7 @@ export async function updateTeacher(teacherId, data) {
   }
 }
 
-export async function deleteTeacher(teacherId)  {
+export async function deleteTeacher(teacherId) {
   try {
     // console.log("delete teacher : ", teacherId);
     const response = await axios.delete(`${baseURL}/teacher/${teacherId}`);
@@ -210,53 +206,6 @@ export async function deleteTeacher(teacherId)  {
     return Promise.reject("some error occurred while updating teacher.");
   }
 }
-
-export async function addEvent(data) {
-  try {
-    const response = await axios.post(
-      `${baseURL}/holiday-event/create-event/`,
-      data
-    );
-    if (response.data["status"] === "error") {
-      return Promise.reject(`${response?.data?.message}`);
-    }
-    if (response.data["status"] === "ok") {
-      return Promise.resolve("event added successfully");
-    }
-  } catch (error) {
-    return Promise.reject("some error occurred while creating event.");
-  }
-}
-
-export async function getEvents() {
-  try {
-    const response = await axios.get(`${baseURL}/holiday-event`);
-    // console.log(response);
-    if (response.data["status"] === "error") {
-      return Promise.reject(`${response?.data?.message}`);
-    }
-    if (response.data["status"] === "ok") {
-      return response;
-    }
-  } catch (error) {
-    return Promise.reject("some error occurred while fetching event list.");
-  }
-}
-
-// export async function deleteHolidayEvent(eventId) {
-//   try {
-//     console.log("delete teacher : ", teacherId);
-//     const response = await axios.delete(`${baseURL}/teacher/${teacherId}`);
-//     if (response.data["status"] === "error") {
-//       return Promise.reject(`${response?.data?.message}`);
-//     }
-//     if (response.data["status"] === "ok") {
-//       return Promise.resolve("teacher deleted successfully");
-//     }
-//   } catch (error) {
-//     return Promise.reject("some error occurred while deleting teacher.");
-//   }
-// }
 
 export async function registerStudent(data) {
   try {
@@ -324,37 +273,37 @@ export async function deleteStudent(studentId) {
   }
 }
 
-// export async function addEvent(data) {
-//   try {
-//     const response = await axios.post(
-//       `${baseURL}/holiday-event/create-event/`,
-//       data
-//     );
-//     if (response.data["status"] === "error") {
-//       return Promise.reject(`${response?.data?.message}`);
-//     }
-//     if (response.data["status"] === "ok") {
-//       return Promise.resolve("event added successfully");
-//     }
-//   } catch (error) {
-//     return Promise.reject("some error occurred while creating event.");
-//   }
-// }
+export async function addEvent(data) {
+  try {
+    const response = await axios.post(
+      `${baseURL}/holiday-event/create-event/`,
+      data
+    );
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("event added successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while creating event.");
+  }
+}
 
-// export async function getEvents() {
-//   try {
-//     const response = await axios.get(`${baseURL}/holiday-event`);
-//     // console.log(response);
-//     if (response.data["status"] === "error") {
-//       return Promise.reject(`${response?.data?.message}`);
-//     }
-//     if (response.data["status"] === "ok") {
-//       return response;
-//     }
-//   } catch (error) {
-//     return Promise.reject("some error occurred while fetching event list.");
-//   }
-// }
+export async function getEvents() {
+  try {
+    const response = await axios.get(`${baseURL}/holiday-event`);
+    // console.log(response);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return response;
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while fetching event list.");
+  }
+}
 
 export async function deleteHolidayEvent(eventId) {
   try {

@@ -4,10 +4,14 @@ import {
   faAngleLeft,
   faAngleRight,
   faTrash,
-} from '@fortawesome/free-solid-svg-icons';
-import 'tailwindcss/tailwind.css';
-import toast, {Toaster} from 'react-hot-toast';
-import {addEvent, deleteHolidayEvent, getEvents} from '../services/Axios.service';
+} from "@fortawesome/free-solid-svg-icons";
+import "tailwindcss/tailwind.css";
+import toast, { Toaster } from "react-hot-toast";
+import {
+  addEvent,
+  deleteHolidayEvent,
+  getEvents,
+} from "../services/Axios.service";
 
 const months = [
   'January',
@@ -62,11 +66,19 @@ const Day = ({
 }) => {
   return (
     <div
-      className={`day ${isActive ? 'border-2 border-blue-900' : 'bg-white text-[#01345B] border-2 border-[#B9D7F1]'} 
-      ${isSunday ? 'text-blue-950 bg-[#FFCF43] border-2 border-yellow-500 shadow-md shadow-yellow-500' : 'bg-[#DCEBF8]'} 
-      ${hasEvent ? 'bg-red-300' : ''} 
-      ${isToday ? 'bg-purple-300' : ''} 
-      ${isHoliday ? 'bg-yellow-300' : ''} 
+      className={`day ${
+        isActive
+          ? "border-2 border-blue-900"
+          : "bg-white text-[#01345B] border-2 border-[#B9D7F1]"
+      } 
+      ${
+        isSunday
+          ? "text-blue-950 bg-[#FFCF43] border-2 border-yellow-500 shadow-md shadow-yellow-500"
+          : "bg-[#DCEBF8]"
+      } 
+      ${hasEvent ? "bg-red-300" : ""} 
+      ${isToday ? "bg-purple-300" : ""} 
+      ${isHoliday ? "bg-yellow-300" : ""} 
       cursor-pointer rounded-lg flex font-bold p-2 h-14 justify-center shadow-md shadow-[#B9D7F1]`}
       onClick={onClick}
     >
@@ -85,9 +97,9 @@ const EventForm = ({
   handleAddEvent,
   setShowAddEvent,
 }) => {
-  const handleChange = e => {
-    const {name, value, type, checked} = e.target;
-    setNewEvent ({...newEvent, [name]: type === 'checkbox' ? checked : value});
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewEvent({ ...newEvent, [name]: type === "checkbox" ? checked : value });
   };
 
   return (
@@ -98,7 +110,7 @@ const EventForm = ({
           <input
             type="text"
             name="date"
-            value={newEvent.date.toDateString ()}
+            value={newEvent.date.toDateString()}
             readOnly
             className="w-full p-2 mb-2 border border-gray-300 rounded-lg"
           />
@@ -166,50 +178,50 @@ const EventForm = ({
 };
 
 const Event = () => {
-  const [today, setToday] = useState (new Date ());
-  const [month, setMonth] = useState (today.getMonth ());
-  const [year, setYear] = useState (today.getFullYear ());
-  const [activeDay, setActiveDay] = useState (today.getDate ());
-  const [eventsArr, setEventsArr] = useState ([]);
-  const [showAddEvent, setShowAddEvent] = useState (false);
+  const [today, setToday] = useState(new Date());
+  const [month, setMonth] = useState(today.getMonth());
+  const [year, setYear] = useState(today.getFullYear());
+  const [activeDay, setActiveDay] = useState(today.getDate());
+  const [eventsArr, setEventsArr] = useState([]);
+  const [showAddEvent, setShowAddEvent] = useState(false);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
-  const [newEvent, setNewEvent] = useState ({
-    date: new Date (year, month, activeDay),
-    title: '',
-    description: '',
+  const [newEvent, setNewEvent] = useState({
+    date: new Date(year, month, activeDay),
+    title: "",
+    description: "",
     teacherHoliday: false,
     studentHoliday: false,
   });
 
-  useEffect (() => {
-    fetchEvents ();
+  useEffect(() => {
+    fetchEvents();
   }, []);
 
   const fetchEvents = async () => {
     try {
-      const response = await getEvents ();
+      const response = await getEvents();
       // console.log({"response":response.data.result})
-      setEventsArr (response.data.result);
+      setEventsArr(response.data.result);
     } catch (error) {
-      console.error ('Error fetching events:', error);
+      console.error("Error fetching events:", error);
     }
   };
 
   const handleAddEvent = async () => {
     try {
-      const res = await addEvent (newEvent);
+      const res = await addEvent(newEvent);
       // Resetting the form values
-      setShowAddEvent (false);
-      fetchEvents ();
-      toast.success ('Event created successfully');
+      setShowAddEvent(false);
+      fetchEvents();
+      toast.success("Event created successfully");
     } catch (error) {
-      toast.error (<b>{error}</b>);
-    }finally{
-      setNewEvent ({
-        date: new Date (year, month, activeDay),
-        title: '',
-        description: '',
+      toast.error(<b>{error}</b>);
+    } finally {
+      setNewEvent({
+        date: new Date(year, month, activeDay),
+        title: "",
+        description: "",
         teacherHoliday: false,
         studentHoliday: false,
       });
@@ -255,12 +267,12 @@ const Event = () => {
   };
 
   const handleToday = () => {
-    const todayDate = new Date ();
-    setToday (todayDate);
-    setMonth (todayDate.getMonth ());
-    setYear (todayDate.getFullYear ());
-    setActiveDay (todayDate.getDate ());
-    setNewEvent ({...newEvent, date: todayDate});
+    const todayDate = new Date();
+    setToday(todayDate);
+    setMonth(todayDate.getMonth());
+    setYear(todayDate.getFullYear());
+    setActiveDay(todayDate.getDate());
+    setNewEvent({ ...newEvent, date: todayDate });
   };
 
   const handleGotoDate = e => {
@@ -270,22 +282,21 @@ const Event = () => {
     }
   };
 
-  const updateActiveDay = day => {
-    setActiveDay (day);
-    setNewEvent ({...newEvent, date: new Date (year, month, day)});
-    setShowAddEvent (true);
+  const updateActiveDay = (day) => {
+    setActiveDay(day);
+    setNewEvent({ ...newEvent, date: new Date(year, month, day) });
+    setShowAddEvent(true);
   };
 
-  const deleteEvent = async id => {
+  const deleteEvent = async (id) => {
     // console.log(eventToDelete);
     try {
       const res = await deleteHolidayEvent(eventToDelete["_id"]);
-      fetchEvents ();
-      toast.success ('Event deleted successfully');
+      fetchEvents();
+      toast.success("Event deleted successfully");
     } catch (error) {
-      toast.error (<b>{error}</b>);
-    }finally{
-
+      toast.error(<b>{error}</b>);
+    } finally {
     }
   };
 
@@ -305,9 +316,9 @@ const Event = () => {
       const hasEvent = getEventsForDay (i).length > 0;
       const isSunday = new Date (year, month, i).getDay () === 0;
       const isToday =
-        new Date (year, month, i).toDateString () === today.toDateString ();
+        new Date(year, month, i).toDateString() === today.toDateString();
       const isHoliday = isSunday || hasEvent;
-      days.push (
+      days.push(
         <Day
           key={i}
           day={i}
@@ -316,7 +327,7 @@ const Event = () => {
           isSunday={isSunday}
           isToday={isToday}
           isHoliday={isHoliday}
-          onClick={() => updateActiveDay (i)}
+          onClick={() => updateActiveDay(i)}
         />
       );
     }
@@ -328,13 +339,13 @@ const Event = () => {
     return days;
   };
 
-  const getEventsForDay = day => {
-    const eventDays = eventsArr.filter (event => {
-      const eventDate = new Date (event.date);
+  const getEventsForDay = (day) => {
+    const eventDays = eventsArr.filter((event) => {
+      const eventDate = new Date(event.date);
       return (
-        eventDate.getDate () === day &&
-        eventDate.getMonth () === month &&
-        eventDate.getFullYear () === year
+        eventDate.getDate() === day &&
+        eventDate.getMonth() === month &&
+        eventDate.getFullYear() === year
       );
     });
     // console.log({eventDays});
@@ -377,15 +388,22 @@ const Event = () => {
           </div>
           <div className="right lg:w-2/5 p-5 border-2 border-[#B9D7F1] shadow-md shadow-[#B9D7F1] rounded-lg max-h-[32rem] overflow-scroll">
             <div className="grid grid-cols-1 gap-3">
-            {eventsArr.map (itm => (
-                <div key={itm["_id"]} className="border border-gray-300 shadow-lg rounded-lg overflow-hidden">
+              {eventsArr.map((itm) => (
+                <div
+                  key={itm["_id"]}
+                  className="border border-gray-300 shadow-lg rounded-lg overflow-hidden"
+                >
                   <div className="flex justify-between items-center bg-[#172554] text-white py-2 px-4 text-lg">
                     <div>{itm.day}</div>
                     <div>{itm.date}</div>
-                    <FontAwesomeIcon icon={faTrash} onClick={() => {
-                      setEventToDelete(itm);
-                      setShowDeleteConfirmation(true);
-                    }} className="cursor-pointer" />
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      onClick={() => {
+                        setEventToDelete(itm);
+                        setShowDeleteConfirmation(true);
+                      }}
+                      className="cursor-pointer"
+                    />
                   </div>
                   <div className="bg-white py-2 px-4 text-2xl font-bold text-center text-[#172554]">
                     {itm.title}
@@ -394,14 +412,16 @@ const Event = () => {
                     {itm.description}
                   </div>
                   <div className="flex justify-around space-x-2 p-4 bg-white">
-                    {itm.teacherHoliday &&
+                    {itm.teacherHoliday && (
                       <div className="bg-green-600 text-white py-1 px-3 rounded-full text-sm">
                         Teacher Holiday
-                      </div>}
-                    {itm.studentHoliday &&
+                      </div>
+                    )}
+                    {itm.studentHoliday && (
                       <div className="bg-yellow-600 text-white py-1 px-3 rounded-full text-sm">
                         Student Holiday
-                      </div>}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -417,6 +437,31 @@ const Event = () => {
             setShowAddEvent={setShowAddEvent}
           />}
           {showDeleteConfirmation && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+              <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
+              <p>Are you sure you want to delete this event?</p>
+              <div className="flex justify-between mt-4">
+                <button
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg"
+                  onClick={() => {
+                    deleteEvent(eventToDelete.id);
+                    setShowDeleteConfirmation(false);
+                  }}
+                >
+                  Yes
+                </button>
+                <button
+                  className="px-4 py-2 bg-gray-300 rounded-lg"
+                  onClick={() => setShowDeleteConfirmation(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {showDeleteConfirmation && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-80">
               <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
