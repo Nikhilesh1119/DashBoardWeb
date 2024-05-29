@@ -231,10 +231,7 @@ export async function adminRegisterStudent(data) {
 }
 export async function teacherRegisterStudent(data) {
   try {
-    const response = await axios.post(
-      `${baseURL}/student/register`,
-      data
-    );
+    const response = await axios.post(`${baseURL}/student/register`, data);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
