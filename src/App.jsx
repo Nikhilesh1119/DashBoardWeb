@@ -15,6 +15,7 @@ import Addsection from "./components/Addsection";
 import Studentlist from "./components/Studentlist";
 import StudentSection from "./components/StudentSection";
 import { useSelector } from "react-redux";
+import ParentRegister from "./components/ParentRegister";
 
 function App() {
   const role = useSelector((state) => state.appAuth.role);
@@ -36,6 +37,7 @@ function App() {
                   element={<StudentRegister />}
                 />
                 <Route path="event" element={<Event />} />
+                <Route path="register-parent" element={<ParentRegister/>} />
               </>
             ) : (
               <>
@@ -46,6 +48,8 @@ function App() {
                   path="register-student/:classId/:sectionId"
                   element={<StudentRegister />}
                 />
+                
+                <Route path="register-parent/:id" element={<ParentRegister/>} />
                 <Route path="teacher" element={<TeacherPage />} />
                 <Route path="register-teacher" element={<RegisterTeacher />} />
                 <Route path="class-setup" element={<ClassSetup />} />

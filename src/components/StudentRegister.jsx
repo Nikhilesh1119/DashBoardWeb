@@ -15,7 +15,7 @@ export default function StudentRegister() {
       rollNumber: "",
       gender: "",
       age: "",
-      phone: "",
+      phone: "+91",
       email: "",
       address: "",
       classId: useParams().classId,
@@ -48,10 +48,9 @@ export default function StudentRegister() {
         } else {
           response = await axiosClient.post("/student/admin-register",values);
         }
-        console.log(response);
-        toast.success(<b>register Successfully</b>);
+        toast.success(response.data.result.message);
         setTimeout(() => {
-          navigate(`/student-section/${values.classId}/${values.sectionId}`);
+          navigate(`/register-parent/${response.data.result.studentId}`)
         }, 2000);
         resetForm();
       } catch (error) {
