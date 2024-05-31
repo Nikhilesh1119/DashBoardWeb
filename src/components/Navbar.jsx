@@ -8,8 +8,11 @@ import {
   KEY_ACCESS_TOKEN,
   removeItem,
 } from "../services/LocalStorageManager";
-// import { authAction } from "../store/AuthSlice";
+
 const Navbar = () => {
+  const role = useSelector((state) => state.appAuth.role);
+  const sectionId = useSelector((state) => state.appAuth.section);
+  const classId = useSelector((state) => state.appAuth.class);
   const dispatch = useDispatch();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -61,11 +64,10 @@ const Navbar = () => {
     <div className="bg-blue-950 p-4 text-white">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <Link 
-           to="/">
-          <div className="bg-yellow-400 p-2 rounded-full">
-            <span className="text-blue-800 font-bold">A</span>
-          </div>
+          <Link to="/">
+            <div className="bg-yellow-400 p-2 rounded-full">
+              <span className="text-blue-800 font-bold">A</span>
+            </div>
           </Link>
           <span className="font-bold text-lg ml-2 text-white">LOGO</span>
           {/* setup menu */}
@@ -81,32 +83,59 @@ const Navbar = () => {
                 ref={menuRef}
                 className="absolute top-12 left-0 mt-1 w-40 bg-blue-950 rounded-xl shadow-lg"
               >
-                <div className="py-1" onClick={closeMenu}>
-                  <Link
-                    to="/teacher"
-                    className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
-                  >
-                    Teacher
-                  </Link>
-                  <Link
-                    to="/student"
-                    className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
-                  >
-                    Student
-                  </Link>
-                  <Link
-                    to="/class-setup"
-                    className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
-                  >
-                    Classroom
-                  </Link>
-                  <Link
-                    to="/event"
-                    className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
-                  >
-                    Events
-                  </Link>
-                </div>
+                {role === "teacher" ? (
+                  <>
+                    <div className="py-1" onClick={closeMenu}>
+                      {/* <Link
+                        to="/student"
+                        className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
+                      >
+                        Student
+                      </Link> */}
+                      <Link
+                        to={`/student-section/${classId}/${sectionId}`}
+                        className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
+                      >
+                        Classroom
+                      </Link>
+                      <Link
+                        to="/event"
+                        className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
+                      >
+                        Events
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="py-1" onClick={closeMenu}>
+                      <Link
+                        to="/teacher"
+                        className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
+                      >
+                        Teacher
+                      </Link>
+                      <Link
+                        to="/student"
+                        className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
+                      >
+                        Student
+                      </Link>
+                      <Link
+                        to="/class-setup"
+                        className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
+                      >
+                        Classroom
+                      </Link>
+                      <Link
+                        to="/event"
+                        className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
+                      >
+                        Events
+                      </Link>
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>

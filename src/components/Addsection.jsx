@@ -3,14 +3,9 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-
-import {
-  addSection,
-  getAllUnassignedTeacher,
-  getSection,
-} from "../services/Axios.service";
 import toast, { Toaster } from "react-hot-toast";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { axiosClient } from "../services/axiosClient";
 
 
 const getNextSectionName =(sections)=>{
@@ -44,8 +39,12 @@ function Addsection({setAddSectionModelOpen,clickedClassId,getAllClass}) {
   };
 
   const getUnassignedTeacher = async () => {
-    const res = await getAllUnassignedTeacher();
-    setTeachers(res.data.result);
+    try {
+      const res = await axiosClient.get("/teacher/all-teachers");
+      setTeachers(res.result);
+    } catch (error) {
+      toast.error(error);
+    }
   };
 
   const handleTeacherChange = async (teacherId) => {
@@ -62,8 +61,8 @@ function Addsection({setAddSectionModelOpen,clickedClassId,getAllClass}) {
       }
       const sectionName = getNextSectionName(sections);
       newSection["name"]=sectionName;
-      const res = await addSection(newSection);
-      toast.success(res);
+      const res = await axiosClient.post("section/register",newSection);
+      toast.success("section registered successfully");
       setShowPopover(false);
       getsection();
       getAllClass();
@@ -75,9 +74,9 @@ function Addsection({setAddSectionModelOpen,clickedClassId,getAllClass}) {
   };
 
   const getsection = async () => {
-    const res = await getSection(classId);
-    console.log(res.data.result);
-    setSections(res.data.result);
+    const res = await axiosClient.get(`/section/${classId}`);
+    // console.log(res.data.result);
+    setSections(res.result);
   };
 
   useEffect(() => {

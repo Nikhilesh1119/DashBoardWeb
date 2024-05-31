@@ -15,7 +15,7 @@ axiosClient.interceptors.request.use(
     (request)=>{
         const accessToken = getItem(KEY_ACCESS_TOKEN);
         request.headers["Authorization"] = `Bearer ${accessToken}`;
-        console.log({"request interceptor ":request});
+        // console.log({"request interceptor ":request});
         return request;
     },
     (error)=>{
@@ -28,6 +28,11 @@ axiosClient.interceptors.response.use(
         const data = response.data;
         if(data.status==="ok"){
             return data;
+        }
+        if(data.status==="error"){
+            // console.log("error")
+            // console.log(data);
+            return Promise.reject(data.message)
         }
         
     },

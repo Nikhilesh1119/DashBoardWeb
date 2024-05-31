@@ -6,9 +6,9 @@ import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Modal from "react-modal";
-import { addClass, getClass } from "../services/Axios.service";
 import toast, { Toaster } from "react-hot-toast";
 import Addsection from "./Addsection";
+import { axiosClient } from "../services/axiosClient";
 
 Modal.setAppElement("#root");
 const classOptions = [
@@ -71,26 +71,41 @@ function ClassSetup() {
   };
 
   const getAllClass = async () => {
-    const res = await getClass();
-    setClasses(res.data.result);
+    const res = await axiosClient.get("/class/class-list");
+    setClasses(res.result);
   };
 
   const handleNewClassSubmit = async () => {
     try {
-      if(classes.length===16){
+      const lastClass = classes[classes.length-1].name;
+      if(classes.length===16 || lastClass==="12th"){
         return toast.error("Classroom is full of classes.");
       }
       const name = getNextClassName(classes);
       console.log({"next class name : ":name});
-      const res = await addClass(name);
+      const res = await axiosClient.post("/class/register",{name});
+      console.log({res});
       getAllClass();
-      toast.success(res);
+      toast.success("class created successfully");
       // closeModal();
       getAllClass();
     } catch (error) {
       toast.error(error);
     }
   };
+
+  const handleFirstNewClassSubmit=async(classname)=>{
+    try {
+       if(classes.length!==0){
+        return Toaster.error("can't create class.");
+       }
+       const res = await axiosClient.post("/class/register",{name:classname});
+       getAllClass();
+       toast.success("class added successfully");
+    } catch (error) {
+      toast.error(error);    
+    }
+  }
   
 
   useEffect(() => {
@@ -211,18 +226,40 @@ function ClassSetup() {
                     </div>
                   </ReactCardFlip>
                 ))}
-
-                {/* Plus Icon */}
-                {count !== 15 ? (
+              
+                
                   <div
                     className={`${
                       isDarkMode ? "bg-[#152f54] bg-opacity-70" : "bg-white"
-                    } m-3 md:m-6 w-16 h-16 md:w-36 md:h-36 flex justify-center items-center border border-yellow-400 rounded-3xl cursor-pointer`}
-                    onClick={handleNewClassSubmit}
+                    } m-3 md:m-6 w-16 h-16 md:w-36 md:h-36 flex justify-center items-center border border-yellow-400 rounded-3xl `}
+                    
                   >
-                    <img src={add} alt="" className="w-6 h-6 md:w-10 md:h-10" />
+                    {
+                      (classes.length===0)?
+                          (
+                          <div className="mb-4">
+                          <select
+                            value=""
+                            onChange={(e) =>handleFirstNewClassSubmit(e.target.value)}
+                            className={`cursor-pointer shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline ${
+                              isDarkMode
+                                ? "bg-[#152f54] text-white"
+                                : "text-gray-700"
+                            }`}
+                          >
+                            <option className="" value="">Select a class</option>
+                            {classOptions.map((item, i) => (
+                              <option key={i} value={item}>
+                                {item}
+                              </option>
+                            ))}
+                          </select>
+                          </div>
+                          ):
+                          <img src={add} alt="" className="w-6 h-6 md:w-10 md:h-10" onClick={handleNewClassSubmit}/>
+                    }
                   </div>
-                ) : null}
+                
               </div>
             </div>
 
@@ -253,92 +290,8 @@ function ClassSetup() {
       {/* Modal for adding new sections */}
       {
         addSectionModelOpen&&<Addsection setAddSectionModelOpen={setAddSectionModelOpen} clickedClassId = {clickedClassId} getAllClass={getAllClass}/>
-        // <div className="fixed inset-0 flex justify-center items-center flex-col bg-black bg-opacity-50">
-        //   <div className="w-2/3 flex justify-end">
-        //    <div 
-        //    onClick={()=>{setAddSectionModelOpen(false)}}
-        //    className="text-3xl font-semibold text-black bg-white px-2  rounded-full hover:bg-slate-200 hover:text-slate-900 cursor-pointer justify-end"
-        //    >
-        //     X
-        //   </div>
-        //   </div>
-        //   <div className="bg-white h-3/4 w-2/3">
-
-        //   </div>
-        //   {/* <button onClick={()=>{setAddSectionModelOpen(false)}}>remove inset</button> */}
-        // </div>
       }
-      {/* <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Add New Class"
-        className="modal"
-        overlayClassName="modal-overlay"
-      >
-        <h2 className="text-2xl mb-4">Add New Class</h2>
-        <select
-          value={newClassName}
-          onChange={(e) => setNewClassName(e.target.value)}
-          className="input mb-4 p-2 border border-gray-300 rounded"
-          required
-        >
-          <option value="">Select class</option>
-          {classOptions.map((classOption, index) => (
-            <option key={index} value={classOption}>
-              {classOption}
-            </option>
-          ))}
-        </select>
-        <div className="flex justify-end">
-          <button onClick={closeModal} className="btn-secondary mr-2">
-            Cancel
-          </button>
-          <button onClick={handleNewClassSubmit} className="btn-primary">
-            Add
-          </button>
-        </div>
-      </Modal> */}
-
-      {/* Modal styling */}
-      <style jsx>{`
-        .modal {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          right: auto;
-          bottom: auto;
-          margin-right: -50%;
-          transform: translate(-50%, -50%);
-          background: ${isDarkMode ? "#152f54" : "white"};
-          padding: 20px;
-          border-radius: 10px;
-          width: 90%;
-          max-width: 400px;
-        }
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.75);
-        }
-        .input {
-          width: 100%;
-        }
-        .btn-secondary {
-          background: gray;
-          color: white;
-          padding: 10px;
-          border-radius: 5px;
-        }
-        .btn-primary {
-          background: #007bff;
-          color: white;
-          padding: 10px;
-          border-radius: 5px;
-        }
-      `}</style>
+      
     </>
   );
 }

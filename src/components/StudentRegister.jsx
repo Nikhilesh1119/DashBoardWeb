@@ -1,11 +1,12 @@
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
-import { registerStudent } from "../services/Axios.service";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+import { axiosClient } from "../services/axiosClient";
 
 export default function StudentRegister() {
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
+  const role = useSelector((state) => state.appAuth.role);
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -41,8 +42,12 @@ export default function StudentRegister() {
     },
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        console.log(values);
-        const response = await registerStudent(values);
+        let response;
+        if (role === "teacher") {
+          response = await axiosClient.post("/student/register",values);
+        } else {
+          response = await axiosClient.post("/student/admin-register",values);
+        }
         console.log(response);
         toast.success(<b>register Successfully</b>);
         setTimeout(() => {
@@ -112,7 +117,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.firstname &&
@@ -141,7 +146,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.lastname && formik.errors.lastname && (
@@ -171,7 +176,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.rollNumber &&
@@ -199,7 +204,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         >
                           <option
@@ -254,7 +259,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.age && formik.errors.age && (
@@ -282,7 +287,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.phone && formik.errors.phone && (
@@ -312,7 +317,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.email && formik.errors.email && (
@@ -340,7 +345,7 @@ export default function StudentRegister() {
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-zinc-400 bg-white bg-opacity-30"
+                              : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
                         {formik.touched.address && formik.errors.address && (

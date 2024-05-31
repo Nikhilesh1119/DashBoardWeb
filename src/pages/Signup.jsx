@@ -2,7 +2,6 @@
 import {useFormik} from 'formik';
 import {Link} from 'react-router-dom';
 import { Toaster, toast } from "react-hot-toast";
-import { registerAdmin } from '../services/Axios.service';
 import { axiosClient } from '../services/axiosClient';
 
 
@@ -40,7 +39,7 @@ function Signup () {
       try {
           console.log(values);
           // const response = await registerAdmin(values);
-          const response = await axiosClient.post("/admin/signup",values);
+          const response = await axiosClient.post("/admin/register",values);
           console.log(response);
           toast.success(<b>register Successfully</b>);
           resetForm();
