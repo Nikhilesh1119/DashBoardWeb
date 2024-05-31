@@ -4,6 +4,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { adminRegisterParent, getParent, registerParent } from "../services/Axios.service";
 import { useState } from "react";
+import { axiosClient } from "../services/axiosClient";
 
 export default function ParentRegister() {
   const role = useSelector((state) => state.appAuth.role);
@@ -43,13 +44,13 @@ export default function ParentRegister() {
       try {
         let response
         if(role==='teacher'){
-          response = await registerParent(studentId, values);
+          response = await axiosClient.post(`/parent/register/${studentId}`, values);
         }else{
-          response = await adminRegisterParent(studentId, values);
+          response = await axiosClient.post(`/parent/admin-register/${studentId}`, values);
         }
-        toast.success(response.data.result.message);
+        toast.success("parent registered successfully");
         setTimeout(() => {
-          navigate(`/student-section/${response.data.result.classId}/${response.data.result.sectionId}`);
+          navigate(`/student-section/${response.result.classId}/${response.result.sectionId}`);
         }, 2000);
         resetForm();
       } catch (error) {
@@ -64,9 +65,9 @@ export default function ParentRegister() {
   const handleSearch = async () => {
     try {
       if (phoneNo.length === 13) {
-        const response = await getParent(phoneNo);
+        const response = await axiosClient.get(`/parent/admin-get-parent/${phoneNo}`);
         console.log(response);
-        const parent = response.data.result;
+        const parent = response.result;
         formik.setValues({
           username: parent.username || "",
           firstname: parent.firstname || "",

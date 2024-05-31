@@ -42,10 +42,10 @@ export default function RegisterTeacher() {
         const response = await axiosClient.post("/teacher/register",values);
         console.log(response);
         toast.success(<b>register Successfully</b>);
-        // setTimeout(() => {
-        //   navigate("/teacher");
-        // }, 2000);
-        // resetForm();
+        setTimeout(() => {
+          navigate("/teacher");
+        }, 2000);
+        resetForm();
       } catch (error) {
         console.error("Error:", error);
         toast.error(<b>{error}</b>);

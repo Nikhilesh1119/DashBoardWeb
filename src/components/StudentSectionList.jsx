@@ -50,16 +50,21 @@ function StudentSectionList({ sectionId }) {
   const [idForDelete, setIdForDelete] = useState();
 
   const getStudent = async () => {
-    let studentList;
-    if (role === "teacher") {
-      studentList = await axiosClient.get(`/student/student-list/${sectionId}/${pageNo}`);
-    } else {
-      studentList = await axiosClient.get(`/student/admin-student-list/${sectionId}/${pageNo}`);
+    try {
+        let studentList;
+        if (role === "teacher") {
+          studentList = await axiosClient.get(`/student/student-list/${sectionId}/${pageNo}`);
+        } else {
+          studentList = await axiosClient.get(`/student/admin-student-list/${sectionId}/${pageNo}`);
+          console.log(studentList);
+        }
+        setTotalStudentCount(studentList.result.totalCount);
+        setLimit(studentList.result.limit);
+        setStudentData(studentList.result.studentList);
+        setStudentList(studentList.result.studentList);
+    } catch (error) {
+        console.log(error);
     }
-    setTotalStudentCount(studentList.result.totalCount);
-    setLimit(studentList.result.limit);
-    setStudentData(studentList.result.studentList);
-    setStudentList(studentList.result.studentList);
   };
 
   useEffect(() => {
@@ -120,15 +125,16 @@ function StudentSectionList({ sectionId }) {
   const handleConfirmDelete = async () => {
     try {
       if (role === "teacher") {
-        await axiosClient.delete(`/student/delete-student/${studentId}`);
+        await axiosClient.delete(`/student/delete-student/${idForDelete}`);
         console.log("t");
       } else {
-        await axiosClient.delete(`/student/admin-delete-student/${studentId}`);
+        await axiosClient.delete(`/student/admin-delete-student/${idForDelete}`);
         console.log("a");
       }
       getStudent();
       toast.success("Student deleted successfully!");
     } catch (error) {
+      console.log(error);
       toast.error("Failed to delete student!");
     }
     setDeleteConfirmModal(false);
