@@ -230,10 +230,27 @@ export async function adminRegisterStudent(data) {
   }
 }
 
-export async function adminRegisterParent(data) {
+export async function adminRegisterParent(studentId, data) {
   try {
     const response = await axios.post(
-      `${baseURL}/parent/admin-register/${data.id}`,
+      `${baseURL}/parent/admin-register/${studentId}`,
+      data
+    );
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return response;
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred");
+  }
+}
+
+export async function registerParent(studentId, data) {
+  try {
+    const response = await axios.post(
+      `${baseURL}/parent/register/${studentId}`,
       data
     );
     if (response.data["status"] === "error") {
@@ -254,7 +271,7 @@ export async function teacherRegisterStudent(data) {
       return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
-      return Promise.resolve("Student registered successfully");
+      return response;
     }
   } catch (error) {
     return Promise.reject("some error occurred");
@@ -330,7 +347,9 @@ export async function updateStudent(studentId, data) {
 export async function adminDeleteStudent(studentId) {
   try {
     // console.log("delete student : ", studentId);
-    const response = await axios.delete(`${baseURL}/student/admin-delete-student/${studentId}`);
+    const response = await axios.delete(
+      `${baseURL}/student/admin-delete-student/${studentId}`
+    );
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -345,7 +364,9 @@ export async function adminDeleteStudent(studentId) {
 export async function deleteStudent(studentId) {
   try {
     // console.log("delete student : ", studentId);
-    const response = await axios.delete(`${baseURL}/student/delete-student/${studentId}`);
+    const response = await axios.delete(
+      `${baseURL}/student/delete-student/${studentId}`
+    );
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -404,9 +425,11 @@ export async function deleteHolidayEvent(eventId) {
   }
 }
 
-export async function getParent(phone){
+export async function getParent(phone) {
   try {
-    const response=await axios.get(`${baseURL}/parent/admin-get-parent/${phone}`)
+    const response = await axios.get(
+      `${baseURL}/parent/admin-get-parent/${phone}`
+    );
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }

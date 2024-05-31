@@ -2,15 +2,16 @@ import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import { adminRegisterParent, getParent } from "../services/Axios.service";
+import { adminRegisterParent, getParent, registerParent } from "../services/Axios.service";
 import { useState } from "react";
 
 export default function ParentRegister() {
+  const role = useSelector((state) => state.appAuth.role);
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const navigate = useNavigate();
   const [phoneNo, setPhoneNo] = useState("+91");
   const [isFetched, setIsFetched] = useState(false);
-
+  const studentId = useParams().id;
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -20,7 +21,6 @@ export default function ParentRegister() {
       password: "",
       phone: "+91",
       address: "",
-      id: useParams().id,
     },
     validate: (value) => {
       const error = {};
@@ -41,12 +41,17 @@ export default function ParentRegister() {
 
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        const response = await adminRegisterParent(values);
+        let response
+        if(role==='teacher'){
+          response = await registerParent(studentId, values);
+        }else{
+          response = await adminRegisterParent(studentId, values);
+        }
         toast.success(response.data.result.message);
-        // setTimeout(() => {
-        //   navigate(`/student-section/${response.data.result.classId}/${response.data.result.sectionId}`);
-        // }, 2000);
-        // resetForm();
+        setTimeout(() => {
+          navigate(`/student-section/${response.data.result.classId}/${response.data.result.sectionId}`);
+        }, 2000);
+        resetForm();
       } catch (error) {
         console.error("Error:", error);
         toast.error(<b>{error}</b>);
@@ -80,8 +85,8 @@ export default function ParentRegister() {
 
   const handleClear = () => {
     setPhoneNo("");
-    setIsFetched(false)
-    formik.resetForm()
+    setIsFetched(false);
+    formik.resetForm();
   };
 
   return (
