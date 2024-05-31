@@ -115,12 +115,12 @@ const Navbar = () => {
                       >
                         Teacher
                       </Link>
-                      <Link
+                      {/* <Link
                         to="/student"
                         className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
                       >
                         Student
-                      </Link>
+                      </Link> */}
                       <Link
                         to="/class-setup"
                         className="block px-4 py-2 hover:text-blue-800 hover:bg-white"

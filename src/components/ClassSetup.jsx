@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import add from "../assets/add.png";
 import students from "../assets/students.png";
-import downbtn from "../assets/downbtn.png";
+import deleteIcon from "../assets/trash.png";
 import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Modal from "react-modal";
-import { addClass, getClass } from "../services/Axios.service";
+import { addClass, deleteClass, getClass } from "../services/Axios.service";
 import toast, { Toaster } from "react-hot-toast";
 
 Modal.setAppElement("#root");
@@ -73,6 +73,16 @@ function ClassSetup() {
     getAllClass();
   }, []);
 
+  const handleDeleteClass = async (classId) => {
+    try {
+      const response = await deleteClass(classId);
+      toast.success(response);
+      getAllClass()
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
   return (
     <>
       <div className={`${isDarkMode ? "bg-[#0d192f]" : "bg-white"} py-6`}>
@@ -113,11 +123,13 @@ function ClassSetup() {
                         isDarkMode ? "bg-[#152f54] bg-opacity-70" : "bg-white"
                       } my-3 mx-3 md:my-6 md:mx-6 w-16 h-16 md:w-36 md:h-36 border border-yellow-400 rounded-3xl cursor-pointer`}
                     >
+                      {/* {console.log(data._id)} */}
                       <div className="relative rounded-full bg-white">
                         <img
-                          src={downbtn}
+                          src={deleteIcon}
+                          onClick={() => handleDeleteClass(data._id)}
                           alt="^"
-                          className="absolute rounded-full w-4 h-4 md:w-6 md:h-6 top-1 right-1 md:top-1 md:right-7"
+                          className="absolute rounded-full w-4 h-4 md:w-6 md:h-6 top-1 right-1 md:top-1 md:right-3"
                         />
                       </div>
                       <div onClick={() => handleCardClick(index)}>
