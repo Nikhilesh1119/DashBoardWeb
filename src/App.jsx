@@ -32,6 +32,8 @@ function App() {
                   path="student-section/:classId/:sectionId"
                   element={<StudentSection />}
                 />
+                
+                <Route path="register-parent/:id" element={<ParentRegister/>} />
                  <Route
                   path="register-student/:classId/:sectionId"
                   element={<StudentRegister />}
