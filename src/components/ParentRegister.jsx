@@ -1,61 +1,52 @@
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
-import {
-  adminRegisterStudent,
-  teacherRegisterStudent,
-} from "../services/Axios.service";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+import { adminRegisterParent, getParent } from "../services/Axios.service";
+import { useState } from "react";
 
-export default function StudentRegister() {
+export default function ParentRegister() {
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
-  const role = useSelector((state) => state.appAuth.role);
   const navigate = useNavigate();
+  const [phoneNo, setPhoneNo] = useState("+91");
+  const [isFetched, setIsFetched] = useState(false);
+
   const formik = useFormik({
     initialValues: {
+      username: "",
       firstname: "",
       lastname: "",
-      rollNumber: "",
-      gender: "",
-      age: "",
-      phone: "+91",
       email: "",
+      password: "",
+      phone: "+91",
       address: "",
-      classId: useParams().classId,
-      sectionId: useParams().sectionId,
+      id: useParams().id,
     },
-    validateOnBlur: true,
-    validateOnChange: false,
     validate: (value) => {
       const error = {};
+      if (!value.username.length) error.username = "Username required";
       if (!value.firstname.length) error.firstname = "Firstname required";
       if (!value.lastname.length) error.lastname = "Lastname required";
-      if (value.rollNumber.length < 5 || value.rollNumber.length > 20)
-        error.rollNumber = "RollNumber length should lie in 5 to 20 characters";
-      if (!["Male", "Female"].includes(value.gender))
-        error.gender = "Please select Gender";
-      if (value.age < 1 || value.age > 100)
-        error.age = "Enter age between 0 and 100";
-      if (value.phone.length != 13) error.phone = "Enter a valid Phone number";
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!value.email || !emailPattern.test(value.email))
         error.email = "Enter a valid email address";
+      if (value.password.length < 8)
+        error.password = "Password should be at least 8 characters long";
+      if (value.phone.length != 13) error.phone = "Enter a valid Phone number";
       if (!value.address) error.address = "Address required";
       return error;
     },
+    validateOnBlur: true,
+    validateOnChange: false,
+
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        let response;
-        if (role === "teacher") {
-          response = await teacherRegisterStudent(values);
-        } else {
-          response = await adminRegisterStudent(values);
-        }
+        const response = await adminRegisterParent(values);
         toast.success(response.data.result.message);
-        setTimeout(() => {
-          navigate(`/register-parent/${response.data.result.studentId}`)
-        }, 2000);
-        resetForm();
+        // setTimeout(() => {
+        //   navigate(`/student-section/${response.data.result.classId}/${response.data.result.sectionId}`);
+        // }, 2000);
+        // resetForm();
       } catch (error) {
         console.error("Error:", error);
         toast.error(<b>{error}</b>);
@@ -65,12 +56,40 @@ export default function StudentRegister() {
     },
   });
 
+  const handleSearch = async () => {
+    try {
+      if (phoneNo.length === 13) {
+        const response = await getParent(phoneNo);
+        console.log(response);
+        const parent = response.data.result;
+        formik.setValues({
+          username: parent.username || "",
+          firstname: parent.firstname || "",
+          lastname: parent.lastname || "",
+          email: parent.email || "",
+          password: parent.password || "",
+          phone: parent.phone || "",
+          address: parent.address || "",
+        });
+        setIsFetched(true);
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleClear = () => {
+    setPhoneNo("");
+    setIsFetched(false)
+    formik.resetForm()
+  };
+
   return (
     <div>
       <div
         className={`${
           isDarkMode ? "bg-[#0d192f]" : "bg-white"
-        } flex justify-center  py-4 px-3`}
+        }  flex justify-center  py-4 px-3`}
       >
         <Toaster position="top-center" reverseOrder={false} />
         <div
@@ -78,10 +97,10 @@ export default function StudentRegister() {
             isDarkMode
               ? "bg-[#152f54] bg-opacity-40"
               : "bg-[#b9d7f1] bg-opacity-30"
-          } flex flex-col gap-8 max-w-full   mx-auto px-16 py-6 w-[90%]`}
+          } flex flex-col gap-8 max-w-full   mx-auto px-16 py-6  w-[90%]`}
         >
           <div className="flex flex-col">
-            <div className="flex flex-col w-full bg-white  max-md:max-w-full">
+            <div className="flex flex-col  w-full bg-white rounded-3xl max-md:max-w-full">
               <div
                 className={`${
                   isDarkMode
@@ -89,14 +108,40 @@ export default function StudentRegister() {
                     : "bg-sky-950 text-white "
                 } justify-center items-start px-10 py-3 w-full text-2xl font-bold  max-md:px-5 max-md:max-w-full`}
               >
-                Student Details
+                Parent Details
               </div>
               <form
                 onSubmit={formik.handleSubmit}
                 className={`${
-                  isDarkMode ? "bg-[#0d192f]" : "bg-white"
+                  isDarkMode ? "bg-[#0d192f]" : ""
                 } flex flex-col px-6 py-0.5 pt-8 pb-4 w-full max-md:px-5 max-md:max-w-full`}
               >
+                <div className="flex justify-between w-full mb-3">
+                  <input
+                    type="text"
+                    placeholder="Search here..."
+                    className={`${
+                      isDarkMode ? "bg-[#152f54] bg-opacity-40 text-white" : ""
+                    } rounded-md focus:outline-none w-full  border px-3 py-2 border-purple-300`}
+                    onChange={(e) => {
+                      setPhoneNo(e.target.value);
+                    }}
+                    value={phoneNo}
+                  />
+                  <button
+                    className="bg-[#2f0d0d]  text-white hover:text-blue-950  hover:bg-white hover:border-2 hover:border-red-950 py-1 px-4 ml-2 w-40 text-lg rounded-md"
+                    onClick={handleClear}
+                  >
+                    Clear
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-[#0d192f]  text-white hover:text-blue-950  hover:bg-white hover:border-2 hover:border-blue-950 py-1 px-4 ml-2 w-40 text-lg rounded-md"
+                    onClick={handleSearch}
+                  >
+                    Search
+                  </button>
+                </div>
                 <div className="flex gap-5 max-md:flex-wrap">
                   <div className="flex flex-col grow shrink-0 basis-0 w-fit max-md:max-w-full">
                     <div className="flex gap-5 max-md:flex-wrap">
@@ -104,14 +149,44 @@ export default function StudentRegister() {
                         <div
                           className={`${
                             isDarkMode ? "text-white" : "text-indigo-900"
-                          } text-lg font-semibold  max-md:max-w-full`}
+                          } text-lg font-semibold max-md:max-w-full`}
+                        >
+                          User Name *
+                        </div>
+                        <input
+                          readOnly={isFetched}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          value={formik.values.username}
+                          id="username"
+                          name="username"
+                          type="text"
+                          placeholder="Enter username"
+                          className={`${
+                            isDarkMode
+                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              : "text-black bg-white bg-opacity-30"
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
+                        />
+                        {formik.touched.username && formik.errors.username && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.username}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
+                        <div
+                          className={`${
+                            isDarkMode ? "text-white" : "text-indigo-900"
+                          } text-lg font-semibold max-md:max-w-full`}
                         >
                           First Name *
                         </div>
                         <input
+                          readOnly={isFetched}
                           onChange={formik.handleChange}
-                          value={formik.values.firstname}
                           onBlur={formik.handleBlur}
+                          value={formik.values.firstname}
                           id="firstname"
                           name="firstname"
                           type="text"
@@ -129,186 +204,48 @@ export default function StudentRegister() {
                             </p>
                           )}
                       </div>
+                    </div>
+                    <div className="flex gap-5 max-md:flex-wrap">
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
                         <div
                           className={`${
                             isDarkMode ? "text-white" : "text-indigo-900"
-                          } text-lg font-semibold  max-md:max-w-full`}
+                          } text-lg font-semibold max-md:max-w-full`}
                         >
-                          Last Name *
+                          LastName *
                         </div>
                         <input
-                          onChange={formik.handleChange}
-                          value={formik.values.lastname}
-                          onBlur={formik.handleBlur}
+                          readOnly={isFetched}
                           id="lastname"
                           name="lastname"
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          value={formik.values.lastname}
                           type="text"
                           placeholder="Enter lastname"
                           className={`${
                             isDarkMode
                               ? "text-white bg-[#152f54] bg-opacity-40"
                               : "text-black bg-white bg-opacity-30"
-                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
+
                         {formik.touched.lastname && formik.errors.lastname && (
                           <p className="text-red-500 my-0">
                             {formik.errors.lastname}
                           </p>
                         )}
                       </div>
-                    </div>
-                    <div className="flex gap-5 max-md:flex-wrap mt-3">
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
                         <div
                           className={`${
                             isDarkMode ? "text-white" : "text-indigo-900"
-                          } text-lg font-semibold  max-md:max-w-full`}
-                        >
-                          Roll Number *
-                        </div>
-                        <input
-                          id="rollNumber"
-                          name="rollNumber"
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          value={formik.values.rollNumber}
-                          type="text"
-                          placeholder="Enter rollNumber"
-                          className={`${
-                            isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-black bg-white bg-opacity-30"
-                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
-                        />
-                        {formik.touched.rollNumber &&
-                          formik.errors.rollNumber && (
-                            <p className="text-red-500 my-0">
-                              {formik.errors.rollNumber}
-                            </p>
-                          )}
-                      </div>
-                      <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div
-                          className={`${
-                            isDarkMode ? "text-white" : "text-indigo-900"
-                          } text-lg font-semibold  max-md:max-w-full`}
-                        >
-                          Gender *
-                        </div>
-                        <select
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          value={formik.values.gender}
-                          id="gender"
-                          name="gender"
-                          type="radio"
-                          className={`${
-                            isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-black bg-white bg-opacity-30"
-                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
-                        >
-                          <option
-                            className={`${
-                              isDarkMode ? "text-white bg-[#152f54]" : ""
-                            }`}
-                            value=""
-                          >
-                            Select Gender
-                          </option>
-                          <option
-                            className={`${
-                              isDarkMode ? "text-white bg-[#152f54]" : ""
-                            }`}
-                            value="Male"
-                          >
-                            Male
-                          </option>
-                          <option
-                            className={`${
-                              isDarkMode ? "text-white bg-[#152f54]" : ""
-                            }`}
-                            value="Female"
-                          >
-                            Female
-                          </option>
-                        </select>
-                        {formik.touched.gender && formik.errors.gender && (
-                          <p className="text-red-500 my-0">
-                            {formik.errors.gender}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex gap-5 max-md:flex-wrap">
-                      <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div
-                          className={`${
-                            isDarkMode ? "text-white" : "text-indigo-900"
-                          } text-lg font-semibold  max-md:max-w-full`}
-                        >
-                          Age *
-                        </div>
-                        <input
-                          id="age"
-                          name="age"
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          value={formik.values.age}
-                          type="text"
-                          placeholder="Enter age"
-                          className={`${
-                            isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-black bg-white bg-opacity-30"
-                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
-                        />
-                        {formik.touched.age && formik.errors.age && (
-                          <p className="text-red-500 my-0">
-                            {formik.errors.age}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div
-                          className={`${
-                            isDarkMode ? "text-white" : "text-indigo-900"
-                          } text-lg font-semibold  max-md:max-w-full`}
-                        >
-                          Phone *
-                        </div>
-                        <input
-                          id="phone"
-                          name="phone"
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          value={formik.values.phone}
-                          type="text"
-                          placeholder="Enter phone"
-                          className={`${
-                            isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-black bg-white bg-opacity-30"
-                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
-                        />
-                        {formik.touched.phone && formik.errors.phone && (
-                          <p className="text-red-500 my-0">
-                            {formik.errors.phone}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex gap-5 max-md:flex-wrap">
-                      <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
-                        <div
-                          className={`${
-                            isDarkMode ? "text-white" : "text-indigo-900"
-                          } text-lg font-semibold  max-md:max-w-full`}
+                          } text-lg font-semibold max-md:max-w-full`}
                         >
                           Email *
                         </div>
                         <input
+                          readOnly={isFetched}
                           id="email"
                           name="email"
                           onChange={formik.handleChange}
@@ -328,6 +265,68 @@ export default function StudentRegister() {
                           </p>
                         )}
                       </div>
+                    </div>
+                    <div className="flex gap-5 max-md:flex-wrap">
+                      <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
+                        <div
+                          className={`${
+                            isDarkMode ? "text-white" : "text-indigo-900"
+                          } text-lg font-semibold max-md:max-w-full`}
+                        >
+                          Password *
+                        </div>
+                        <input
+                          readOnly={isFetched}
+                          id="password"
+                          name="password"
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          value={formik.values.password}
+                          type="password"
+                          placeholder="Enter password"
+                          className={`${
+                            isDarkMode
+                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              : "text-black bg-white bg-opacity-30"
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
+                        />
+                        {formik.touched.password && formik.errors.password && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.password}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
+                        <div
+                          className={`${
+                            isDarkMode ? "text-white" : "text-indigo-900"
+                          } text-lg font-semibold  max-md:max-w-full`}
+                        >
+                          Phone *
+                        </div>
+                        <input
+                          readOnly={isFetched}
+                          id="phone"
+                          name="phone"
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          value={formik.values.phone}
+                          type="text"
+                          placeholder="Enter phone"
+                          className={`${
+                            isDarkMode
+                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              : "text-black bg-white bg-opacity-30"
+                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
+                        />
+                        {formik.touched.phone && formik.errors.phone && (
+                          <p className="text-red-500 my-0">
+                            {formik.errors.phone}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-5 max-md:flex-wrap">
                       <div className="flex flex-col flex-1 grow shrink-0 basis-0 w-fit max-md:max-w-full">
                         <div
                           className={`${
@@ -337,6 +336,7 @@ export default function StudentRegister() {
                           Address *
                         </div>
                         <input
+                          readOnly={isFetched}
                           id="address"
                           name="address"
                           onChange={formik.handleChange}
@@ -366,7 +366,7 @@ export default function StudentRegister() {
                           isDarkMode
                             ? "text-white bg-[#152f54] bg-opacity-30"
                             : " bg-sky-950 text-white"
-                        } justify-center items-center px-6 py-1.5 text-xl font-bold  rounded border-2 border-solid border-sky-950 max-w-[203px] `}
+                        } justify-center items-center px-6 py-1.5 text-xl font-bold rounded-lg border-2 border-solid border-sky-950 max-w-[203px] `}
                       >
                         Save
                       </button>

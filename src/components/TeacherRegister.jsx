@@ -14,7 +14,7 @@ export default function RegisterTeacher() {
       lastname: "",
       email: "",
       password: "",
-      phone: "",
+      phone: "+91",
     },
     validate: (value) => {
       const error = {};
@@ -36,12 +36,12 @@ export default function RegisterTeacher() {
       try {
         console.log(values);
         const response = await registerTeacher(values);
-        console.log(response);
+        // console.log(response);
         toast.success(<b>register Successfully</b>);
-        setTimeout(() => {
-          navigate("/teacher");
-        }, 2000);
-        resetForm();
+        // setTimeout(() => {
+        //   navigate("/teacher");
+        // }, 2000);
+        // resetForm();
       } catch (error) {
         console.error("Error:", error);
         toast.error(<b>{error}</b>);
