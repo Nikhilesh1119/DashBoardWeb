@@ -62,8 +62,9 @@ export default function ParentRegister() {
     },
   });
 
-  const handleSearch = async () => {
+  const handleSearch = async (e) => {
     try {
+      e.preventDefault();
       if (phoneNo.length === 13) {
         const response = await axiosClient.get(`/parent/admin-get-parent/${phoneNo}`);
         console.log(response);
@@ -141,7 +142,7 @@ export default function ParentRegister() {
                     Clear
                   </button>
                   <button
-                    type="submit"
+                    type="button"
                     className="bg-[#0d192f]  text-white hover:text-blue-950  hover:bg-white hover:border-2 hover:border-blue-950 py-1 px-4 ml-2 w-40 text-lg rounded-md"
                     onClick={handleSearch}
                   >

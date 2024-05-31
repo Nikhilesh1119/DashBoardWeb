@@ -425,6 +425,20 @@ export async function deleteHolidayEvent(eventId) {
   }
 }
 
+export async function deleteClass(classId) {
+  try {
+    const response = await axios.delete(`${baseURL}/class/${classId}`);
+    if (response.data["status"] === "error") {
+      return Promise.reject(`${response?.data?.message}`);
+    }
+    if (response.data["status"] === "ok") {
+      return Promise.resolve("Class deleted successfully");
+    }
+  } catch (error) {
+    return Promise.reject("some error occurred while deleting Class.");
+  }
+}
+
 export async function getParent(phone) {
   try {
     const response = await axios.get(

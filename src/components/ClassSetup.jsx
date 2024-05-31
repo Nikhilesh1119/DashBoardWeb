@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import add from "../assets/add.png";
 import students from "../assets/students.png";
-import downbtn from "../assets/downbtn.png";
+import deleteIcon from "../assets/trash.png";
 import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -72,6 +72,7 @@ function ClassSetup() {
 
   const getAllClass = async () => {
     const res = await axiosClient.get("/class/class-list");
+    console.log(res)
     setClasses(res.result);
   };
 
@@ -111,6 +112,17 @@ function ClassSetup() {
   useEffect(() => {
     getAllClass();
   }, []);
+
+  const handleDeleteClass = async (classId) => {
+    try {
+      // const response = await deleteClass(classId);
+      const response = await axiosClient.delete(`/class/${classId}`);
+      toast.success("Class deleted successfully");
+      getAllClass();
+    } catch (error) {
+      toast.error(error);
+    }
+  };
 
   return (
     <>
@@ -152,11 +164,13 @@ function ClassSetup() {
                         isDarkMode ? "bg-[#152f54] bg-opacity-70" : "bg-white"
                       } my-3 mx-3 md:my-6 md:mx-6 w-16 h-16 md:w-36 md:h-36 border border-yellow-400 rounded-3xl cursor-pointer`}
                     >
+                      {/* {console.log(data._id)} */}
                       <div className="relative rounded-full bg-white">
                         <img
-                          src={downbtn}
+                          src={deleteIcon}
+                          onClick={() => handleDeleteClass(data._id)}
                           alt="^"
-                          className="absolute rounded-full w-4 h-4 md:w-6 md:h-6 top-1 right-1 md:top-1 md:right-7"
+                          className="absolute rounded-full w-4 h-4 md:w-6 md:h-6 top-1 right-1 md:top-1 md:right-3"
                         />
                       </div>
                       <div onClick={() => handleCardClick(index)}>
