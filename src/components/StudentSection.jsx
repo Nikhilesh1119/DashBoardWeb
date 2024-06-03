@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import StudentSectionList from "./StudentSectionList";
 function StudentSection() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
-
-  const classId = useParams().classId;
-  const sectionId = useParams().sectionId;
+  
+  const navigate = useNavigate ();
+  const location = useLocation();
+  const { classId, sectionId } = location.state;
 
   const handleOpenForm = () => {
     setIsFormOpen(true);
@@ -37,12 +38,16 @@ function StudentSection() {
                 isDarkMode ? "bg-[#152f54]" : "bg-white"
               } text-red-500 font-bold p-2 `}
             >
-              <Link
-                to={`/register-student/${classId}/${sectionId}`}
+              <div
+                onClick={() =>
+                  navigate("/register-student", {
+                    state: { classId, sectionId },
+                  })
+                }
                 className="text-red-500 no-underline"
               >
                 + new Student
-              </Link>
+              </div>
             </button>
           </div>
         </div>

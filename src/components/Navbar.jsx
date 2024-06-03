@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Switch from "react-switch";
 import { appConfigAction } from "../store/AppConfigSlice";
@@ -10,7 +10,10 @@ import {
 } from "../services/LocalStorageManager";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const role = useSelector((state) => state.appAuth.role);
+  const sectionId = useSelector((state) => state.appAuth.section);
+  const classId = useSelector((state) => state.appAuth.class);
   const dispatch = useDispatch();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -84,18 +87,16 @@ const Navbar = () => {
                 {role === "teacher" ? (
                   <>
                     <div className="py-1" onClick={closeMenu}>
-                      {/* <Link
-                        to="/student"
-                        className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
-                      >
-                        Student
-                      </Link> */}
-                      <Link
-                        to={`/student-section`}
+                      <div
+                        onClick={() =>
+                          navigate("/student-section", {
+                            state: { classId, sectionId },
+                          })
+                        }
                         className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
                       >
                         Classroom
-                      </Link>
+                      </div>
                       <Link
                         to="/event"
                         className="block px-4 py-2 hover:text-blue-800 hover:bg-white"

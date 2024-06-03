@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { adminRegisterParent, getParent, registerParent } from "../services/Axios.service";
 import { useState } from "react";
 import { axiosClient } from "../services/axiosClient";
@@ -10,9 +10,11 @@ export default function ParentRegister() {
   const role = useSelector((state) => state.appAuth.role);
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const navigate = useNavigate();
+  
+  const location = useLocation();
+  const { studentId } = location.state;
   const [phoneNo, setPhoneNo] = useState("+91");
   const [isFetched, setIsFetched] = useState(false);
-  const studentId = useParams().id;
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -50,7 +52,12 @@ export default function ParentRegister() {
         }
         toast.success("parent registered successfully");
         setTimeout(() => {
-          navigate(`/student-section/${response.result.classId}/${response.result.sectionId}`);
+          navigate("/student-section", {
+            state: {
+              classId: response.result.classId,
+              sectionId: response.result.sectionId,
+            },
+          })
         }, 2000);
         resetForm();
       } catch (error) {

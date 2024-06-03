@@ -58,7 +58,7 @@ function StudentSectionList({ sectionId }) {
           studentList = await axiosClient.get(`/student/student-list/${sectionId}/${pageNo}`);
         } else {
           studentList = await axiosClient.get(`/student/admin-student-list/${sectionId}/${pageNo}`);
-          console.log(studentList);
+          // console.log(studentList);
         }
         setTotalStudentCount(studentList.result.totalCount);
         setLimit(studentList.result.limit);

@@ -33,9 +33,9 @@ function App() {
                   element={<StudentSection />}
                 />
                 
-                <Route path="register-parent/:id" element={<ParentRegister/>} />
+                <Route path="register-parent" element={<ParentRegister/>} />
                  <Route
-                  path="register-student/:classId/:sectionId"
+                  path="register-student"
                   element={<StudentRegister />}
                 />
                 <Route path="event" element={<Event />} />
@@ -47,18 +47,18 @@ function App() {
                 <Route path="student-list" element={<Studentlist />} />
                 <Route path="student" element={<StudentPage />} />
                 <Route
-                  path="register-student/:classId/:sectionId"
+                  path="register-student"
                   element={<StudentRegister />}
                 />
                 
-                <Route path="register-parent/:id" element={<ParentRegister/>} />
+                <Route path="register-parent" element={<ParentRegister/>} />
                 <Route path="teacher" element={<TeacherPage />} />
                 <Route path="register-teacher" element={<RegisterTeacher />} />
                 <Route path="class-setup" element={<ClassSetup />} />
                 <Route path="event" element={<Event />} />
                 <Route path="addsection/:id" element={<Addsection />} />
                 <Route
-                  path="student-section/:classId/:sectionId"
+                  path="student-section"
                   element={<StudentSection />}
                 />
               </>
