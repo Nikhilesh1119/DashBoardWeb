@@ -11,8 +11,6 @@ import {
 
 const Navbar = () => {
   const role = useSelector((state) => state.appAuth.role);
-  const sectionId = useSelector((state) => state.appAuth.section);
-  const classId = useSelector((state) => state.appAuth.class);
   const dispatch = useDispatch();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -93,7 +91,7 @@ const Navbar = () => {
                         Student
                       </Link> */}
                       <Link
-                        to={`/student-section/${classId}/${sectionId}`}
+                        to={`/student-section`}
                         className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
                       >
                         Classroom

@@ -29,7 +29,7 @@ function App() {
               <>
                 <Route path="" element={<DashBoard />} />
                 <Route
-                  path="student-section/:classId/:sectionId"
+                  path="student-section"
                   element={<StudentSection />}
                 />
                 
