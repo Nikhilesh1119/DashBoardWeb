@@ -6,10 +6,51 @@ import ReactCardFlip from "react-card-flip";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Modal from "react-modal";
-import { addClass, deleteClass, getClass } from "../services/Axios.service";
 import toast, { Toaster } from "react-hot-toast";
+import Addsection from "./Addsection";
+import { axiosClient } from "../services/axiosClient";
 
 Modal.setAppElement("#root");
+const classOptions = [
+  "Pre-Nursery",
+  "Nursery",
+  "LKG",
+  "UKG",
+  "1st",
+  "2nd",
+  "3rd",
+  "4th",
+  "5th",
+  "6th",
+  "7th",
+  "8th",
+  "9th",
+  "10th",
+  "11th",
+  "12th",
+];
+const getNextClassName=(classes)=>{
+  if(classes.length==0)return classOptions[0];
+  const lastClass = classes[classes.length-1].name;
+  console.log({lastClass})
+  switch(lastClass){
+    case "Pre-Nursery":{return classOptions[1]; break;}
+    case "Nursery":{return classOptions[2]; break;}
+    case "LKG":{return classOptions[3]; break;}
+    case "UKG":{return classOptions[4]; break;}
+    case "1st":{return classOptions[5]; break;}
+    case "2nd":{return classOptions[6]; break;}
+    case "3rd":{return classOptions[7]; break;}
+    case "4th":{return classOptions[8]; break;}
+    case "5th":{return classOptions[9]; break;}
+    case "6th":{return classOptions[10]; break;}
+    case "7th":{return classOptions[11]; break;}
+    case "8th":{return classOptions[12]; break;}
+    case "9th":{return classOptions[13]; break;}
+    case "10th":{return classOptions[14]; break;}
+    case "11th":{return classOptions[15]; break;}
+  }
+}
 
 function ClassSetup() {
   const [count, setCount] = useState(0);
@@ -18,6 +59,8 @@ function ClassSetup() {
   const [isFlipped, setIsFlipped] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [newClassName, setNewClassName] = useState("");
+  const[clickedClassId ,setClickedClassId] = useState("");
+  const [addSectionModelOpen,setAddSectionModelOpen] = useState(false);
 
   const handleCardClick = (index) => {
     setIsFlipped((prevIsFlipped) => {
@@ -27,47 +70,44 @@ function ClassSetup() {
     });
   };
 
+  const getAllClass = async () => {
+    const res = await axiosClient.get("/class/class-list");
+    console.log(res)
+    setClasses(res.result);
+  };
+
   const handleNewClassSubmit = async () => {
     try {
-      const res = await addClass(newClassName);
-      toast.success(res);
-      closeModal();
+      const lastClass = classes[classes.length-1].name;
+      if(classes.length===16 || lastClass==="12th"){
+        return toast.error("Classroom is full of classes.");
+      }
+      const name = getNextClassName(classes);
+      console.log({"next class name : ":name});
+      const res = await axiosClient.post("/class/register",{name});
+      console.log({res});
+      getAllClass();
+      toast.success("class created successfully");
+      // closeModal();
       getAllClass();
     } catch (error) {
       toast.error(error);
     }
   };
 
-  const openModal = () => {
-    setModalIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalIsOpen(false);
-  };
-
-  const classOptions = [
-    "Pre-Nursery",
-    "Nursery",
-    "KG",
-    "1st",
-    "2nd",
-    "3rd",
-    "4th",
-    "5th",
-    "6th",
-    "7th",
-    "8th",
-    "9th",
-    "10th",
-    "11th",
-    "12th",
-  ];
-
-  const getAllClass = async () => {
-    const res = await getClass();
-    setClasses(res.data.result);
-  };
+  const handleFirstNewClassSubmit=async(classname)=>{
+    try {
+       if(classes.length!==0){
+        return Toaster.error("can't create class.");
+       }
+       const res = await axiosClient.post("/class/register",{name:classname});
+       getAllClass();
+       toast.success("class added successfully");
+    } catch (error) {
+      toast.error(error);    
+    }
+  }
+  
 
   useEffect(() => {
     getAllClass();
@@ -75,9 +115,10 @@ function ClassSetup() {
 
   const handleDeleteClass = async (classId) => {
     try {
-      const response = await deleteClass(classId);
-      toast.success(response);
-      getAllClass()
+      // const response = await deleteClass(classId);
+      const response = await axiosClient.delete(`/class/${classId}`);
+      toast.success("Class deleted successfully");
+      getAllClass();
     } catch (error) {
       toast.error(error);
     }
@@ -153,7 +194,7 @@ function ClassSetup() {
                         isDarkMode ? "bg-[#152f54] bg-opacity-70" : "bg-white"
                       } mt-3 mx-3 md:mt-6 md:mx-6 w-16 h-16 md:w-36 md:h-36 border border-yellow-400 rounded-3xl cursor-pointer`}
                     >
-                      <div className="flex flex-col justify-evenly h-full">
+                      <div className="flex flex-col justify-evenly h-full" onClick={() => handleCardClick(index)}>
                         <div className="px-1 pt-1 md:px-5 md:pt-3 flex flex-row flex-wrap ">
                           {data.section.map((section, j) => (
                             <div
@@ -176,8 +217,9 @@ function ClassSetup() {
                         {data.section.length < 8 ? (
                           <>
                             <Link
-                              to={`/addsection/${data._id}`}
+                              // to={`/addsection/${data._id}`}
                               className="flex justify-center items-center"
+                              onClick={()=>{setClickedClassId(data["_id"]); setAddSectionModelOpen(true)}}
                             >
                               <div className="bg-red-500 text-white text-center text-xs md:text-sm w-20 md:w-28 rounded-full">
                                 Add Section
@@ -198,18 +240,40 @@ function ClassSetup() {
                     </div>
                   </ReactCardFlip>
                 ))}
-
-                {/* Plus Icon */}
-                {count !== 15 ? (
+              
+                
                   <div
                     className={`${
                       isDarkMode ? "bg-[#152f54] bg-opacity-70" : "bg-white"
-                    } m-3 md:m-6 w-16 h-16 md:w-36 md:h-36 flex justify-center items-center border border-yellow-400 rounded-3xl cursor-pointer`}
-                    onClick={openModal}
+                    } m-3 md:m-6 w-16 h-16 md:w-36 md:h-36 flex justify-center items-center border border-yellow-400 rounded-3xl `}
+                    
                   >
-                    <img src={add} alt="" className="w-6 h-6 md:w-10 md:h-10" />
+                    {
+                      (classes.length===0)?
+                          (
+                          <div className="mb-4">
+                          <select
+                            value=""
+                            onChange={(e) =>handleFirstNewClassSubmit(e.target.value)}
+                            className={`cursor-pointer shadow appearance-none border rounded w-full py-2 px-3 leading-tight focus:outline-none focus:shadow-outline ${
+                              isDarkMode
+                                ? "bg-[#152f54] text-white"
+                                : "text-gray-700"
+                            }`}
+                          >
+                            <option className="" value="">Select a class</option>
+                            {classOptions.map((item, i) => (
+                              <option key={i} value={item}>
+                                {item}
+                              </option>
+                            ))}
+                          </select>
+                          </div>
+                          ):
+                          <img src={add} alt="" className="w-6 h-6 md:w-10 md:h-10" onClick={handleNewClassSubmit}/>
+                    }
                   </div>
-                ) : null}
+                
               </div>
             </div>
 
@@ -237,78 +301,11 @@ function ClassSetup() {
         </div>
       </div>
 
-      {/* Modal for adding new class */}
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        contentLabel="Add New Class"
-        className="modal"
-        overlayClassName="modal-overlay"
-      >
-        <h2 className="text-2xl mb-4">Add New Class</h2>
-        <select
-          value={newClassName}
-          onChange={(e) => setNewClassName(e.target.value)}
-          className="input mb-4 p-2 border border-gray-300 rounded"
-          required
-        >
-          <option value="">Select class</option>
-          {classOptions.map((classOption, index) => (
-            <option key={index} value={classOption}>
-              {classOption}
-            </option>
-          ))}
-        </select>
-        <div className="flex justify-end">
-          <button onClick={closeModal} className="btn-secondary mr-2">
-            Cancel
-          </button>
-          <button onClick={handleNewClassSubmit} className="btn-primary">
-            Add
-          </button>
-        </div>
-      </Modal>
-
-      {/* Modal styling */}
-      <style jsx>{`
-        .modal {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          right: auto;
-          bottom: auto;
-          margin-right: -50%;
-          transform: translate(-50%, -50%);
-          background: ${isDarkMode ? "#152f54" : "white"};
-          padding: 20px;
-          border-radius: 10px;
-          width: 90%;
-          max-width: 400px;
-        }
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.75);
-        }
-        .input {
-          width: 100%;
-        }
-        .btn-secondary {
-          background: gray;
-          color: white;
-          padding: 10px;
-          border-radius: 5px;
-        }
-        .btn-primary {
-          background: #007bff;
-          color: white;
-          padding: 10px;
-          border-radius: 5px;
-        }
-      `}</style>
+      {/* Modal for adding new sections */}
+      {
+        addSectionModelOpen&&<Addsection setAddSectionModelOpen={setAddSectionModelOpen} clickedClassId = {clickedClassId} getAllClass={getAllClass}/>
+      }
+      
     </>
   );
 }

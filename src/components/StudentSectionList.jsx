@@ -19,20 +19,14 @@ import {
   FormLabel,
 } from "@mui/material";
 import { useMediaQuery, useTheme } from "@mui/material";
-import {
-  adminDeleteStudent,
-  adminGetStudentList,
-  adminUpdateStudent,
-  deleteStudent,
-  getStudentList,
-  updateStudent,
-} from "../services/Axios.service";
+import { axiosClient } from "../services/axiosClient";
+// import axios from "axios";
 
 function StudentSectionList({ sectionId }) {
   const role = useSelector((state) => state.appAuth.role);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
-
+  
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const [pageNo, setPageNo] = useState(1);
   const [totalStudentCount, setTotalStudentCount] = useState(5);
@@ -58,16 +52,21 @@ function StudentSectionList({ sectionId }) {
   const [idForDelete, setIdForDelete] = useState();
 
   const getStudent = async () => {
-    let studentList;
-    if (role === "teacher") {
-      studentList = await getStudentList(sectionId, pageNo);
-    } else {
-      studentList = await adminGetStudentList(sectionId, pageNo);
+    try {
+        let studentList;
+        if (role === "teacher") {
+          studentList = await axiosClient.get(`/student/student-list/${sectionId}/${pageNo}`);
+        } else {
+          studentList = await axiosClient.get(`/student/admin-student-list/${sectionId}/${pageNo}`);
+          console.log(studentList);
+        }
+        setTotalStudentCount(studentList.result.totalCount);
+        setLimit(studentList.result.limit);
+        setStudentData(studentList.result.studentList);
+        setStudentList(studentList.result.studentList);
+    } catch (error) {
+        console.log(error);
     }
-    setTotalStudentCount(studentList.data.result.totalCount);
-    setLimit(studentList.data.result.limit);
-    setStudentData(studentList.data.result.studentList);
-    setStudentList(studentList.data.result.studentList);
   };
 
   useEffect(() => {
@@ -128,15 +127,16 @@ function StudentSectionList({ sectionId }) {
   const handleConfirmDelete = async () => {
     try {
       if (role === "teacher") {
-        await deleteStudent(idForDelete);
+        await axiosClient.delete(`/student/delete-student/${idForDelete}`);
         console.log("t");
       } else {
-        await adminDeleteStudent(idForDelete);
+        await axiosClient.delete(`/student/admin-delete-student/${idForDelete}`);
         console.log("a");
       }
       getStudent();
       toast.success("Student deleted successfully!");
     } catch (error) {
+      console.log(error);
       toast.error("Failed to delete student!");
     }
     setDeleteConfirmModal(false);
@@ -168,9 +168,9 @@ function StudentSectionList({ sectionId }) {
     };
     try {
       if (role === "teacher") {
-        await updateStudent(updatedStudent["_id"], updatedStudent);
+        await axiosClient.put(`/student/update-student/${updatedStudent["_id"]}`, updatedStudent);
       } else {
-        await adminUpdateStudent(updatedStudent["_id"], updatedStudent);
+        await axiosClient.put(`/student/admin-update-student/${updatedStudent["_id"]}`, updatedStudent);
       }
       getStudent();
       toast.success("Student updated successfully!");

@@ -1,8 +1,8 @@
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
-import { registerTeacher } from "../services/Axios.service";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { axiosClient } from "../services/axiosClient";
 
 export default function RegisterTeacher() {
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
@@ -35,13 +35,17 @@ export default function RegisterTeacher() {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         console.log(values);
-        const response = await registerTeacher(values);
-        // console.log(response);
+        if(!formik.isValid){
+          toast.error("invalid form data");
+          return;
+        }
+        const response = await axiosClient.post("/teacher/register",values);
+        console.log(response);
         toast.success(<b>register Successfully</b>);
-        // setTimeout(() => {
-        //   navigate("/teacher");
-        // }, 2000);
-        // resetForm();
+        setTimeout(() => {
+          navigate("/teacher");
+        }, 2000);
+        resetForm();
       } catch (error) {
         console.error("Error:", error);
         toast.error(<b>{error}</b>);

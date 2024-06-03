@@ -8,26 +8,36 @@ const BASE_URL = "http://localhost:4000";
 
 export const axiosClient = axios.create({
     baseURL:BASE_URL,
-    withCredentials:true,
+    // withCredentials:true,
 })
 
 axiosClient.interceptors.request.use(
     (request)=>{
-        store.dispatch(appConfigAction.setLoading(true));
-
         const accessToken = getItem(KEY_ACCESS_TOKEN);
         request.headers["Authorization"] = `Bearer ${accessToken}`;
+        // console.log({"request interceptor ":request});
         return request;
+    },
+    (error)=>{
+
     }
 );
 
 axiosClient.interceptors.response.use(
     async(response)=>{
-        store.dispatch(appConfigAction.setLoading(false));
         const data = response.data;
+        console.log(data);
         if(data.status==="ok"){
             return data;
         }
+        if(data.status==="error"){
+            // console.log("error")
+            // console.log(data);
+            return Promise.reject(data.message)
+        }
+        
+    },
+    async(error)=>{
 
     }
 )

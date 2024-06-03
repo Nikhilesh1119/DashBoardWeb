@@ -3,6 +3,8 @@ import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import { loginAdmin, loginTeacher } from "../services/Axios.service";
+import { axiosClient } from "../services/axiosClient";
+import { setItem, setUsername } from "../services/LocalStorageManager";
 
 function Login() {
   const [isAdmin, setIsAdmin] = useState(true);
@@ -21,12 +23,17 @@ function Login() {
       try {
         let response;
         if (isAdmin) {
-          response = await loginAdmin({
+          response = await axiosClient.post("/admin/login",{
             adminName: values.username,
             password: values.password,
           });
+          setItem(response?.result.accessToken);
+          setUsername(response?.result.username);
+          console.log(response);
         } else {
-          response = await loginTeacher(values);
+          response = await axiosClient.post("/teacher/login",values);
+          setItem(response?.result.accessToken);
+          setUsername(response?.result.username);
         }
         toast.success(<b>Login Successfully</b>);
         resetForm();
@@ -35,7 +42,7 @@ function Login() {
           window.location.replace('/')
         }, 2000);
       } catch (error) {
-        toast.error(<b>{error.response?.data?.message || "Login Failed"}</b>);
+        toast.error(<b>{error}</b>);
       } finally {
         setSubmitting(false);
       }

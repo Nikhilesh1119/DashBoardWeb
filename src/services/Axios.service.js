@@ -3,7 +3,7 @@ import {
   KEY_ACCESS_TOKEN,
   setItem,
   setUsername,
-  getItem,
+  getItem
 } from "./LocalStorageManager";
 // const baseURL = "http://89.116.33.150:4400";
 const baseURL = "http://localhost:4000";
@@ -66,7 +66,7 @@ export async function registerTeacher(data) {
 export async function loginTeacher(data) {
   try {
     const response = await axios.post(`${baseURL}/teacher/login`, data);
-    // console.log(response);
+    console.log(response);
     if (response.data["status"] === "error") {
       const errorField = response.data.message["field"];
       if (errorField) {
@@ -94,7 +94,7 @@ export async function addClass(name) {
       return Promise.reject(`${response?.data?.message}`);
     }
     if (response.data["status"] === "ok") {
-      return Promise.resolve("Class Add successfully");
+      return Promise.resolve("Class added successfully");
     }
   } catch (error) {
     return Promise.reject("some error occurred");
@@ -104,7 +104,7 @@ export async function addClass(name) {
 export async function getClass() {
   try {
     const response = await axios.get(`${baseURL}/class/class-list`);
-    // console.log(response);
+    console.log(response);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
     }
@@ -200,7 +200,7 @@ export async function updateTeacher(teacherId, data) {
 
 export async function deleteTeacher(teacherId) {
   try {
-    console.log("delete teacher : ", teacherId);
+    // console.log("delete teacher : ", teacherId);
     const response = await axios.delete(`${baseURL}/teacher/${teacherId}`);
     if (response.data["status"] === "error") {
       return Promise.reject(`${response?.data?.message}`);
@@ -209,7 +209,7 @@ export async function deleteTeacher(teacherId) {
       return Promise.resolve("teacher deleted successfully");
     }
   } catch (error) {
-    return Promise.reject("some error occurred while deleting teacher.");
+    return Promise.reject("some error occurred while updating teacher.");
   }
 }
 
@@ -454,4 +454,3 @@ export async function getParent(phone) {
     return Promise.reject("some error occurred while fetching parent.");
   }
 }
-

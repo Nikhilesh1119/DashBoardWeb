@@ -7,12 +7,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import "tailwindcss/tailwind.css";
 import toast, { Toaster } from "react-hot-toast";
-import {
-  addEvent,
-  deleteHolidayEvent,
-  getEvents,
-} from "../services/Axios.service";
+
 import { useSelector } from "react-redux";
+import { axiosClient } from "../services/axiosClient";
 const months = [
   "January",
   "February",
@@ -226,9 +223,9 @@ const Event = () => {
 
   const fetchEvents = async () => {
     try {
-      const response = await getEvents();
+      const response = await axiosClient.get("/holiday-event");
       // console.log(response.data.result)
-      setEventsArr(response.data.result);
+      setEventsArr(response.result);
     } catch (error) {
       console.error("Error fetching events:", error);
     }
@@ -236,7 +233,7 @@ const Event = () => {
 
   const handleAddEvent = async () => {
     try {
-      const res = await addEvent(newEvent);
+      const res = await axiosClient.post("/holiday-event/create-event/",newEvent);
       // Resetting the form values
       setShowAddEvent(false);
       fetchEvents();
@@ -317,7 +314,7 @@ const Event = () => {
   const deleteEvent = async (id) => {
     // console.log(eventToDelete);
     try {
-      const res = await deleteHolidayEvent(eventToDelete["_id"]);
+      const res = await axiosClient.delete(`/holiday-event/${eventToDelete["_id"]}`);
       fetchEvents();
       toast.success("Event deleted successfully");
     } catch (error) {

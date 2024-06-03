@@ -5,16 +5,12 @@ import Stack from "@mui/material/Stack";
 import noteacher from "../assets/noteacher.png";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
-import {
-  getTeacherList,
-  updateTeacher,
-  deleteTeacher,
-} from "../services/Axios.service"; // Add deleteTeacher function
 import Popover from "@mui/material/Popover";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import { axiosClient } from "../services/axiosClient";
 
 function Teacherlist() {
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
@@ -39,11 +35,11 @@ function Teacherlist() {
   const [idForDelete, setIdForDelete] = useState();
 
   const getTeacher = async () => {
-    const teacherList = await getTeacherList(pageNo);
-    setTotalTeacherCount(teacherList.data.result.totalCount);
-    setLimit(teacherList.data.result.limit);
-    setTeacherData(teacherList.data.result.teacherList);
-    setTeacherList(teacherList.data.result.teacherList);
+    const teacherList = await axiosClient.get(`teacher/teacher-list/${pageNo}`);
+    setTotalTeacherCount(teacherList.result.totalCount);
+    setLimit(teacherList.result.limit);
+    setTeacherData(teacherList.result.teacherList);
+    setTeacherList(teacherList.result.teacherList);
   };
 
   useEffect(() => {
@@ -100,7 +96,7 @@ function Teacherlist() {
 
   const handleConfirmDelete = async () => {
     try {
-      await deleteTeacher(idForDelete);
+      await axiosClient.delete(`/teacher/${idForDelete}`);
       getTeacher();
       toast.success("Teacher deleted successfully!");
     } catch (error) {
@@ -134,11 +130,11 @@ function Teacherlist() {
       ...formValues,
     };
     try {
-      await updateTeacher(updatedTeacher["_id"], updatedTeacher);
+      await axiosClient.put(`/teacher/${updatedTeacher["_id"]}`, updatedTeacher);
       getTeacher();
       toast.success("Teacher updated successfully!");
     } catch (error) {
-      toast.error("Failed to update teacher!");
+      toast.error(<b>{error}</b>);
     }
     setOpenModal(false);
     setSelectedTeacher(null);
