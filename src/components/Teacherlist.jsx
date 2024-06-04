@@ -12,7 +12,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { axiosClient } from "../services/axiosClient";
 
-function Teacherlist() {
+function Teacherlist(){
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const [pageNo, setPageNo] = useState(1);
   const [totalTeacherCount, setTotalTeacherCount] = useState(5);

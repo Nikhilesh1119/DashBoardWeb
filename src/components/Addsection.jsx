@@ -79,6 +79,18 @@ function Addsection({setAddSectionModelOpen,clickedClassId,getAllClass}) {
     setSections(res.result);
   };
 
+  const handleSectionDelete = async(sectionId)=>{
+    try {
+      const res = await axiosClient.delete(`/section/${sectionId}`);
+      getsection();
+      getAllClass();
+      toast.success("section deleted successfully");
+      
+    } catch (error) {
+      toast.error(error);
+    }
+  }
+
   useEffect(() => {
     getUnassignedTeacher();
     getsection();
@@ -154,9 +166,11 @@ function Addsection({setAddSectionModelOpen,clickedClassId,getAllClass}) {
                         <div className="bg-red-700 border-white border-2 border-l-0 text-white  rounded-r-full flex justify-center items-center px-3 sm:px-5 md:px-10">
                           <FontAwesomeIcon
                             icon={faTrash}
-                            onClick={() => {
-                              setEventToDelete(itm);
-                              setShowDeleteConfirmation(true);
+                            onClick={() =>{
+                              // setEventToDelete(itm);
+                              // setShowDeleteConfirmation(true);
+                              console.log(itm["_id"])
+                              handleSectionDelete(itm["_id"]);
                             }}
                             className="cursor-pointer"
                             />

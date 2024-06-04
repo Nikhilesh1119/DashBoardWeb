@@ -284,7 +284,7 @@ function ClassSetup() {
                               }}
                             >
                               <div className="bg-red-500 text-white text-center text-xs md:text-sm w-20 md:w-28 rounded-full">
-                                Add Section
+                                sections
                               </div>
                             </Link>
                           </>
