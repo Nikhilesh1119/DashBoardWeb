@@ -275,8 +275,6 @@ function ClassSetup() {
                         {data.section.length < 8 ? (
                           <>
                             <Link
-                              // to={`/addsection/${data._id}`}
-                              // 30t 2s 15s
                               className="flex justify-center items-center"
                               onClick={() => {
                                 setClickedClassId(data["_id"]);

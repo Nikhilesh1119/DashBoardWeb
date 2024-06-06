@@ -14,7 +14,7 @@ export default function RegisterTeacher() {
       lastname: "",
       email: "",
       password: "",
-      phone: "+91",
+      phone: "",
     },
     validate: (value) => {
       const error = {};
@@ -26,7 +26,7 @@ export default function RegisterTeacher() {
         error.email = "Enter a valid email address";
       if (value.password.length < 8)
         error.password = "Password should be at least 8 characters long";
-      if (value.phone.length != 13) error.phone = "Enter a valid Phone number";
+      if (value.phone.length != 10) error.phone = "Enter a valid Phone number";
       return error;
     },
     validateOnBlur: true,

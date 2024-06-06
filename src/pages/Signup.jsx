@@ -12,7 +12,7 @@ function Signup () {
       affiliationNo: '',
       address: '',
       email: '',
-      phone: '+91',
+      phone: '',
       adminName: '',
       password: '',
     },

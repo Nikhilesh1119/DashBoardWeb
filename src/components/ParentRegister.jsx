@@ -2,7 +2,11 @@ import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { adminRegisterParent, getParent, registerParent } from "../services/Axios.service";
+import {
+  adminRegisterParent,
+  getParent,
+  registerParent,
+} from "../services/Axios.service";
 import { useState } from "react";
 import { axiosClient } from "../services/axiosClient";
 
@@ -10,10 +14,10 @@ export default function ParentRegister() {
   const role = useSelector((state) => state.appAuth.role);
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const navigate = useNavigate();
-  
+
   const location = useLocation();
   const { studentId } = location.state;
-  const [phoneNo, setPhoneNo] = useState("+91");
+  const [phoneNo, setPhoneNo] = useState("");
   const [isFetched, setIsFetched] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -22,7 +26,7 @@ export default function ParentRegister() {
       lastname: "",
       email: "",
       password: "",
-      phone: "+91",
+      phone: "",
       address: "",
     },
     validate: (value) => {
@@ -35,7 +39,7 @@ export default function ParentRegister() {
         error.email = "Enter a valid email address";
       if (value.password.length < 8)
         error.password = "Password should be at least 8 characters long";
-      if (value.phone.length != 13) error.phone = "Enter a valid Phone number";
+      if (value.phone.length != 10) error.phone = "Enter a valid Phone number";
       if (!value.address) error.address = "Address required";
       return error;
     },
@@ -44,11 +48,17 @@ export default function ParentRegister() {
 
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        let response
-        if(role==='teacher'){
-          response = await axiosClient.post(`/parent/register/${studentId}`, values);
-        }else{
-          response = await axiosClient.post(`/parent/admin-register/${studentId}`, values);
+        let response;
+        if (role === "teacher") {
+          response = await axiosClient.post(
+            `/parent/register/${studentId}`,
+            values
+          );
+        } else {
+          response = await axiosClient.post(
+            `/parent/admin-register/${studentId}`,
+            values
+          );
         }
         toast.success("parent registered successfully");
         setTimeout(() => {
@@ -57,7 +67,7 @@ export default function ParentRegister() {
               classId: response.result.classId,
               sectionId: response.result.sectionId,
             },
-          })
+          });
         }, 2000);
         resetForm();
       } catch (error) {
@@ -72,8 +82,10 @@ export default function ParentRegister() {
   const handleSearch = async (e) => {
     try {
       e.preventDefault();
-      if (phoneNo.length === 13) {
-        const response = await axiosClient.get(`/parent/admin-get-parent/${phoneNo}`);
+      if (phoneNo.length === 10) {
+        const response = await axiosClient.get(
+          `/parent/admin-get-parent/${phoneNo}`
+        );
         console.log(response);
         const parent = response.result;
         formik.setValues({
@@ -138,7 +150,11 @@ export default function ParentRegister() {
                       isDarkMode ? "bg-[#152f54] bg-opacity-40 text-white" : ""
                     } rounded-md focus:outline-none w-full  border px-3 py-2 border-purple-300`}
                     onChange={(e) => {
-                      setPhoneNo(e.target.value);
+                      if (phoneNo.length === 10) {
+                        handleSearch();
+                      } else {
+                        setPhoneNo(e.target.value);
+                      }
                     }}
                     value={phoneNo}
                   />
@@ -147,13 +163,6 @@ export default function ParentRegister() {
                     onClick={handleClear}
                   >
                     Clear
-                  </button>
-                  <button
-                    type="button"
-                    className="bg-[#0d192f]  text-white hover:text-blue-950  hover:bg-white hover:border-2 hover:border-blue-950 py-1 px-4 ml-2 w-40 text-lg rounded-md"
-                    onClick={handleSearch}
-                  >
-                    Search
                   </button>
                 </div>
                 <div className="flex gap-5 max-md:flex-wrap">

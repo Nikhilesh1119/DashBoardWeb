@@ -17,7 +17,7 @@ export default function StudentRegister() {
       rollNumber: "",
       gender: "",
       age: "",
-      phone: "+91",
+      phone: "",
       email: "",
       address: "",
       classId: classId,
@@ -35,7 +35,7 @@ export default function StudentRegister() {
         error.gender = "Please select Gender";
       if (value.age < 1 || value.age > 100)
         error.age = "Enter age between 0 and 100";
-      if (value.phone.length != 13) error.phone = "Enter a valid Phone number";
+      if (value.phone.length != 10) error.phone = "Enter a valid Phone number";
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!value.email || !emailPattern.test(value.email))
         error.email = "Enter a valid email address";
