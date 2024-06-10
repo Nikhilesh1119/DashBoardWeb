@@ -68,7 +68,8 @@ function Teacherlist(){
     const searchedTeacher = teacherList.filter(
       (itm) =>
         itm.firstname.toLowerCase() === searchInputLower ||
-        itm.username.toLowerCase() === searchInputLower
+        itm.username.toLowerCase() === searchInputLower ||
+        itm.phone===searchInput
     );
     setTeacherData(searchedTeacher);
   };
