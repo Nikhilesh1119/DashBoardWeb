@@ -17,7 +17,7 @@ export default function StudentRegister() {
       rollNumber: "",
       gender: "",
       age: "",
-      phone: "+91",
+      phone: "",
       email: "",
       address: "",
       classId: classId,
@@ -35,7 +35,7 @@ export default function StudentRegister() {
         error.gender = "Please select Gender";
       if (value.age < 1 || value.age > 100)
         error.age = "Enter age between 0 and 100";
-      if (value.phone.length != 13) error.phone = "Enter a valid Phone number";
+      if (value.phone.length != 10) error.phone = "Enter a valid Phone number";
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!value.email || !emailPattern.test(value.email))
         error.email = "Enter a valid email address";
@@ -120,7 +120,7 @@ export default function StudentRegister() {
                           placeholder="Enter firstname"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54] "
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
@@ -149,7 +149,7 @@ export default function StudentRegister() {
                           placeholder="Enter lastname"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54] "
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
@@ -179,7 +179,7 @@ export default function StudentRegister() {
                           placeholder="Enter rollNumber"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54] "
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
@@ -207,7 +207,7 @@ export default function StudentRegister() {
                           type="radio"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54] "
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         >
@@ -262,7 +262,7 @@ export default function StudentRegister() {
                           placeholder="Enter age"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54]"
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
@@ -290,7 +290,7 @@ export default function StudentRegister() {
                           placeholder="Enter phone"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54]"
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
@@ -320,7 +320,7 @@ export default function StudentRegister() {
                           placeholder="Enter email"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54]"
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
@@ -348,7 +348,7 @@ export default function StudentRegister() {
                           placeholder="Enter address"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54] "
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />

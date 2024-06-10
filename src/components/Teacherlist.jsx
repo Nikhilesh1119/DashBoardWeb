@@ -212,13 +212,13 @@ function Teacherlist(){
                       } text-left px-4 py-2 `}>UserName</th>
                     <th className={`${
                         isDarkMode ? "text-white" : ""
-                      } text-left px-4 py-2 `}>FirstName</th>
+                      } text-left px-4 py-2 max-md:hidden`}>FirstName</th>
                     <th className={`${
                         isDarkMode ? "text-white" : ""
-                      } text-left px-4 py-2 `}>Phone</th>
+                      } text-left px-4 py-2 max-lg:hidden`}>Phone</th>
                     <th className={`${
                         isDarkMode ? "text-white" : ""
-                      } text-left px-4 py-2 `}>Email</th>
+                      } text-left px-4 py-2 max-xl:hidden `}>Email</th>
                     <th className={`${
                         isDarkMode ? "text-white" : ""
                       } text-left px-4 py-2 `}>Action</th>
@@ -241,13 +241,13 @@ function Teacherlist(){
                       </td>
                       <td  className={`${
                           isDarkMode ? "text-white" : ""
-                        } px-4 py-2`}>{data.firstname}</td>
+                        } px-4 py-2 max-md:hidden`}>{data.firstname}</td>
                       <td  className={`${
                           isDarkMode ? "text-white" : ""
-                        } px-4 py-2`}>{data.phone}</td>
+                        } px-4 py-2 max-lg:hidden`}>{data.phone}</td>
                       <td  className={`${
                           isDarkMode ? "text-white" : ""
-                        } px-4 py-2`}>{data.email}</td>
+                        } px-4 py-2 max-xl:hidden`}>{data.email}</td>
                       <td className={`${
                           isDarkMode ? "text-white" : ""
                         } px-4 py-2`}>

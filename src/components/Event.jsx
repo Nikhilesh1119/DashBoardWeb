@@ -79,32 +79,33 @@ const Day = ({
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   return (
     <div
-      className={`day ${
-        isActive
-          ? isDarkMode
-            ? "bg-[#b9d7f1] text-gray-900 border border-slate-600 "
-            : "border-2 border-blue-900"
-          : isDarkMode
-          ? "bg-[#102946]"
-          : "bg-white text-[#01345B] border-2 border-[#B9D7F1]"
-      } 
-      ${
-        isSunday
-          ? isDarkMode
-            ? "text-blue-900 bg-[#FFD65C] "
-            : "text-blue-950 bg-[#FFCF43] border-2 border-yellow-500 shadow-md shadow-yellow-500 "
-          : isDarkMode
-          ? "text-white "
-          : "bg-[#DCEBF8] "
-      } 
-      ${hasEvent ? "bg-red-400" : ""} 
-      ${isToday ? (isDarkMode ? "bg-blue-900 " : "bg-purple-300 ") : ""} 
-      ${isHoliday ? "bg-yellow-300" : ""} 
-      cursor-pointer rounded-lg flex font-bold p-2 h-14 justify-center shadow-md shadow-[#B9D7F1]`}
-      onClick={onClick}
-    >
-      {day}
-    </div>
+  className={`day ${
+    isActive
+      ? isDarkMode
+        ? "bg-[#b9d7f1] text-gray-900 border border-slate-600 "
+        : "border-2 border-blue-900"
+      : isDarkMode
+      ? "bg-[#102946]"
+      : "bg-white text-[#01345B] border-2 border-[#B9D7F1]"
+  } 
+  ${
+    isSunday
+      ? isDarkMode
+        ? "text-blue-900 bg-[#FFD65C] "
+        : "text-blue-950 bg-yellow-300 border-2 border-yellow-300 shadow-md shadow-yellow-500 "
+      : isDarkMode
+      ? "text-white "
+      : "bg-[#DCEBF8] "
+  } 
+  ${isToday ? (isDarkMode ? "bg-blue-900  text-white" : "bg-purple-300 ") : ""} 
+  ${isHoliday ? "" : ""} 
+  ${hasEvent ? "bg-white" : ""} 
+  cursor-pointer rounded-lg flex font-bold p-2 h-14 justify-center shadow-md shadow-[#B9D7F1]`}
+  onClick={onClick}
+>
+  {day}
+</div> 
+
   );
 };
 
@@ -164,7 +165,7 @@ const EventForm = ({
               onChange={handleChange}
               className="form-checkbox"
             />
-            <span className="ml-2">Teacher Holiday</span>
+            <span className="ml-2"> Holiday</span>
           </label>
         </div>
         <div className="mb-4">
@@ -176,7 +177,7 @@ const EventForm = ({
               onChange={handleChange}
               className="form-checkbox"
             />
-            <span className="ml-2">Student Holiday</span>
+            <span className="ml-2">event</span>
           </label>
         </div>
         <div className="flex justify-between mt-4">
@@ -224,8 +225,9 @@ const Event = () => {
   const fetchEvents = async () => {
     try {
       const response = await axiosClient.get("/holiday-event");
-      // console.log(response.data.result)
-      setEventsArr(response.result);
+      // Sort events by date in ascending order
+      const sortedEvents = response.result.sort((a, b) => new Date(a.date) - new Date(b.date));
+      setEventsArr(sortedEvents);
     } catch (error) {
       console.error("Error fetching events:", error);
     }
@@ -251,25 +253,7 @@ const Event = () => {
     }
   };
 
-  // const handleAddEvent = async () => {
-  //   try {
-  //     const res = await addEvent (newEvent);
-  //     // Resetting the form values
-  //     setShowAddEvent (false);
-  //     fetchEvents ();
-  //     toast.success ('Event created successfully');
-  //   } catch (error) {
-  //     toast.error (<b>{error}</b>);
-  //   }finally{
-  //     setNewEvent ({
-  //       date: new Date (year, month, activeDay),
-  //       title: '',
-  //       description: '',
-  //       teacherHoliday: false,
-  //       studentHoliday: false,
-  //     });
-  //   }
-  // };
+  
 
   const updateCalendar = (newMonth, newYear) => {
     setMonth(newMonth);
@@ -315,6 +299,7 @@ const Event = () => {
     // console.log(eventToDelete);
     try {
       const res = await axiosClient.delete(`/holiday-event/${eventToDelete["_id"]}`);
+      console.log(res)
       fetchEvents();
       toast.success("Event deleted successfully");
     } catch (error) {
@@ -446,13 +431,13 @@ const Event = () => {
                 : "shadow-[#B9D7F1] border-[#B9D7F1] "
             } right lg:w-2/5 p-5 border-2 shadow-md  rounded-lg max-h-[32rem] overflow-y-scroll`}
           >
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-5 ">
               {eventsArr.map((itm) => (
                 <div
                   key={itm["_id"]}
-                  className="border border-gray-300 shadow-lg rounded-lg overflow-hidden"
+                  className="border border-gray-300 shadow-lg rounded-lg overflow-hidden "
                 >
-                  <div className="flex justify-between items-center bg-[#172554] text-white py-2 px-4 text-lg">
+                  <div className="flex justify-between items-center bg-[#172554] text-white py-0 px-4 text-lg">
                     <div>{itm.day}</div>
                     <div>{itm.date}</div>
                     {role === "teacher" ? (
@@ -476,7 +461,7 @@ const Event = () => {
                       isDarkMode
                         ? "bg-[#102945] text-white"
                         : "bg-white  text-[#172554]"
-                    } py-2 px-4 text-2xl font-bold text-center `}
+                    } py-0 px-4 text-2xl font-bold text-center `}
                   >
                     {itm.title}
                   </div>
@@ -485,23 +470,23 @@ const Event = () => {
                       isDarkMode
                         ? "bg-[#102945] text-gray-50"
                         : "bg-gray-50  text-gray-600"
-                    } py-1 px-4 text-center `}
+                    } py-0 px-4 text-center `}
                   >
-                    {itm.description}
+                     { itm.description}
                   </div>
                   <div
                     className={`${
                       isDarkMode ? "bg-blue-950" : "bg-white"
-                    } flex justify-around space-x-2 p-4 `}
+                    } flex justify-around space-x-0 p--3 `}
                   >
                     {itm.teacherHoliday && (
-                      <div className="bg-green-600 text-white py-1 px-3 rounded-full text-sm">
-                        Teacher Holiday
+                      <div className=" bg-purple-300 text-purple-900 px-2 rounded-full text-sm font-bold m-2 ">
+                        Holiday
                       </div>
                     )}
                     {itm.studentHoliday && (
-                      <div className="bg-yellow-600 text-white py-1 px-3 rounded-full text-sm">
-                        Student Holiday
+                      <div className="bg-pink-200 text-yellow-600 px-2 rounded-full text-sm font-bold m-2">
+                        Event
                       </div>
                     )}
                   </div>

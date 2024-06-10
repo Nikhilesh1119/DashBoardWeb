@@ -114,12 +114,12 @@ const Navbar = () => {
                       >
                         Teacher
                       </Link>
-                      {/* <Link
+                      <Link
                         to="/student"
                         className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
                       >
                         Student
-                      </Link> */}
+                      </Link>
                       <Link
                         to="/class-setup"
                         className="block px-4 py-2 hover:text-blue-800 hover:bg-white"
@@ -141,7 +141,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex space-x-8">
-          <label className="py-2 flex justify-center items-center gap-x-2">
+          <label className="py-2 flex justify-center items-center gap-x-2 max-sm:hidden">
             <span>Dark Mode</span>
             <Switch
               height={20}

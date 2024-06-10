@@ -65,7 +65,6 @@ function App() {
             )}
           </Route>
         </Route>
-
         <Route element={<NotRequireUser />}>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

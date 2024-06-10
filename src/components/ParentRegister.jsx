@@ -2,18 +2,25 @@ import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { adminRegisterParent, getParent, registerParent } from "../services/Axios.service";
+import {
+  adminRegisterParent,
+  getParent,
+  registerParent,
+} from "../services/Axios.service";
 import { useState } from "react";
 import { axiosClient } from "../services/axiosClient";
+import hide from "../assets/hide.png";
+import show from "../assets/show.png";
 
 export default function ParentRegister() {
   const role = useSelector((state) => state.appAuth.role);
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const navigate = useNavigate();
-  
+  const [ishide, setIsHide] = useState(true);
+
   const location = useLocation();
   const { studentId } = location.state;
-  const [phoneNo, setPhoneNo] = useState("+91");
+  const [phoneNo, setPhoneNo] = useState("");
   const [isFetched, setIsFetched] = useState(false);
   const formik = useFormik({
     initialValues: {
@@ -22,7 +29,7 @@ export default function ParentRegister() {
       lastname: "",
       email: "",
       password: "",
-      phone: "+91",
+      phone: "",
       address: "",
     },
     validate: (value) => {
@@ -35,7 +42,7 @@ export default function ParentRegister() {
         error.email = "Enter a valid email address";
       if (value.password.length < 8)
         error.password = "Password should be at least 8 characters long";
-      if (value.phone.length != 13) error.phone = "Enter a valid Phone number";
+      if (value.phone.length != 10) error.phone = "Enter a valid Phone number";
       if (!value.address) error.address = "Address required";
       return error;
     },
@@ -44,11 +51,17 @@ export default function ParentRegister() {
 
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        let response
-        if(role==='teacher'){
-          response = await axiosClient.post(`/parent/register/${studentId}`, values);
-        }else{
-          response = await axiosClient.post(`/parent/admin-register/${studentId}`, values);
+        let response;
+        if (role === "teacher") {
+          response = await axiosClient.post(
+            `/parent/register/${studentId}`,
+            values
+          );
+        } else {
+          response = await axiosClient.post(
+            `/parent/admin-register/${studentId}`,
+            values
+          );
         }
         toast.success("parent registered successfully");
         setTimeout(() => {
@@ -57,7 +70,7 @@ export default function ParentRegister() {
               classId: response.result.classId,
               sectionId: response.result.sectionId,
             },
-          })
+          });
         }, 2000);
         resetForm();
       } catch (error) {
@@ -72,8 +85,10 @@ export default function ParentRegister() {
   const handleSearch = async (e) => {
     try {
       e.preventDefault();
-      if (phoneNo.length === 13) {
-        const response = await axiosClient.get(`/parent/admin-get-parent/${phoneNo}`);
+      if (phoneNo.length === 10) {
+        const response = await axiosClient.get(
+          `/parent/admin-get-parent/${phoneNo}`
+        );
         console.log(response);
         const parent = response.result;
         formik.setValues({
@@ -178,7 +193,7 @@ export default function ParentRegister() {
                           placeholder="Enter username"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54] "
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
@@ -207,7 +222,7 @@ export default function ParentRegister() {
                           placeholder="Enter firstname"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54] "
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
@@ -239,7 +254,7 @@ export default function ParentRegister() {
                           placeholder="Enter lastname"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54]"
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
@@ -269,7 +284,7 @@ export default function ParentRegister() {
                           placeholder="Enter email"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54] "
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
@@ -289,21 +304,38 @@ export default function ParentRegister() {
                         >
                           Password *
                         </div>
-                        <input
-                          readOnly={isFetched}
-                          id="password"
-                          name="password"
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          value={formik.values.password}
-                          type="password"
-                          placeholder="Enter password"
-                          className={`${
-                            isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-black bg-white bg-opacity-30"
-                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
-                        />
+                        <div className="flex items-center border border-violet-300 border-solid rounded-md  max-md:pr-5 max-md:max-w-full mb-4 focus-within:border-black focus-within:border-2 focus-within:rounded-md">
+                          <input
+                            readOnly={isFetched}
+                            id="password"
+                            name="password"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.password}
+                            type={ishide ? "password" : "text"}
+                            placeholder="Enter password"
+                            className={`${
+                              isDarkMode
+                                ? "text-white bg-[#152f54] "
+                                : "text-black bg-white bg-opacity-30"
+                            } px-3.5 py-3 text-sm whitespace-nowrap w-full border-none focus:outline-none`}
+                          />
+                          {ishide ? (
+                            <img
+                              src={show}
+                              onClick={() => setIsHide(!ishide)}
+                              alt=""
+                              className="size-5 relative right-3"
+                            />
+                          ) : (
+                            <img
+                              src={hide}
+                              onClick={() => setIsHide(!ishide)}
+                              alt=""
+                              className="size-5 relative right-3"
+                            />
+                          )}
+                        </div>
                         {formik.touched.password && formik.errors.password && (
                           <p className="text-red-500 my-0">
                             {formik.errors.password}
@@ -329,7 +361,7 @@ export default function ParentRegister() {
                           placeholder="Enter phone"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54]"
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
@@ -360,7 +392,7 @@ export default function ParentRegister() {
                           placeholder="Enter address"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54] "
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />

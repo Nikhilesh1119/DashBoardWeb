@@ -6,10 +6,14 @@ import { loginAdmin, loginTeacher } from "../services/Axios.service";
 import { axiosClient } from "../services/axiosClient";
 import { setItem, setUsername } from "../services/LocalStorageManager";
 
+import hide from "../assets/hide.png";
+import show from "../assets/show.png";
+
 function Login() {
   const [isAdmin, setIsAdmin] = useState(true);
   const navigate = useNavigate();
 
+  const [ishide, setIsHide] = useState(true);
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -23,7 +27,7 @@ function Login() {
       try {
         let response;
         if (isAdmin) {
-          response = await axiosClient.post("/admin/login",{
+          response = await axiosClient.post("/admin/login", {
             adminName: values.username,
             password: values.password,
           });
@@ -31,7 +35,7 @@ function Login() {
           setUsername(response?.result.username);
           console.log(response);
         } else {
-          response = await axiosClient.post("/teacher/login",values);
+          response = await axiosClient.post("/teacher/login", values);
           setItem(response?.result.accessToken);
           setUsername(response?.result.username);
         }
@@ -39,7 +43,7 @@ function Login() {
         resetForm();
         setTimeout(() => {
           // navigate("/");
-          window.location.replace('/')
+          window.location.replace("/");
         }, 2000);
       } catch (error) {
         toast.error(<b>{error}</b>);
@@ -75,15 +79,30 @@ function Login() {
                   value={formik.values.username}
                 />
               </div>
-              <div className="mt-5">
+              <div className="mt-5 border border-gray-400  flex justify-center items-center focus-within:border-black focus-within:border-2 focus-within:rounded-md">
                 <input
-                  type="password"
+                  type={ishide ? "password" : "text"}
                   name="password"
                   placeholder="Password"
-                  className="border border-gray-400 py-1 px-2 w-full"
+                  className=" py-1 px-2 w-full border-none focus:outline-none "
                   onChange={formik.handleChange}
                   value={formik.values.password}
                 />
+                {ishide ? (
+                  <img
+                    src={show}
+                    onClick={() => setIsHide(!ishide)}
+                    alt=""
+                    className="size-5 relative right-3"
+                  />
+                ) : (
+                  <img
+                    src={hide}
+                    onClick={() => setIsHide(!ishide)}
+                    alt=""
+                    className="size-5 relative right-3"
+                  />
+                )}
               </div>
               <div className="mt-5">
                 <button
