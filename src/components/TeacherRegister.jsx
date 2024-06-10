@@ -3,9 +3,14 @@ import { useSelector } from "react-redux";
 import { Toaster, toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { axiosClient } from "../services/axiosClient";
+import hide from "../assets/hide.png";
+import show from "../assets/show.png";
+import { useState } from "react";
 
 export default function RegisterTeacher() {
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
+  const [ishide, setIsHide] = useState(true);
+
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -35,11 +40,11 @@ export default function RegisterTeacher() {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         console.log(values);
-        if(!formik.isValid){
+        if (!formik.isValid) {
           toast.error("invalid form data");
           return;
         }
-        const response = await axiosClient.post("/teacher/register",values);
+        const response = await axiosClient.post("/teacher/register", values);
         console.log(response);
         toast.success(<b>register Successfully</b>);
         setTimeout(() => {
@@ -108,7 +113,7 @@ export default function RegisterTeacher() {
                           placeholder="Enter username"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54]"
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
@@ -136,7 +141,7 @@ export default function RegisterTeacher() {
                           placeholder="Enter firstname"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54]"
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
                         />
@@ -167,7 +172,7 @@ export default function RegisterTeacher() {
                           placeholder="Enter lastname"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54] "
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
@@ -196,7 +201,7 @@ export default function RegisterTeacher() {
                           placeholder="Enter email"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54] "
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
@@ -216,20 +221,43 @@ export default function RegisterTeacher() {
                         >
                           Password *
                         </div>
-                        <input
-                          id="password"
-                          name="password"
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          value={formik.values.password}
-                          type="text"
-                          placeholder="Enter password"
+                        <div
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
-                              : "text-black bg-white bg-opacity-30"
-                          } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid  max-md:pr-5 max-md:max-w-full`}
-                        />
+                              ? "bg-[#152f54] focus-within:border-white"
+                              : "focus-within:border-black"
+                          } flex items-center border border-violet-300 border-solid rounded-md  max-md:pr-5 max-md:max-w-full mb-4  focus-within:border-2 focus-within:rounded-md`}
+                        >
+                          <input
+                            id="password"
+                            name="password"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            value={formik.values.password}
+                            type={ishide ? "password" : "text"}
+                            placeholder="Enter password"
+                            className={`${
+                              isDarkMode
+                                ? "text-white bg-[#152f54]"
+                                : "text-black bg-white bg-opacity-30"
+                            } px-3.5 py-3 text-sm whitespace-nowrap w-full border-none focus:outline-none`}
+                          />
+                          {ishide ? (
+                            <img
+                              src={show}
+                              onClick={() => setIsHide(!ishide)}
+                              alt=""
+                              className="size-5 relative right-3"
+                            />
+                          ) : (
+                            <img
+                              src={hide}
+                              onClick={() => setIsHide(!ishide)}
+                              alt=""
+                              className="size-5 relative right-3"
+                            />
+                          )}
+                        </div>
                         {formik.touched.password && formik.errors.password && (
                           <p className="text-red-500 my-0">
                             {formik.errors.password}
@@ -254,7 +282,7 @@ export default function RegisterTeacher() {
                           placeholder="Enter phone"
                           className={`${
                             isDarkMode
-                              ? "text-white bg-[#152f54] bg-opacity-40"
+                              ? "text-white bg-[#152f54]"
                               : "text-black bg-white bg-opacity-30"
                           } justify-center items-start px-3.5 py-3 mb-4 text-sm whitespace-nowrap  rounded-md border border-violet-300 border-solid max-md:pr-5 max-md:max-w-full`}
                         />
