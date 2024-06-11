@@ -52,6 +52,8 @@ export default function ParentRegister() {
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         let response;
+        console.log(values);
+        console.log({studentId});
         if (role === "teacher") {
           response = await axiosClient.post(
             `/parent/register/${studentId}`,
@@ -63,6 +65,7 @@ export default function ParentRegister() {
             values
           );
         }
+        console.log(response)
         toast.success("parent registered successfully");
         setTimeout(() => {
           navigate("/student-section", {
