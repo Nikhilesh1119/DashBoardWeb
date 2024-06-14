@@ -16,7 +16,7 @@ function Login() {
   const [ishide, setIsHide] = useState(true);
   const formik = useFormik({
     initialValues: {
-      username: "",
+      email: "",
       password: "",
     },
     validate: (values) => {
@@ -28,12 +28,11 @@ function Login() {
         let response;
         if (isAdmin) {
           response = await axiosClient.post("/admin/login", {
-            adminName: values.username,
+            email: values.email,
             password: values.password,
           });
           setItem(response?.result.accessToken);
           setUsername(response?.result.username);
-          console.log(response);
         } else {
           response = await axiosClient.post("/teacher/login", values);
           setItem(response?.result.accessToken);
@@ -72,11 +71,11 @@ function Login() {
               <div className="mt-5">
                 <input
                   type="text"
-                  name="username"
-                  placeholder={isAdmin ? "Admin Name" : "Teacher Name"}
+                  name="email"
+                  placeholder={isAdmin ? "Admin email" : "Teacher email"}
                   className="border border-gray-400 py-1 px-2 w-full"
                   onChange={formik.handleChange}
-                  value={formik.values.username}
+                  value={formik.values.email}
                 />
               </div>
               <div className="mt-5 border border-gray-400  flex justify-center items-center focus-within:border-black focus-within:border-2 focus-within:rounded-md">

@@ -35,12 +35,16 @@ function StudentPage() {
                 isDarkMode ? "bg-[#152f54]" : "bg-white"
               } text-red-500 font-bold p-2 `}
             >
-              <Link
-                to="/register-student"
+               <div
+                onClick={() =>
+                  navigate("/register-student", {
+                    state: { classId, sectionId },
+                  })
+                }
                 className="text-red-500 no-underline"
               >
                 + new Student
-              </Link>
+              </div>
             </button>
           </div>
         </div>

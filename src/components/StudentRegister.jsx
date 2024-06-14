@@ -54,6 +54,7 @@ export default function StudentRegister() {
           console.log(response);
         }
         toast.success("student registered successfully");
+        console.log(response);
         setTimeout(() => {
           navigate("/register-parent", {state: { studentId:response.result.studentId }})
         }, 2000);
