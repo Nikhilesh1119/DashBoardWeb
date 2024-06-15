@@ -5,7 +5,6 @@ import RequireUser from "./components/RequireUser";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import StudentPage from "./components/Student";
 import ClassSetup from "./components/ClassSetup";
 import RegisterTeacher from "./components/TeacherRegister";
 import StudentRegister from "./components/StudentRegister";
@@ -45,7 +44,7 @@ function App() {
               <>
                 <Route path="" element={<DashBoard />} />
                 <Route path="student-list" element={<Studentlist />} />
-                <Route path="student" element={<StudentPage />} />
+                <Route path="student" element={<Studentlist />} />
                 <Route
                   path="register-student"
                   element={<StudentRegister />}

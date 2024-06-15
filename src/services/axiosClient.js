@@ -5,13 +5,13 @@ import store from "../store/store.jsx";
 import {
   getItem,
   KEY_ACCESS_TOKEN,
-  removeItem,
+  removeItem
 } from "./LocalStorageManager.js";
 // const BASE_URL = "http://89.116.33.150:4400";
 const BASE_URL = "http://localhost:4000";
 
 export const axiosClient = axios.create({
-  baseURL: BASE_URL,
+  baseURL: BASE_URL
   // withCredentials:true,
 });
 
@@ -38,6 +38,9 @@ axiosClient.interceptors.response.use(
       removeItem("username");
       window.location.replace("/login", "_self");
       //   console.log("error")
+      return Promise.reject(data.message);
+    }
+    if (data.status == "error") {
       return Promise.reject(data.message);
     }
   },
