@@ -28,7 +28,7 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   async (response) => {
     const data = response.data;
-    // console.log(data);
+    console.log(data);
     if (data.status === "ok") {
       return data;
     }
