@@ -47,8 +47,11 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
 
   const getUnassignedTeacher = async () => {
     try {
-      const res = await axiosClient.get("/teacher/all-teachers");
+      const res = await axiosClient.get("/teacher/unassigned-teachers");
+      // console.log( teachers)
+      // console.log({res:res.result});
       setTeachers(res.result);
+      // console.log( teachers)
     } catch (error) {
       toast.error(error);
     }
@@ -73,6 +76,7 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
       setShowPopover(false);
       getsection();
       getAllClass();
+      getUnassignedTeacher();
     } catch (error) {
       toast.error(error);
     } finally {
@@ -92,6 +96,7 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
       getsection();
       getAllClass();
       toast.success("section deleted successfully");
+      getUnassignedTeacher();
     } catch (error) {
       toast.error(error);
     }
@@ -253,7 +258,9 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
                           }`}
                         >
                           <option value="">Select a teacher</option>
-                          {teachers.map((teacher, i) => (
+                          {console.log(teachers)}
+                          {
+                          teachers.map((teacher, i) => (
                             <option key={i} value={teacher._id}>
                               {teacher.username}
                             </option>

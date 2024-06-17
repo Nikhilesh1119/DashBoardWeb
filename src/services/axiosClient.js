@@ -28,12 +28,12 @@ axiosClient.interceptors.request.use(
 axiosClient.interceptors.response.use(
   async (response) => {
     const data = response.data;
-    console.log(data);
+    // console.log(data);
     if (data.status === "ok") {
       return data;
     }
     if (data.status === "error" && data.message === "jwt expired") {
-      console.log(data);
+      // console.log(data);
       removeItem(KEY_ACCESS_TOKEN);
       removeItem("username");
       window.location.replace("/login", "_self");

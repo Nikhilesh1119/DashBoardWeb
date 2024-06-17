@@ -17,6 +17,10 @@ import {
   Button,
   Grid,
   FormLabel,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { axiosClient } from "../services/axiosClient";
@@ -50,13 +54,17 @@ function Studentlist({ sectionId }) {
   });
   const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
   const [idForDelete, setIdForDelete] = useState();
+  const[classList, setClassList] = useState([]);
+  const[sectionList, setSectionList] = useState([]);
+  const[searchClass,setSearchClass] = useState("");
+  const[searchSection,setSearchSection] = useState("");
+  const[searchStudentName, setSearchStudentName] = useState("");
 
   const getStudent = async () => {
     try {
       const studentList = await axiosClient.get(
         `/student/admin-all-student-list/${pageNo}`
       );
-      console.log(studentList);
       setTotalStudentCount(studentList.result.totalCount);
       setLimit(studentList.result.limit);
       setStudentData(studentList.result.studentList);
@@ -66,8 +74,39 @@ function Studentlist({ sectionId }) {
     }
   };
 
+  const getStudentsOfSection = async()=>{
+    try {
+      const studentList = await axiosClient.get(
+        `/student/admin-student-list/${searchSection}/${pageNo}`
+      );
+      console.log(studentList);
+      setTotalStudentCount(studentList.result.totalCount);
+      setLimit(studentList.result.limit);
+      setStudentData(studentList.result.studentList);
+      setStudentList(studentList.result.studentList);
+
+    } catch (error) {
+      console.log(error);      
+    }
+  }
+
+  const getClassList = async()=>{
+    try {
+      const classes = await axiosClient.get(`/class/class-list`);
+      setClassList(classes.result);
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getStudentsOfSection();
+  }, [searchSection]);
+  
   useEffect(() => {
     getStudent();
+    getClassList();
   }, [pageNo]);
 
   useEffect(() => {
@@ -94,8 +133,8 @@ function Studentlist({ sectionId }) {
     const searchInputLower = searchInput.toLowerCase();
     const searchedStudent = studentList.filter(
       (itm) =>
-        itm.firstname.toLowerCase() === searchInputLower ||
-        itm.username.toLowerCase() === searchInputLower
+        itm.firstname.toLowerCase() === searchInputLower
+        // itm.username.toLowerCase() === searchInputLower
     );
     setStudentData(searchedStudent);
   };
@@ -125,12 +164,12 @@ function Studentlist({ sectionId }) {
     try {
       if (role === "teacher") {
         await axiosClient.delete(`/student/delete-student/${idForDelete}`);
-        console.log("t");
+        // console.log("t");
       } else {
         await axiosClient.delete(
           `/student/admin-delete-student/${idForDelete}`
         );
-        console.log("a");
+        // console.log("a");
       }
       getStudent();
       toast.success("Student deleted successfully!");
@@ -177,6 +216,8 @@ function Studentlist({ sectionId }) {
           updatedStudent
         );
       }
+
+      
       getStudent();
       toast.success("Student updated successfully!");
     } catch (error) {
@@ -209,14 +250,47 @@ function Studentlist({ sectionId }) {
                 className={`flex flex-col grow shrink-0 justify-center items-start py-0.5 rounded basis-0 w-fit max-md:max-w-full max-md:hidden`}
               >
                 <div className="flex gap-4 px-4 py-3.5 rounded-3xl w-full">
-                  <img
-                    loading="lazy"
-                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/74e76d4d72d68d2ad4c35f2227992fc796d750093cd063bd440074b4e49127c1?apiKey=5571847fc48447bbad48faecb3b890d9&"
-                    className={`${
-                      isDarkMode ? " bg-[#0D192F]" : ""
-                    } shrink-0 w-6 aspect-square`}
-                  />
                   <div className="flex justify-between w-full">
+                    <FormControl size="medium" className="mx-2" style={{width:"200px",marginRight:"10px"}}>
+                      <InputLabel id="demo-simple-select-label">Class</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={searchClass}
+                        label="Age"
+                        onChange={(e)=>{
+                          setSearchClass(e.target.value);
+                          const classData = classList.filter((itm)=>itm["_id"]==e.target.value)
+                          setSectionList(classData[0]["section"]);
+                        }}
+                      >
+                        {classList.map((itm)=>{
+                          return(
+                             <MenuItem key={itm["_id"]} value={itm["_id"]}>{itm.name}</MenuItem>
+                          )
+                        })
+                        }
+                      </Select>
+                    </FormControl>
+                    <FormControl size="medium" className="" style={{width:"200px",marginRight:"10px"}}>
+                      <InputLabel id="demo-simple-select-label" style={{marginRight:"100px"}}>Section</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={searchSection}
+                        label="Age"
+                        onChange={(e)=>{
+                           setSearchSection(e.target.value);
+                        }}
+                      >
+                        {
+                          sectionList.map((itm)=>{
+                            return <MenuItem key={itm["_id"]} value={itm["_id"]}>{itm.name}</MenuItem>
+                          })
+                        }
+
+                      </Select>
+                    </FormControl>
                     <input
                       type="text"
                       placeholder="Search here..."
