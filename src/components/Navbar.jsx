@@ -32,6 +32,10 @@ const Navbar = () => {
     setMenuOpen(true);
   };
 
+  // const toggleMenu = () => {
+  //   setMenuOpen(!menuOpen);
+  // };
+
   const handleProfileMenu = () => {
     setProfileMenuOpen(true);
   };
@@ -75,6 +79,7 @@ const Navbar = () => {
           <div className="relative pl-6 z-10">
             <button
               onMouseEnter={handleMenu}
+              // onClick={toggleMenu}
               className="text-white bg-blue-900 px-4 py-2 rounded-md hover:text-blue-800 hover:bg-white"
             >
               Setup

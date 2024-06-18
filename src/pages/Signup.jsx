@@ -1,6 +1,6 @@
 // import React from "react";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import { axiosClient } from "../services/axiosClient";
 import hide from "../assets/hide.png";
@@ -9,7 +9,7 @@ import { useState } from "react";
 
 function Signup() {
   const [ishide, setIsHide] = useState(true);
-
+const navigate=useNavigate()
   const formik = useFormik({
     initialValues: {
       schoolName: "",
@@ -47,6 +47,9 @@ function Signup() {
         console.log(response);
         toast.success(<b>register Successfully</b>);
         resetForm();
+        setTimeout(() => {
+          navigate('/login')
+        }, 2000);
       } catch (error) {
         console.error("Error:", error);
         toast.error(<b>{error}</b>);
