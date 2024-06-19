@@ -253,13 +253,15 @@ function ClassSetup() {
                               } w-4 h-4 md:w-6 md:h-6 m-0.5 md:m-1 border rounded-lg flex justify-center items-center`}
                               key={j}
                             >
+                              {console.log(data.name,section.name)}
                               <div
-                                // to={`/student-section/${data._id}/${section._id}`}
                                 onClick={() =>
                                   navigate("/student-section", {
                                     state: {
                                       classId: data._id,
                                       sectionId: section._id,
+                                      className: data.name,
+                                      sectionName: section.name,
                                     },
                                   })
                                 }

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 const initialStudents = [
   {
@@ -14,10 +16,14 @@ const initialStudents = [
 const genders = ["Male", "Female", "Other"];
 
 export default function StudentSection() {
+  const role = useSelector((state) => state.appAuth.role);
   const [students, setStudents] = useState(initialStudents);
   const [validationError, setValidationError] = useState(false);
-  const [editIndex, setEditIndex] = useState(0); // Initialize to 0 to start with the first row in edit mode
+  const [editIndex, setEditIndex] = useState(0);
   const [rollNumberCounter, setRollNumberCounter] = useState(2);
+  const location = useLocation();
+  const { classId, sectionId, className, sectionName } = location.state;
+  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
 
   const handleAddRow = () => {
     const lastStudent = students[students.length - 1];
@@ -44,7 +50,7 @@ export default function StudentSection() {
       },
     ]);
     setRollNumberCounter(rollNumberCounter + 1);
-    setEditIndex(students.length); // Activate the first name input of the new row
+    setEditIndex(students.length);
   };
 
   const handleInputChange = (index, field, value) => {
@@ -63,37 +69,77 @@ export default function StudentSection() {
 
   const handleDelete = (index) => {
     const newStudents = students.filter((_, i) => i !== index);
-    setStudents(newStudents);
-    setEditIndex(null); // Reset edit index if necessary
+    const updatedStudents = newStudents.map((student, i) => ({
+      ...student,
+      rollNo: i + 1,
+    }));
+    setStudents(updatedStudents);
+    setRollNumberCounter(updatedStudents.length + 1);
+    setEditIndex(null);
   };
 
   return (
-    <div className="bg-[#eff6fc] h-screen m-3">
+    <div
+      className={`${
+        isDarkMode ? "bg-[#0D192F] text-white" : "bg-white text-gray-900"
+      } h-screen m-3`}
+    >
       <div className="px-5">
         <div className="flex justify-between">
           <div className="text-3xl px-5 py-3">Student Setup</div>
-          <div className="text-xl px-5 py-3 font-semibold text-gray-800 ">
-            Class: 10th | Section: A
-          </div>
+          {role === "teacher" ? (
+            <div
+              className={` ${
+                isDarkMode ? "text-white" : ""
+              } text-xl px-5 py-3 font-semibold text-gray-800`}
+            >
+              Class: {localStorage.getItem("class")} | Section:{" "}
+              {localStorage.getItem("section")}
+            </div>
+          ) : (
+            <div
+              className={` ${
+                isDarkMode ? "text-white" : ""
+              } text-xl px-5 py-3 font-semibold text-gray-800`}
+            >
+              Class: {className} | Section: {sectionName}
+            </div>
+          )}
         </div>
         <div className="p-3">
           <div className="flex justify-between w-full">
             <input
               type="text"
               placeholder="Search here..."
-              className="px-3 rounded-md focus:outline-none w-full"
+              className={`${
+                isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
+              } px-3 rounded-md focus:outline-none w-full`}
             />
-            <button className="bg-[#2f0d0d] text-white hover:text-blue-950 hover:bg-white hover:border-2 hover:border-red-950 py-1 px-4 ml-2 w-40 text-lg rounded-md">
+            <button
+              className={`bg-[#2f0d0d] text-white hover:text-blue-950 hover:bg-white hover:border-2 hover:border-red-950 py-1 px-4 ml-2 w-40 text-lg rounded-md`}
+            >
               Clear
             </button>
-            <button className="bg-[#0d192f] text-white hover:text-blue-950 hover:bg-white hover:border-2 hover:border-blue-950 py-1 px-4 ml-2 w-40 text-lg rounded-md">
+            <button
+              className={`bg-[#0d192f] text-white hover:text-blue-950 hover:bg-white hover:border-2 hover:border-blue-950 py-1 px-4 ml-2 w-40 text-lg rounded-md`}
+            >
               Search
             </button>
           </div>
         </div>
         <div className="overflow-x-auto mt-6">
-          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-            <thead className="bg-gray-200 text-base font-medium text-indigo-900">
+          <table
+            className={`${
+              isDarkMode ? "bg-gray-800" : "bg-white"
+            } min-w-full shadow-md rounded-lg overflow-hidden`}
+          >
+            <thead
+              className={`${
+                isDarkMode
+                  ? "bg-gray-700 text-white"
+                  : "bg-gray-200 text-indigo-900"
+              } text-base font-medium`}
+            >
               <tr>
                 <th className="px-4 py-2 border border-gray-400">Roll No.</th>
                 <th className="px-4 py-2 border border-gray-400">First Name</th>
@@ -109,7 +155,11 @@ export default function StudentSection() {
             <tbody className="text-sm font-normal text-gray-900">
               {students.map((student, index) => (
                 <tr key={index}>
-                  <td className="px-4 py-2 border border-gray-400">
+                  <td
+                    className={`${
+                      isDarkMode ? "text-white" : ""
+                    } px-4 py-2 border border-gray-400`}
+                  >
                     {student.rollNo}
                   </td>
                   <td className="px-4 py-2 border border-gray-400">
@@ -120,7 +170,11 @@ export default function StudentSection() {
                         handleInputChange(index, "firstName", e.target.value)
                       }
                       placeholder="Enter First Name"
-                      className="w-full h-full px-2 py-1 border-none focus:outline-none"
+                      className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
+                        isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-gray-900"
+                      }`}
                       disabled={
                         editIndex !== index && index < students.length - 1
                       }
@@ -135,7 +189,11 @@ export default function StudentSection() {
                         handleInputChange(index, "lastName", e.target.value)
                       }
                       placeholder="Enter Last Name"
-                      className="w-full h-full px-2 py-1 border-none focus:outline-none"
+                      className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
+                        isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-gray-900"
+                      }`}
                       disabled={
                         editIndex !== index && index < students.length - 1
                       }
@@ -147,7 +205,11 @@ export default function StudentSection() {
                       onChange={(e) =>
                         handleInputChange(index, "gender", e.target.value)
                       }
-                      className="w-full h-full px-2 py-1 border-none focus:outline-none"
+                      className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
+                        isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-gray-900"
+                      }`}
                       disabled={
                         editIndex !== index && index < students.length - 1
                       }
@@ -168,7 +230,11 @@ export default function StudentSection() {
                         handleInputChange(index, "guardianName", e.target.value)
                       }
                       placeholder="Enter Guardian Name"
-                      className="w-full h-full px-2 py-1 border-none focus:outline-none"
+                      className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
+                        isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-gray-900"
+                      }`}
                       disabled={
                         editIndex !== index && index < students.length - 1
                       }
@@ -182,7 +248,11 @@ export default function StudentSection() {
                         handleInputChange(index, "phone", e.target.value)
                       }
                       placeholder="Enter Phone Number"
-                      className="w-full h-full px-2 py-1 border-none focus:outline-none"
+                      className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
+                        isDarkMode
+                          ? "bg-gray-800 text-white"
+                          : "bg-white text-gray-900"
+                      }`}
                       disabled={
                         editIndex !== index && index < students.length - 1
                       }

@@ -10,10 +10,12 @@ const token = getItem("access_token");
 if (token) {
   try {
     const decodedToken = jwtDecode(token);
-    // console.log(token);
+    console.log(decodedToken);
     initialRole = decodedToken.role;
-    initialSection=decodedToken.sectionId
-    initialClass=decodedToken.classId
+    initialSection = decodedToken.sectionId;
+    initialClass = decodedToken.classId;
+    localStorage.setItem("class", decodedToken.className);
+    localStorage.setItem("section", decodedToken.sectionName);
   } catch (error) {
     console.error("Failed to decode token:", error);
   }
@@ -30,7 +32,6 @@ const appAuthSlice = createSlice({
     getRole(state) {
       return state.role;
     },
-    
   },
 });
 

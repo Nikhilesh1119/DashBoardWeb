@@ -22,27 +22,12 @@ const navigate=useNavigate()
     },
     validate: (values) => {
       const errors = {};
-      // Add validation rules here
-      // if (!values.email.match(/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/)) {
-      //   errors.email = "Invalid email address";
-      // }
-      // if (values.schoolName.length<5||values.schoolName.length>500) {
-      //   errors.schoolName = "school name length should be between 5 and 500";
-      // }
-      // if (values.affiliationNo.length<5||values.affiliationNo.length>50) {
-      //   errors.affiliationNo = "affiliation no. length should be between 5 and 50";
-      // }
-
-      // if(!values.phone.match(/^\+91[6-9]\d{9}$/)){
-      //   errors.phone="Invalid phone number";
-      // }
       return errors;
     },
 
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
         console.log(values);
-        // const response = await registerAdmin(values);
         const response = await axiosClient.post("/admin/register", values);
         console.log(response);
         toast.success(<b>register Successfully</b>);
@@ -95,9 +80,6 @@ const navigate=useNavigate()
                   onChange={formik.handleChange}
                   value={formik.values.schoolName}
                 />
-                {/* {formik.errors.schoolName && (
-                <div className="text-red-500">{formik.errors.schoolName}</div>
-                )} */}
               </div>
               <div className="mt-5">
                 <input
@@ -108,9 +90,6 @@ const navigate=useNavigate()
                   onChange={formik.handleChange}
                   value={formik.values.affiliationNo}
                 />
-                {/* {formik.errors.affiliationNo && (
-                <div className="text-red-500">{formik.errors.affiliationNo}</div>
-                )} */}
               </div>
 
               <div className="mt-5">
@@ -132,9 +111,6 @@ const navigate=useNavigate()
                   onChange={formik.handleChange}
                   value={formik.values.email}
                 />
-                {/* {formik.errors.email && (
-                <div className="text-red-500">{formik.errors.email}</div>
-                )} */}
               </div>
               <div className="mt-5">
                 <input
@@ -145,9 +121,6 @@ const navigate=useNavigate()
                   onChange={formik.handleChange}
                   value={formik.values.phone}
                 />
-                {/* {formik.errors.phone && (
-                  <div className="text-red-500">{formik.errors.phone}</div>
-                )} */}
               </div>
               <div className="mt-5">
                 <input
@@ -197,7 +170,7 @@ const navigate=useNavigate()
             <div className="text-right mt-2 text-sm">
               Already have account?{" "}
               <Link to="/login">
-                <span className="text-blue-950 font-semibold">login</span>{" "}
+                <span className="text-blue-950 font-semibold">login</span>
               </Link>
             </div>
           </div>

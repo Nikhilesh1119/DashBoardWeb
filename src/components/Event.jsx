@@ -79,15 +79,15 @@ const Day = ({
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   return (
     <div
-  className={`day ${
-    isActive
-      ? isDarkMode
-        ? "bg-[#b9d7f1] text-gray-900 border border-slate-600 "
-        : "border-2 border-blue-900"
-      : isDarkMode
-      ? "bg-[#102946]"
-      : "bg-white text-[#01345B] border-2 border-[#B9D7F1]"
-  } 
+      className={`day ${
+        isActive
+          ? isDarkMode
+            ? "bg-[#b9d7f1] text-gray-900 border border-slate-600 "
+            : "border-2 border-blue-900"
+          : isDarkMode
+          ? "bg-[#102946]"
+          : "bg-white text-[#01345B] border-2 border-[#B9D7F1]"
+      } 
   ${
     isSunday
       ? isDarkMode
@@ -97,15 +97,14 @@ const Day = ({
       ? "text-white "
       : "bg-[#DCEBF8] "
   } 
-  ${isToday ? (isDarkMode ? "bg-blue-900  text-white" : "bg-purple-300 ") : ""} 
+  ${isToday ? (isDarkMode ? "  text-white" : "bg-purple-300 ") : ""} 
   ${isHoliday ? "" : ""} 
-  ${hasEvent ? "bg-white" : ""} 
+  ${hasEvent ? "" : ""} 
   cursor-pointer rounded-lg flex font-bold p-2 h-14 justify-center shadow-md shadow-[#B9D7F1]`}
-  onClick={onClick}
->
-  {day}
-</div> 
-
+      onClick={onClick}
+    >
+      {day}
+    </div>
   );
 };
 
@@ -226,7 +225,9 @@ const Event = () => {
     try {
       const response = await axiosClient.get("/holiday-event");
       // Sort events by date in ascending order
-      const sortedEvents = response.result.sort((a, b) => new Date(a.date) - new Date(b.date));
+      const sortedEvents = response.result.sort(
+        (a, b) => new Date(a.date) - new Date(b.date)
+      );
       setEventsArr(sortedEvents);
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -235,7 +236,10 @@ const Event = () => {
 
   const handleAddEvent = async () => {
     try {
-      const res = await axiosClient.post("/holiday-event/create-event/",newEvent);
+      const res = await axiosClient.post(
+        "/holiday-event/create-event/",
+        newEvent
+      );
       // Resetting the form values
       setShowAddEvent(false);
       fetchEvents();
@@ -252,8 +256,6 @@ const Event = () => {
       });
     }
   };
-
-  
 
   const updateCalendar = (newMonth, newYear) => {
     setMonth(newMonth);
@@ -298,8 +300,10 @@ const Event = () => {
   const deleteEvent = async (id) => {
     // console.log(eventToDelete);
     try {
-      const res = await axiosClient.delete(`/holiday-event/${eventToDelete["_id"]}`);
-      console.log(res)
+      const res = await axiosClient.delete(
+        `/holiday-event/${eventToDelete["_id"]}`
+      );
+      console.log(res);
       fetchEvents();
       toast.success("Event deleted successfully");
     } catch (error) {
@@ -382,7 +386,7 @@ const Event = () => {
             isDarkMode ? "bg-[#0D192F] text-red-700" : "bg-white text-blue-900"
           } container relative w-full p-5 mb-3 mx-auto flex flex-col-reverse lg:flex-row rounded-lg `}
         >
-          <div className="left lg:w-3/5 p-5">
+          <div className="left lg:w-3/5 px-5">
             <Calendar
               month={month}
               year={year}
@@ -472,7 +476,7 @@ const Event = () => {
                         : "bg-gray-50  text-gray-600"
                     } py-0 px-4 text-center `}
                   >
-                     { itm.description}
+                    {itm.description}
                   </div>
                   <div
                     className={`${

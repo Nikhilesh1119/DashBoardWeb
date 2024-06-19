@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 const getNextSectionName = (sections) => {
   const sectionLength = sections.length;
@@ -8,6 +9,7 @@ const getNextSectionName = (sections) => {
 };
 
 function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
+  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const [newSection, setNewSection] = useState({
     name: "",
     teacherId: "",
@@ -88,9 +90,19 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
   return (
     <>
       <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-        <div className="w-full max-w-3xl p-6 bg-white rounded-lg shadow-lg">
+        <div
+          className={`${
+            isDarkMode ? "bg-blue-950" : "bg-white"
+          } w-full max-w-3xl p-6 rounded-lg shadow-lg`}
+        >
           <div className="flex justify-between items-center mb-4">
-            <div className="text-3xl font-bold text-blue-900">Sections</div>
+            <div
+              className={`text-3xl font-bold ${
+                isDarkMode ? "text-white" : "text-blue-900"
+              } `}
+            >
+              Sections
+            </div>
             <button
               onClick={() => setAddSectionModelOpen(false)}
               className="text-3xl font-semibold text-white bg-blue-900 px-4 py-2 rounded-md shadow-md hover:bg-blue-800"
@@ -102,10 +114,16 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
             {sections.map((section, index) => (
               <div
                 key={section.id}
-                className="flex items-center justify-between mb-2 p-4 bg-gray-100 rounded-lg shadow-md"
+                className={`flex items-center justify-between mb-2 p-4 ${
+                  isDarkMode ? "bg-blue-800" : "bg-gray-100"
+                } rounded-lg shadow-md`}
               >
                 <div className="flex items-center">
-                  <div className="text-lg font-semibold mr-4">
+                  <div
+                    className={`text-lg font-semibold ${
+                      isDarkMode ? "text-white" : ""
+                    } mr-4`}
+                  >
                     {section.name}
                   </div>
                 </div>
@@ -114,12 +132,27 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
                     name="teacherId"
                     value={newSection.teacherId}
                     onChange={handleChange}
-                    className="border border-gray-300 rounded-md px-3 py-2 bg-white w-48"
+                    className={`border border-gray-300 rounded-md px-3 py-2 ${
+                      isDarkMode ? "bg-gray-300" : "bg-gray-100"
+                    } w-48`}
                     ref={selectRef}
                   >
-                    <option value="">Select Teacher</option>
+                    <option
+                      value=""
+                      className={`${
+                        isDarkMode ? "bg-blue-900 text-white" : ""
+                      }`}
+                    >
+                      Select Teacher
+                    </option>
                     {teachers.map((teacher) => (
-                      <option key={teacher.id} value={teacher.id}>
+                      <option
+                        key={teacher.id}
+                        value={teacher.id}
+                        className={`${
+                          isDarkMode ? "bg-blue-900 text-white" : ""
+                        }`}
+                      >
                         {teacher.name}
                       </option>
                     ))}
@@ -147,14 +180,22 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
                   {activeSection === section.id ? (
                     <button
                       onClick={handleSaveSection}
-                      className="text-green-600 hover:text-green-800 mr-2"
+                      className={`${
+                        isDarkMode
+                          ? "text-white"
+                          : "text-green-600 hover:text-green-800"
+                      } mr-2`}
                     >
                       Save
                     </button>
                   ) : (
                     <button
                       onClick={() => handleUpdateClick(section)}
-                      className="text-blue-600 hover:text-blue-800 mr-2"
+                      className={`${
+                        isDarkMode
+                          ? "text-white"
+                          : "text-blue-600 hover:text-blue-800"
+                      }  mr-2`}
                       disabled={activeSection !== null}
                     >
                       Update
@@ -162,7 +203,11 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
                   )}
                   <button
                     onClick={() => handleSectionDelete(section.id)}
-                    className={`text-red-600 hover:text-red-800 ${
+                    className={` ${
+                      isDarkMode
+                        ? "text-white "
+                        : "text-red-600 hover:text-red-800"
+                    } ${
                       index !== sections.length - 1 &&
                       "opacity-50 cursor-not-allowed"
                     }`}
@@ -174,9 +219,17 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
               </div>
             ))}
             {showForm && (
-              <div className="flex items-center justify-between mb-2 p-4 bg-gray-100 rounded-lg shadow-md">
+              <div
+                className={`flex items-center justify-between mb-2 p-4  rounded-lg shadow-md ${
+                  isDarkMode ? "bg-blue-800" : "bg-gray-100"
+                }`}
+              >
                 <div className="flex items-center">
-                  <div className="border border-gray-300 rounded-md px-3 py-2 bg-white mr-4">
+                  <div
+                    className={`border border-gray-300 rounded-md px-3 py-2 mr-4 ${
+                      isDarkMode ? "bg-blue-800 text-white" : "bg-white"
+                    }`}
+                  >
                     {getNextSectionName(sections)}
                   </div>
                 </div>
@@ -184,11 +237,18 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
                   name="teacherId"
                   value={newSection.teacherId}
                   onChange={handleChange}
-                  className="border border-gray-300 rounded-md px-3 py-2 w-48"
+                  className={`border border-gray-300 rounded-md px-3 py-2 ${
+                    isDarkMode ? "bg-gray-300" : "bg-gray-100"
+                  } w-48`}
                   ref={selectRef}
                   disabled={activeSection !== null}
                 >
-                  <option value="">Select Teacher</option>
+                  <option
+                    value=""
+                    className={`${isDarkMode ? "bg-blue-900 text-white" : ""}`}
+                  >
+                    Select Teacher
+                  </option>
                   {teachers.map((teacher) => (
                     <option key={teacher.id} value={teacher.id}>
                       {teacher.name}
@@ -197,7 +257,11 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
                 </select>
                 <button
                   onClick={handleSaveSection}
-                  className="text-green-600 hover:text-green-800 mr-2"
+                  className={`${
+                    isDarkMode
+                      ? "text-white"
+                      : "text-green-600 hover:text-green-800"
+                  } mr-2`}
                   disabled={activeSection !== null}
                 >
                   Save

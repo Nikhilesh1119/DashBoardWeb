@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useFormik } from "formik";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
-import { loginAdmin, loginTeacher } from "../services/Axios.service";
 import { axiosClient } from "../services/axiosClient";
 import { setItem, setUsername } from "../services/LocalStorageManager";
 
@@ -11,7 +10,6 @@ import show from "../assets/show.png";
 
 function Login() {
   const [isAdmin, setIsAdmin] = useState(true);
-  const navigate = useNavigate();
 
   const [ishide, setIsHide] = useState(true);
   const formik = useFormik({
@@ -41,7 +39,6 @@ function Login() {
         toast.success(<b>Login Successfully</b>);
         resetForm();
         setTimeout(() => {
-          // navigate("/");
           window.location.replace("/");
         }, 2000);
       } catch (error) {
@@ -123,7 +120,6 @@ function Login() {
             </div>
             {isAdmin ? (
               <>
-                {" "}
                 <div className="text-right mt-2 text-sm">
                   Don't have an account?{" "}
                   <Link to="/signup">

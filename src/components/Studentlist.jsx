@@ -24,7 +24,6 @@ import {
 } from "@mui/material";
 import { useMediaQuery, useTheme } from "@mui/material";
 import { axiosClient } from "../services/axiosClient";
-// import axios from "axios";
 
 function Studentlist({ sectionId }) {
   const role = useSelector((state) => state.appAuth.role);
@@ -33,6 +32,8 @@ function Studentlist({ sectionId }) {
 
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const [pageNo, setPageNo] = useState(1);
+
+  const [openInfoModal, setOpenInfoModal] = useState(false);
   const [totalStudentCount, setTotalStudentCount] = useState(5);
   const [limit, setLimit] = useState(5);
   const [StudentData, setStudentData] = useState([]);
@@ -54,11 +55,11 @@ function Studentlist({ sectionId }) {
   });
   const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
   const [idForDelete, setIdForDelete] = useState();
-  const[classList, setClassList] = useState([]);
-  const[sectionList, setSectionList] = useState([]);
-  const[searchClass,setSearchClass] = useState("");
-  const[searchSection,setSearchSection] = useState("");
-  const[searchStudentName, setSearchStudentName] = useState("");
+  const [classList, setClassList] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+  const [searchClass, setSearchClass] = useState("");
+  const [searchSection, setSearchSection] = useState("");
+  const [searchStudentName, setSearchStudentName] = useState("");
 
   const getStudent = async () => {
     try {
@@ -74,7 +75,7 @@ function Studentlist({ sectionId }) {
     }
   };
 
-  const getStudentsOfSection = async()=>{
+  const getStudentsOfSection = async () => {
     try {
       const studentList = await axiosClient.get(
         `/student/admin-student-list/${searchSection}/${pageNo}`
@@ -84,26 +85,29 @@ function Studentlist({ sectionId }) {
       setLimit(studentList.result.limit);
       setStudentData(studentList.result.studentList);
       setStudentList(studentList.result.studentList);
-
     } catch (error) {
-      console.log(error);      
+      console.log(error);
     }
-  }
+  };
 
-  const getClassList = async()=>{
+  const getClassList = async () => {
     try {
       const classes = await axiosClient.get(`/class/class-list`);
       setClassList(classes.result);
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
+
+  const handleInfoModalClose = () => {
+    setOpenInfoModal(false);
+    setSelectedStudent(null);
+  };
 
   useEffect(() => {
     getStudentsOfSection();
   }, [searchSection]);
-  
+
   useEffect(() => {
     getStudent();
     getClassList();
@@ -132,9 +136,7 @@ function Studentlist({ sectionId }) {
   const handleSearch = () => {
     const searchInputLower = searchInput.toLowerCase();
     const searchedStudent = studentList.filter(
-      (itm) =>
-        itm.firstname.toLowerCase() === searchInputLower
-        // itm.username.toLowerCase() === searchInputLower
+      (itm) => itm.firstname.toLowerCase() === searchInputLower
     );
     setStudentData(searchedStudent);
   };
@@ -156,7 +158,7 @@ function Studentlist({ sectionId }) {
   };
 
   const handleDelete = () => {
-    setDeleteConfirmModal(true); // Show delete confirmation modal
+    setDeleteConfirmModal(true); 
     handleClose();
   };
 
@@ -164,12 +166,10 @@ function Studentlist({ sectionId }) {
     try {
       if (role === "teacher") {
         await axiosClient.delete(`/student/delete-student/${idForDelete}`);
-        // console.log("t");
       } else {
         await axiosClient.delete(
           `/student/admin-delete-student/${idForDelete}`
         );
-        // console.log("a");
       }
       getStudent();
       toast.success("Student deleted successfully!");
@@ -217,7 +217,6 @@ function Studentlist({ sectionId }) {
         );
       }
 
-      
       getStudent();
       toast.success("Student updated successfully!");
     } catch (error) {
@@ -251,44 +250,63 @@ function Studentlist({ sectionId }) {
               >
                 <div className="flex gap-4 px-4 py-3.5 rounded-3xl w-full">
                   <div className="flex justify-between w-full">
-                    <FormControl size="medium" className="mx-2" style={{width:"200px",marginRight:"10px"}}>
-                      <InputLabel id="demo-simple-select-label">Class</InputLabel>
+                    <FormControl
+                      size="medium"
+                      className={`${isDarkMode ? "bg-blue-950" : ""} mx-2`}
+                      style={{ width: "200px", marginRight: "10px" }}
+                    >
+                      <InputLabel id="demo-simple-select-label">
+                        Class
+                      </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={searchClass}
                         label="Age"
-                        onChange={(e)=>{
+                        onChange={(e) => {
                           setSearchClass(e.target.value);
-                          const classData = classList.filter((itm)=>itm["_id"]==e.target.value)
+                          const classData = classList.filter(
+                            (itm) => itm["_id"] == e.target.value
+                          );
                           setSectionList(classData[0]["section"]);
                         }}
                       >
-                        {classList.map((itm)=>{
-                          return(
-                             <MenuItem key={itm["_id"]} value={itm["_id"]}>{itm.name}</MenuItem>
-                          )
-                        })
-                        }
+                        {classList.map((itm) => {
+                          return (
+                            <MenuItem key={itm["_id"]} value={itm["_id"]}>
+                              {itm.name}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
-                    <FormControl size="medium" className="" style={{width:"200px",marginRight:"10px"}}>
-                      <InputLabel id="demo-simple-select-label" style={{marginRight:"100px"}}>Section</InputLabel>
+                    <FormControl
+                      size="medium"
+                      className={`${isDarkMode ? "bg-blue-950" : ""} mx-2`}
+                      style={{ width: "200px", marginRight: "10px" }}
+                    >
+                      <InputLabel
+                        id="demo-simple-select-label"
+                        style={{ marginRight: "100px" }}
+                      >
+                        Section
+                      </InputLabel>
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
                         value={searchSection}
                         label="Age"
-                        onChange={(e)=>{
-                           setSearchSection(e.target.value);
+                        onChange={(e) => {
+                          setSearchSection(e.target.value);
                         }}
                       >
-                        {
-                          sectionList.map((itm)=>{
-                            return <MenuItem key={itm["_id"]} value={itm["_id"]}>{itm.name}</MenuItem>
-                          })
-                        }
-
+                        {sectionList.map((itm) => {
+                          return (
+                            <MenuItem key={itm["_id"]} value={itm["_id"]}>
+                              {itm.name}
+                            </MenuItem>
+                          );
+                        })}
                       </Select>
                     </FormControl>
                     <input
@@ -368,7 +386,7 @@ function Studentlist({ sectionId }) {
                     <th
                       className={`${
                         isDarkMode ? "text-white" : ""
-                      } text-left px-4 py-2`}
+                      } text-left pl-4 py-2`}
                     >
                       Action
                     </th>
@@ -424,16 +442,29 @@ function Studentlist({ sectionId }) {
                       <td
                         className={`${
                           isDarkMode ? "text-white" : ""
-                        } px-4 py-2`}
+                        } pl-4 py-2`}
                       >
-                        <Button
-                          aria-describedby={id}
-                          variant="contained"
-                          color={`${isDarkMode ? "error" : "info"}`}
-                          onClick={(e) => handleClick(e, data)}
-                        >
-                          Action
-                        </Button>
+                        <div>
+                          <Button
+                            aria-describedby={id}
+                            variant="contained"
+                            color={`${isDarkMode ? "error" : "info"}`}
+                            onClick={(e) => handleClick(e, data)}
+                          >
+                            Action
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color={`${isDarkMode ? "info" : "primary"}`}
+                            onClick={() => {
+                              setSelectedStudent(data);
+                              setOpenInfoModal(true);
+                            }}
+                            style={{ marginLeft: "10px" }}
+                          >
+                            Info
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -573,7 +604,7 @@ function Studentlist({ sectionId }) {
             p: isSmallScreen ? 2 : 4,
             overflow: "auto",
             bgcolor: isDarkMode ? "#0d192f" : "background.paper",
-            color: isDarkMode ? "white" : "inherit", // Ensure text color is white in dark mode
+            color: isDarkMode ? "white" : "inherit",
           }}
         >
           <h2
@@ -866,7 +897,7 @@ function Studentlist({ sectionId }) {
             border: `2px solid ${isDarkMode ? "white" : "#000"}`,
             boxShadow: 24,
             p: 4,
-            color: isDarkMode ? "white" : "inherit", // Ensure text color is white in dark mode
+            color: isDarkMode ? "white" : "inherit", 
           }}
         >
           <p
@@ -889,6 +920,64 @@ function Studentlist({ sectionId }) {
             >
               Yes
             </Button>
+          </div>
+        </Box>
+      </Modal>
+      <Modal
+        open={openInfoModal}
+        onClose={handleInfoModalClose}
+        aria-labelledby="info-modal-title"
+        aria-describedby="info-modal-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: isSmallScreen ? "80%" : 400,
+            bgcolor: isDarkMode ? "#0d192f" : "background.paper",
+            border: `2px solid ${isDarkMode ? "white" : "#000"}`,
+            boxShadow: 24,
+            p: 4,
+            color: isDarkMode ? "white" : "inherit",
+          }}
+        >
+          <h2
+            id="info-modal-title"
+            style={{ color: isDarkMode ? "white" : "inherit" }}
+          >
+            Student Information
+          </h2>
+          <div id="info-modal-description">
+            {selectedStudent && (
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <strong>First Name:</strong> {selectedStudent.firstname}
+                </Grid>
+                <Grid item xs={12}>
+                  <strong>Last Name:</strong> {selectedStudent.lastname}
+                </Grid>
+                <Grid item xs={12}>
+                  <strong>Roll Number:</strong> {selectedStudent.rollNumber}
+                </Grid>
+                <Grid item xs={12}>
+                  <strong>Gender:</strong> {selectedStudent.gender}
+                </Grid>
+                <Grid item xs={12}>
+                  <strong>Age:</strong> {selectedStudent.age}
+                </Grid>
+                <Grid item xs={12}>
+                  <strong>Phone:</strong> {selectedStudent.phone}
+                </Grid>
+                <Grid item xs={12}>
+                  <strong>Email:</strong> {selectedStudent.email}
+                </Grid>
+                <Grid item xs={12}>
+                  <strong>Address:</strong> {selectedStudent.address}
+                </Grid>
+              </Grid>
+            )}
           </div>
         </Box>
       </Modal>
