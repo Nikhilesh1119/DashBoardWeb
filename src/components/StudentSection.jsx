@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 
@@ -18,12 +18,14 @@ const genders = ["Male", "Female", "Other"];
 export default function StudentSection() {
   const role = useSelector((state) => state.appAuth.role);
   const [students, setStudents] = useState(initialStudents);
+  const [searchQuery, setSearchQuery] = useState("");
   const [validationError, setValidationError] = useState(false);
-  const [editIndex, setEditIndex] = useState(0);
+  const [editIndex, setEditIndex] = useState(null);
   const [rollNumberCounter, setRollNumberCounter] = useState(2);
   const location = useLocation();
   const { classId, sectionId, className, sectionName } = location.state;
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
+  const searchInputRef = useRef(null); // Create a ref for the search input
 
   const handleAddRow = () => {
     const lastStudent = students[students.length - 1];
@@ -78,6 +80,24 @@ export default function StudentSection() {
     setEditIndex(null);
   };
 
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    searchInputRef.current.focus(); // Focus the search input when cleared
+  };
+
+  // Filtering students and keeping track of their original indexes
+  const filteredStudents = students
+    .map((student, index) => ({ ...student, originalIndex: index }))
+    .filter(
+      (student) =>
+        student.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        student.lastName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
   return (
     <div
       className={`${
@@ -111,19 +131,18 @@ export default function StudentSection() {
             <input
               type="text"
               placeholder="Search here..."
+              value={searchQuery} // Bind the search query value to the input
+              onChange={handleSearchInputChange} // Update search input change handler
+              ref={searchInputRef} // Attach ref to search input
               className={`${
                 isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
-              } px-3 rounded-md focus:outline-none w-full`}
+              } px-3 rounded-md focus:outline-none border border-black w-full`}
             />
             <button
               className={`bg-[#2f0d0d] text-white hover:text-blue-950 hover:bg-white hover:border-2 hover:border-red-950 py-1 px-4 ml-2 w-40 text-lg rounded-md`}
+              onClick={handleClearSearch} // Clear search query and focus input
             >
               Clear
-            </button>
-            <button
-              className={`bg-[#0d192f] text-white hover:text-blue-950 hover:bg-white hover:border-2 hover:border-blue-950 py-1 px-4 ml-2 w-40 text-lg rounded-md`}
-            >
-              Search
             </button>
           </div>
         </div>
@@ -153,7 +172,7 @@ export default function StudentSection() {
               </tr>
             </thead>
             <tbody className="text-sm font-normal text-gray-900">
-              {students.map((student, index) => (
+              {filteredStudents.map((student, index) => (
                 <tr key={index}>
                   <td
                     className={`${
@@ -167,7 +186,7 @@ export default function StudentSection() {
                       type="text"
                       value={student.firstName}
                       onChange={(e) =>
-                        handleInputChange(index, "firstName", e.target.value)
+                        handleInputChange(student.originalIndex, "firstName", e.target.value)
                       }
                       placeholder="Enter First Name"
                       className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
@@ -176,9 +195,9 @@ export default function StudentSection() {
                           : "bg-white text-gray-900"
                       }`}
                       disabled={
-                        editIndex !== index && index < students.length - 1
+                        editIndex !== student.originalIndex && student.originalIndex < students.length - 1
                       }
-                      autoFocus={editIndex === index}
+                      autoFocus={editIndex === student.originalIndex}
                     />
                   </td>
                   <td className="px-4 py-2 border border-gray-400">
@@ -186,7 +205,7 @@ export default function StudentSection() {
                       type="text"
                       value={student.lastName}
                       onChange={(e) =>
-                        handleInputChange(index, "lastName", e.target.value)
+                        handleInputChange(student.originalIndex, "lastName", e.target.value)
                       }
                       placeholder="Enter Last Name"
                       className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
@@ -195,7 +214,7 @@ export default function StudentSection() {
                           : "bg-white text-gray-900"
                       }`}
                       disabled={
-                        editIndex !== index && index < students.length - 1
+                        editIndex !== student.originalIndex && student.originalIndex < students.length - 1
                       }
                     />
                   </td>
@@ -203,7 +222,7 @@ export default function StudentSection() {
                     <select
                       value={student.gender}
                       onChange={(e) =>
-                        handleInputChange(index, "gender", e.target.value)
+                        handleInputChange(student.originalIndex, "gender", e.target.value)
                       }
                       className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
                         isDarkMode
@@ -211,7 +230,7 @@ export default function StudentSection() {
                           : "bg-white text-gray-900"
                       }`}
                       disabled={
-                        editIndex !== index && index < students.length - 1
+                        editIndex !== student.originalIndex && student.originalIndex < students.length - 1
                       }
                     >
                       <option value="">Gender</option>
@@ -227,7 +246,7 @@ export default function StudentSection() {
                       type="text"
                       value={student.guardianName}
                       onChange={(e) =>
-                        handleInputChange(index, "guardianName", e.target.value)
+                        handleInputChange(student.originalIndex, "guardianName", e.target.value)
                       }
                       placeholder="Enter Guardian Name"
                       className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
@@ -236,7 +255,7 @@ export default function StudentSection() {
                           : "bg-white text-gray-900"
                       }`}
                       disabled={
-                        editIndex !== index && index < students.length - 1
+                        editIndex !== student.originalIndex && student.originalIndex < students.length - 1
                       }
                     />
                   </td>
@@ -245,7 +264,7 @@ export default function StudentSection() {
                       type="text"
                       value={student.phone}
                       onChange={(e) =>
-                        handleInputChange(index, "phone", e.target.value)
+                        handleInputChange(student.originalIndex, "phone", e.target.value)
                       }
                       placeholder="Enter Phone Number"
                       className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
@@ -254,14 +273,14 @@ export default function StudentSection() {
                           : "bg-white text-gray-900"
                       }`}
                       disabled={
-                        editIndex !== index && index < students.length - 1
+                        editIndex !== student.originalIndex && student.originalIndex < students.length - 1
                       }
                     />
                   </td>
                   <td className="px-4 py-2 border border-gray-400">
-                    {index < students.length - 1 && (
+                    {student.originalIndex < students.length - 1 && (
                       <>
-                        {editIndex === index ? (
+                        {editIndex === student.originalIndex ? (
                           <button
                             className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded-md w-full h-full"
                             onClick={handleSave}
@@ -272,13 +291,13 @@ export default function StudentSection() {
                           <div className="flex gap-2">
                             <button
                               className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded-md w-full h-full"
-                              onClick={() => handleEdit(index)}
+                              onClick={() => handleEdit(student.originalIndex)}
                             >
                               Edit
                             </button>
                             <button
                               className="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded-md w-full h-full"
-                              onClick={() => handleDelete(index)}
+                              onClick={() => handleDelete(student.originalIndex)}
                             >
                               Delete
                             </button>
@@ -286,7 +305,7 @@ export default function StudentSection() {
                         )}
                       </>
                     )}
-                    {index === students.length - 1 && (
+                    {student.originalIndex === students.length - 1 && (
                       <button
                         className="bg-green-500 hover:bg-green-700 text-white py-1 px-3 rounded-md w-full h-full"
                         onClick={handleAddRow}

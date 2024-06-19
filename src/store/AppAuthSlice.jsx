@@ -10,7 +10,7 @@ const token = getItem("access_token");
 if (token) {
   try {
     const decodedToken = jwtDecode(token);
-    console.log(decodedToken);
+    // console.log(decodedToken);
     initialRole = decodedToken.role;
     initialSection = decodedToken.sectionId;
     initialClass = decodedToken.classId;

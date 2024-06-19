@@ -16,8 +16,6 @@ const appConfigSlice = createSlice({
       state.isLoggedin = false;
     },
     toggleDarkMode(state) {
-      console.log("toggle clicked");
-      console.log(state.isDarkMode);
       state.isDarkMode = !state.isDarkMode;
     },
     setLoading(state, action) {

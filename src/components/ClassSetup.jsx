@@ -32,7 +32,7 @@ const classOptions = [
 const getNextClassName = (classes) => {
   if (classes.length == 0) return classOptions[0];
   const lastClass = classes[classes.length - 1].name;
-  console.log({ lastClass });
+  // console.log({ lastClass });
   switch (lastClass) {
     case "Pre-Nursery": {
       return classOptions[1];
@@ -129,7 +129,7 @@ function ClassSetup() {
         return toast.error("Classroom is full of classes.");
       }
       const name = getNextClassName(classes);
-      console.log({ "next class name : ": name });
+      // console.log({ "next class name : ": name });
       const res = await axiosClient.post("/class/register", { name });
       // console.log({ res });
       getAllClass();
@@ -248,23 +248,22 @@ function ClassSetup() {
                         <div className="px-1 pt-1 md:px-5 md:pt-3 flex flex-row flex-wrap ">
                           {data.section.map((section, j) => (
                             <div
+                              onClick={() =>
+                                navigate("/student-section", {
+                                  state: {
+                                    classId: data._id,
+                                    sectionId: section._id,
+                                    className: data.name,
+                                    sectionName: section.name,
+                                  },
+                                })
+                              }
                               className={`${
                                 isDarkMode ? "border-white" : "border-rose-500"
                               } w-4 h-4 md:w-6 md:h-6 m-0.5 md:m-1 border rounded-lg flex justify-center items-center`}
                               key={j}
                             >
-                              {console.log(data.name,section.name)}
                               <div
-                                onClick={() =>
-                                  navigate("/student-section", {
-                                    state: {
-                                      classId: data._id,
-                                      sectionId: section._id,
-                                      className: data.name,
-                                      sectionName: section.name,
-                                    },
-                                  })
-                                }
                                 className={`${
                                   isDarkMode ? "text-white" : "text-rose-500"
                                 } text-xs md:text-base`}
@@ -347,7 +346,7 @@ function ClassSetup() {
                     <img
                       src={add}
                       alt=""
-                      className="w-6 h-6 md:w-10 md:h-10"
+                      className="w-6 h-6 md:w-10 md:h-10 cursor-pointer"
                       onClick={handleNewClassSubmit}
                     />
                   )}
