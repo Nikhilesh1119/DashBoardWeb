@@ -6,7 +6,6 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ClassSetup from "./components/ClassSetup";
-import RegisterTeacher from "./components/TeacherRegister";
 import StudentRegister from "./components/StudentRegister";
 import TeacherPage from "./components/Teacher";
 import Event from "./components/Event";
@@ -52,7 +51,6 @@ function App() {
                 
                 <Route path="register-parent" element={<ParentRegister/>} />
                 <Route path="teacher" element={<TeacherPage />} />
-                <Route path="register-teacher" element={<RegisterTeacher />} />
                 <Route path="class-setup" element={<ClassSetup />} />
                 <Route path="event" element={<Event />} />
                 {/* <Route path="addsection/:id" element={<Addsection />} /> */}

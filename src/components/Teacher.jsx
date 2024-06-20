@@ -1,82 +1,104 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import plus from "../assets/plus.png";
-import pen from "../assets/pen.png";
-import remove from "../assets/remove.png";
-import { button } from "@material-tailwind/react";
 import { axiosClient } from "../services/axiosClient";
 import toast, { Toaster } from "react-hot-toast";
+
 export default function Teacher() {
-  const [teachers, setTeachers] = useState([
-    { rollNo: 1, firstname: "", lastname: "", phone: "" },
-  ]);
+  const [teachers, setTeachers] = useState([]);
+  const [newTeacher, setNewTeacher] = useState({
+    SNo: null,
+    firstname: "",
+    lastname: "",
+    phone: "",
+  });
   const [validationError, setValidationError] = useState(false);
-  const [editRollNo, setEditRollNo] = useState(null);
-  const [rollNumberCounter, setRollNumberCounter] = useState(2);
+  const [editSNo, setEditSNo] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef(null);
 
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
 
   const registerTeacher = async () => {
-    const lastTeacher = teachers[teachers.length - 1];
-    if (
-      lastTeacher.firstname.trim() === "" ||
-      lastTeacher.lastname.trim() === "" ||
-      lastTeacher.phone.trim() === ""
-    ) {
-      setValidationError(true);
-      return;
+    try {
+      if (
+        !newTeacher.firstname.trim() ||
+        !newTeacher.lastname.trim() ||
+        !newTeacher.phone.trim()
+      ) {
+        setValidationError(true);
+        return;
+      } else {
+        setValidationError(false);
+      }
+      const response = await axiosClient.post("/teacher/register", {
+        firstname: newTeacher.firstname,
+        lastname: newTeacher.lastname,
+        phone: newTeacher.phone,
+      });
+      console.log(response);
+      toast.success(<b>register Successfully</b>);
+      getTeacher();
+      // setTeachers([...teachers, { ...newTeacher, SNo: teachers.length + 1 }]);
+      setNewTeacher({
+        SNo: null,
+        firstname: "",
+        lastname: "",
+        phone: "",
+      });
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(<b>{error}</b>);
     }
-    setValidationError(false);
-    setTeachers([
-      ...teachers,
-      { rollNo: rollNumberCounter, firstname: "", lastname: "", phone: "" },
-    ]);
-    // try {
-    // console.log(teachers);
-    // const response = await axiosClient.post("/teacher/register", {
-    //   firstname: teachers.firstname,
-    //   lastname: teachers.lastname,
-    //   phone: teachers.phone,
-    // });
-    // console.log(response);
-    // toast.success(<b>register Successfully</b>);
-    // setTimeout(() => {
-    //   navigate("/teacher");
-    // }, 2000);
-    // } catch (error) {
-    //   console.error("Error:", error);
-    //   toast.error(<b>{error}</b>);
-    // }
-    setRollNumberCounter(rollNumberCounter + 1);
-    setEditRollNo(rollNumberCounter);
   };
 
-  const handleInputChange = (rollNo, field, value) => {
-    const newTeachers = teachers.map((teacher) =>
-      teacher.rollNo === rollNo ? { ...teacher, [field]: value } : teacher
-    );
-    setTeachers(newTeachers);
+  const getTeacher = async () => {
+    try {
+      const response = await axiosClient.get(`teacher/teacher-list`);
+      const fetchedTeachers = response.result.teacherList;
+      const teachersWithSNos = fetchedTeachers.map((teacher, index) => ({
+        ...teacher,
+        SNo: index + 1,
+      }));
+      setTeachers(teachersWithSNos);
+    } catch (error) {
+      toast.error("Failed to fetch teacher data");
+    }
   };
 
-  const handleEdit = (rollNo) => {
-    setEditRollNo(rollNo);
+  useEffect(() => {
+    getTeacher();
+  }, []);
+
+  const handleInputChange = (SNo, field, value) => {
+    if (SNo === null) {
+      setNewTeacher({ ...newTeacher, [field]: value });
+    } else {
+      const newTeachers = teachers.map((teacher) =>
+        teacher.SNo === SNo ? { ...teacher, [field]: value } : teacher
+      );
+      setTeachers(newTeachers);
+    }
   };
 
-  const handleSave = () => {
-    setEditRollNo(null);
+  const handleEdit = (SNo) => {
+    setEditSNo(SNo);
   };
 
-  const handleDelete = (rollNo) => {
-    const newTeachers = teachers.filter((teacher) => teacher.rollNo !== rollNo);
-    const updatedTeachers = newTeachers.map((teacher, i) => ({
-      ...teacher,
-      rollNo: i + 1,
-    }));
-    setTeachers(updatedTeachers);
-    setRollNumberCounter(updatedTeachers.length + 1);
-    setEditRollNo(null);
+  const updateTeacher = async (teacher) => {
+    try {
+      await axiosClient.put(`/teacher/admin-teacher/${teacher._id}`, teacher);
+      getTeacher();
+      toast.success("Teacher updated successfully!");
+      setEditSNo(null);
+    } catch (error) {
+      toast.error(<b>{error}</b>);
+    }
+  };
+
+  const handleDelete = async (teacherId) => {
+    await axiosClient.delete(`/teacher/${teacherId}`);
+    getTeacher();
+    toast.success("Teacher Deleted");
   };
 
   const handleSearchInputChange = (e) => {
@@ -105,12 +127,12 @@ export default function Teacher() {
               type="text"
               placeholder="Search here..."
               value={searchQuery}
-              onChange={handleSearchInputChange} // Update search input change handler
-              ref={searchInputRef} // Attach ref to search input
+              onChange={handleSearchInputChange}
+              ref={searchInputRef}
               className={`${
                 isDarkMode ? "bg-gray-800 text-white" : "bg-white text-gray-900"
               } px-3 rounded-md focus:outline-none border border-black w-full`}
-              onFocus={() => searchInputRef.current.focus()} // Ensure focus on the search input
+              onFocus={() => searchInputRef.current.focus()}
             />
             <button
               className={`bg-${
@@ -118,7 +140,7 @@ export default function Teacher() {
               } bg-[#2f0d0d] text-white hover:text-blue-950 hover:bg-white hover:border-2 hover:border-red-950 py-1 px-4 ml-2 w-40 text-lg rounded-md`}
               onClick={() => {
                 setSearchQuery("");
-                searchInputRef.current.focus(); // Focus the search input when cleared
+                searchInputRef.current.focus();
               }}
             >
               Clear
@@ -143,18 +165,18 @@ export default function Teacher() {
                 <th className="px-4 py-2 border border-gray-400">First Name</th>
                 <th className="px-4 py-2 border border-gray-400">Last Name</th>
                 <th className="px-4 py-2 border border-gray-400">Phone</th>
-                <th className=" py-2 border border-gray-400">Action</th>
+                <th className="px-4 py-2 border border-gray-400">Action</th>
               </tr>
             </thead>
             <tbody className="text-sm font-normal text-gray-900">
               {filteredTeachers.map((teacher) => (
-                <tr key={teacher.rollNo}>
+                <tr key={teacher.SNo}>
                   <td
                     className={`${
                       isDarkMode ? "text-white" : ""
                     } px-4 py-2 border border-gray-400`}
                   >
-                    {teacher.rollNo}
+                    {teacher.SNo}
                   </td>
                   <td className="px-4 py-2 border border-gray-400">
                     <input
@@ -162,7 +184,7 @@ export default function Teacher() {
                       value={teacher.firstname}
                       onChange={(e) =>
                         handleInputChange(
-                          teacher.rollNo,
+                          teacher.SNo,
                           "firstname",
                           e.target.value
                         )
@@ -173,11 +195,8 @@ export default function Teacher() {
                           ? "bg-gray-800 text-white"
                           : "bg-white text-gray-900"
                       }`}
-                      disabled={
-                        editRollNo !== teacher.rollNo &&
-                        teacher.rollNo !== rollNumberCounter - 1
-                      }
-                      autoFocus={editRollNo === teacher.rollNo}
+                      disabled={editSNo !== teacher.SNo}
+                      autoFocus={editSNo === newTeacher.SNo}
                     />
                   </td>
                   <td className="px-4 py-2 border border-gray-400">
@@ -186,7 +205,7 @@ export default function Teacher() {
                       value={teacher.lastname}
                       onChange={(e) =>
                         handleInputChange(
-                          teacher.rollNo,
+                          teacher.SNo,
                           "lastname",
                           e.target.value
                         )
@@ -197,10 +216,7 @@ export default function Teacher() {
                           ? "bg-gray-800 text-white"
                           : "bg-white text-gray-900"
                       }`}
-                      disabled={
-                        editRollNo !== teacher.rollNo &&
-                        teacher.rollNo !== rollNumberCounter - 1
-                      }
+                      disabled={editSNo !== teacher.SNo}
                     />
                   </td>
                   <td className="px-4 py-2 border border-gray-400">
@@ -208,11 +224,7 @@ export default function Teacher() {
                       type="text"
                       value={teacher.phone}
                       onChange={(e) =>
-                        handleInputChange(
-                          teacher.rollNo,
-                          "phone",
-                          e.target.value
-                        )
+                        handleInputChange(teacher.SNo, "phone", e.target.value)
                       }
                       placeholder="Enter Phone Number"
                       className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
@@ -220,73 +232,102 @@ export default function Teacher() {
                           ? "bg-gray-800 text-white"
                           : "bg-white text-gray-900"
                       }`}
-                      disabled={
-                        editRollNo !== teacher.rollNo &&
-                        teacher.rollNo !== rollNumberCounter - 1
-                      }
+                      disabled={editSNo !== teacher.SNo}
                     />
                   </td>
-                  <td className=" py-2 border border-gray-400">
-                    {teacher.rollNo !== rollNumberCounter - 1 && (
-                      <>
-                        {editRollNo === teacher.rollNo ? (
-                          // <div className="flex justify-evenly">
-                          //   <button onClick={handleSave}>
-                          //     <img src={plus} alt="plus" className="size-6" />
-                          //   </button>
-                          // </div>
-                          <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded-md w-full h-full"
-                            onClick={handleSave}
-                          >
-                            Save
-                          </button>
-                        ) : (
-                          <div className="flex gap-2 justify-evenly">
-                            {/* <button onClick={() => handleEdit(teacher.rollNo)}>
-                              <img src={pen} alt="pen" className="size-6" />
-                            </button> */}
-                            {/* <button
-                              onClick={() => handleDelete(teacher.rollNo)}
-                            >
-                              <img
-                                src={remove}
-                                alt="remove"
-                                className="size-6"
-                              />
-                            </button> */}
-                            <button
-                              className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded-md w-full h-full"
-                              onClick={() => handleEdit(teacher.rollNo)}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded-md w-full h-full"
-                              onClick={() => handleDelete(teacher.rollNo)}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        )}
-                      </>
-                    )}
-                    {teacher.rollNo === rollNumberCounter - 1 && (
-                      // <div className="flex justify-evenly">
-                      //   <button onClick={registerTeacher}>
-                      //     <img src={plus} alt="plus" className="size-6" />
-                      //   </button>
-                      // </div>
+                  <td className="px-4 py-2 border border-gray-400">
+                    {editSNo === teacher.SNo ? (
                       <button
-                        className="bg-green-500 hover:bg-green-700 text-white py-1 px-3 rounded-md w-full h-full"
-                        onClick={registerTeacher}
+                        className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded-md w-full h-full"
+                        onClick={() => updateTeacher(teacher)}
                       >
-                        Add Row
+                        Save
                       </button>
+                    ) : (
+                      <div className="flex gap-2 justify-evenly">
+                        <button
+                          className="bg-blue-500 hover:bg-blue-700 text-white py-1 px-3 rounded-md w-full h-full"
+                          onClick={() => handleEdit(teacher.SNo)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="bg-red-500 hover:bg-red-700 text-white py-1 px-3 rounded-md w-full h-full"
+                          onClick={() => handleDelete(teacher._id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     )}
                   </td>
                 </tr>
               ))}
+              <tr>
+                <td
+                  className={`${
+                    isDarkMode ? "text-white" : ""
+                  } px-4 py-2 border border-gray-400`}
+                >
+                  {teachers.length + 1}
+                </td>
+                <td className="px-4 py-2 border border-gray-400">
+                  <input
+                    type="text"
+                    value={newTeacher.firstname}
+                    onChange={(e) =>
+                      handleInputChange(null, "firstname", e.target.value)
+                    }
+                    placeholder="Enter First Name"
+                    className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
+                      isDarkMode
+                        ? "bg-gray-800 text-white"
+                        : "bg-white text-gray-900"
+                    }`}
+                    disabled={editSNo !== null}
+                  />
+                </td>
+                <td className="px-4 py-2 border border-gray-400">
+                  <input
+                    type="text"
+                    value={newTeacher.lastname}
+                    onChange={(e) =>
+                      handleInputChange(null, "lastname", e.target.value)
+                    }
+                    placeholder="Enter Last Name"
+                    className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
+                      isDarkMode
+                        ? "bg-gray-800 text-white"
+                        : "bg-white text-gray-900"
+                    }`}
+                    disabled={editSNo !== null}
+                  />
+                </td>
+                <td className="px-4 py-2 border border-gray-400">
+                  <input
+                    type="text"
+                    value={newTeacher.phone}
+                    onChange={(e) =>
+                      handleInputChange(null, "phone", e.target.value)
+                    }
+                    placeholder="Enter Phone Number"
+                    className={`w-full h-full px-2 py-1 border-none focus:outline-none ${
+                      isDarkMode
+                        ? "bg-gray-800 text-white"
+                        : "bg-white text-gray-900"
+                    }`}
+                    disabled={editSNo !== null}
+                  />
+                </td>
+                <td className="px-4 py-2 border border-gray-400">
+                  <button
+                    className="bg-green-500 hover:bg-green-700 text-white py-1 px-3 rounded-md w-full h-full"
+                    onClick={registerTeacher}
+                    disabled={editSNo !== null}
+                  >
+                    Add Row
+                  </button>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
