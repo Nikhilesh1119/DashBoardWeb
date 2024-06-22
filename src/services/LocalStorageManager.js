@@ -12,6 +12,11 @@ export function setItem(value){
 export function removeItem(key){
     localStorage.removeItem(key);
 }
+
 export function setUsername(value){
     localStorage.setItem("username",value);
+}
+
+export function setFirstname(value){
+    localStorage.setItem("firstname",value);
 }

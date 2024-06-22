@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { axiosClient } from "../services/axiosClient";
 
 const getNextSectionName = (sections) => {
   const sectionLength = sections.length;
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const letters = "ABCDEFGHI";
   return sectionLength < letters.length ? letters[sectionLength] : "";
 };
 
@@ -15,13 +16,8 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
     teacherId: "",
   });
   const [sections, setSections] = useState([]);
-  const [teachers] = useState([
-    // Example teachers list
-    { id: 1, name: "Teacher A" },
-    { id: 2, name: "Teacher B" },
-    { id: 3, name: "Teacher C" },
-  ]);
-  const [showForm, setShowForm] = useState(true); // State to control form visibility
+  const [teachers, setTeachers] = useState([]);
+  const [showForm, setShowForm] = useState(true);
   const [activeSection, setActiveSection] = useState(null);
   const selectRef = useRef(null);
 
@@ -29,49 +25,56 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
     if (selectRef.current) {
       selectRef.current.focus();
     }
-  }, [sections]);
+  }, [sections, activeSection]);
 
-  const handleSaveSection = () => {
+  const handleSaveSection = async () => {
     if (sections.length === 8) {
       return toast.error("Reached maximum section limit");
     }
     if (!newSection.teacherId) {
       return toast.error("Please select a teacher");
     }
-
-    // Check if we are adding a new section or updating an existing one
     if (activeSection === null) {
-      // Adding a new section
       const sectionName = getNextSectionName(sections);
       const newSectionObj = {
-        id: sections.length + 1, // Example: Generating a unique ID (simulation)
-        name: sectionName, // Auto-incremented section name
+        name: sectionName,
         teacherId: newSection.teacherId,
+        classId: clickedClassId,
       };
-      setSections([...sections, newSectionObj]);
-      toast.success("Section added successfully");
+      try {
+        const res = await axiosClient.post("section/register", newSectionObj);
+        getSections();
+        getUnassignedTeacher();
+        toast.success(res.result);
+      } catch (error) {
+        toast.error("Failed to add section");
+      }
     } else {
-      // Updating an existing section
-      const updatedSections = sections.map((section) =>
-        section.id === activeSection
-          ? { ...section, teacherId: newSection.teacherId }
-          : section
-      );
-      setSections(updatedSections);
-      toast.success("Teacher updated successfully");
-      setActiveSection(null); // Reset active section after update
+      try {
+        // await axiosClient.put(`/section/${activeSection}`, {
+        //   teacherId: newSection.teacherId,
+        // });
+        getSections();
+        getUnassignedTeacher();
+        toast.success("Teacher updated successfully");
+      } catch (error) {
+        toast.error("Failed to update teacher");
+      }
+      setActiveSection(null);
     }
 
-    setNewSection({ name: "", teacherId: "" }); // Reset form fields
-    setShowForm(true); // Keep the form visible for adding another section
+    setNewSection({ name: "", teacherId: "" });
+    setShowForm(true);
   };
 
-  const handleSectionDelete = (sectionId) => {
-    const updatedSections = sections.filter(
-      (section) => section.id !== sectionId
-    );
-    setSections(updatedSections);
-    toast.success("Section deleted successfully");
+  const handleSectionDelete = async (sectionId) => {
+    try {
+      await axiosClient.delete(`/section/${sectionId}`);
+      getSections();
+      toast.success("Section deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete section");
+    }
   };
 
   const handleChange = (e) => {
@@ -82,10 +85,34 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
     });
   };
 
+  const getUnassignedTeacher = async () => {
+    try {
+      const res = await axiosClient.get("/teacher/unassigned-teachers");
+      setTeachers(res.result);
+    } catch (error) {
+      toast.error("Failed to fetch unassigned teachers");
+    }
+  };
+
   const handleUpdateClick = (section) => {
-    setActiveSection(section.id);
+    getUnassignedTeacher();
+    setActiveSection(section._id);
     setNewSection({ name: section.name, teacherId: section.teacherId });
   };
+
+  const getSections = async () => {
+    try {
+      const res = await axiosClient.get(`/section/${clickedClassId}`);
+      setSections(res.result);
+    } catch (error) {
+      toast.error("Failed to fetch sections");
+    }
+  };
+
+  useEffect(() => {
+    getUnassignedTeacher();
+    getSections();
+  }, [clickedClassId]);
 
   return (
     <>
@@ -104,7 +131,10 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
               Sections
             </div>
             <button
-              onClick={() => setAddSectionModelOpen(false)}
+              onClick={async () => {
+                setAddSectionModelOpen(false);
+                await getAllClass();
+              }}
               className="text-3xl font-semibold text-white bg-blue-900 px-4 py-2 rounded-md shadow-md hover:bg-blue-800"
             >
               Done
@@ -113,7 +143,7 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
           <div className="mb-6 max-h-80 overflow-y-auto">
             {sections.map((section, index) => (
               <div
-                key={section.id}
+                key={section._id}
                 className={`flex items-center justify-between mb-2 p-4 ${
                   isDarkMode ? "bg-blue-800" : "bg-gray-100"
                 } rounded-lg shadow-md`}
@@ -127,7 +157,7 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
                     {section.name}
                   </div>
                 </div>
-                {activeSection === section.id ? (
+                {activeSection === section._id ? (
                   <select
                     name="teacherId"
                     value={newSection.teacherId}
@@ -147,37 +177,27 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
                     </option>
                     {teachers.map((teacher) => (
                       <option
-                        key={teacher.id}
-                        value={teacher.id}
+                        key={teacher._id}
+                        value={teacher._id}
                         className={`${
                           isDarkMode ? "bg-blue-900 text-white" : ""
                         }`}
                       >
-                        {teacher.name}
+                        {teacher.firstname}
                       </option>
                     ))}
                   </select>
                 ) : (
-                  <select
-                    name="teacherId"
-                    value={section.teacherId}
-                    onChange={(e) =>
-                      handleChange({
-                        target: { name: "teacherId", value: e.target.value },
-                      })
-                    }
-                    className="border border-gray-300 rounded-md px-3 py-2 bg-white w-48"
-                    disabled
+                  <div
+                    className={`border border-gray-300 rounded-md px-3 py-2 ${
+                      isDarkMode ? "bg-gray-300" : "bg-gray-100"
+                    } w-48`}
                   >
-                    {teachers.map((teacher) => (
-                      <option key={teacher.id} value={teacher.id}>
-                        {teacher.name}
-                      </option>
-                    ))}
-                  </select>
+                    {section.classTeacher.firstname}
+                  </div>
                 )}
                 <div className="flex items-center">
-                  {activeSection === section.id ? (
+                  {activeSection === section._id ? (
                     <button
                       onClick={handleSaveSection}
                       className={`${
@@ -198,11 +218,11 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
                       }  mr-2`}
                       disabled={activeSection !== null}
                     >
-                      Update
+                      Edit
                     </button>
                   )}
                   <button
-                    onClick={() => handleSectionDelete(section.id)}
+                    onClick={() => handleSectionDelete(section._id)}
                     className={` ${
                       isDarkMode
                         ? "text-white "
@@ -250,8 +270,8 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
                     Select Teacher
                   </option>
                   {teachers.map((teacher) => (
-                    <option key={teacher.id} value={teacher.id}>
-                      {teacher.name}
+                    <option key={teacher._id} value={teacher._id}>
+                      {teacher.firstname}
                     </option>
                   ))}
                 </select>
