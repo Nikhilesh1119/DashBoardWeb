@@ -22,7 +22,6 @@ const Navbar = () => {
   const profileMenuRef = useRef(null);
 
   const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
-  const username = getItem("username");
 
   const handleChange = () => {
     dispatch(appConfigAction.toggleDarkMode());
@@ -55,8 +54,14 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
+    if (role === "teacher") {
+      removeItem("class");
+      removeItem("section");
+      removeItem("firstname");
+    } else {
+      removeItem("username");
+    }
     removeItem(KEY_ACCESS_TOKEN);
-    removeItem("username");
   };
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
@@ -163,7 +168,8 @@ const Navbar = () => {
               onMouseEnter={handleProfileMenu}
               className="text-white px-4 py-2 rounded-md"
             >
-              {username ? username : "Admin"}
+              {role === "teacher" ? getItem("firstname") : getItem("username")}
+              {/* {firstname ? firstname : "teacher"} */}
             </button>
             {profileMenuOpen && (
               <div

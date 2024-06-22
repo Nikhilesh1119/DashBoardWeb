@@ -14,8 +14,10 @@ if (token) {
     initialRole = decodedToken.role;
     initialSection = decodedToken.sectionId;
     initialClass = decodedToken.classId;
-    localStorage.setItem("class", decodedToken.className);
-    localStorage.setItem("section", decodedToken.sectionName);
+    if (decodedToken.role === "teacher") {
+      localStorage.setItem("class", decodedToken.className);
+      localStorage.setItem("section", decodedToken.sectionName);
+    }
   } catch (error) {
     console.error("Failed to decode token:", error);
   }

@@ -181,16 +181,16 @@ const EventForm = ({
         </div>
         <div className="flex justify-between mt-4">
           <button
-            className="px-4 py-2 bg-blue-900 text-white rounded-lg"
-            onClick={handleAddEvent}
-          >
-            Submit
-          </button>
-          <button
             className="px-4 py-2 bg-gray-300 rounded-lg"
             onClick={() => setShowAddEvent(false)}
           >
             Cancel
+          </button>
+          <button
+            className="px-4 py-2 bg-blue-900 text-white rounded-lg"
+            onClick={handleAddEvent}
+          >
+            Submit
           </button>
         </div>
       </div>

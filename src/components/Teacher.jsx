@@ -4,19 +4,19 @@ import { axiosClient } from "../services/axiosClient";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function Teacher() {
+  const searchInputRef = useRef(null);
+  const newTeacherFirstNameRef = useRef(null);
   const [teachers, setTeachers] = useState([]);
+  const [validationError, setValidationError] = useState(false);
+  const [editSNo, setEditSNo] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
   const [newTeacher, setNewTeacher] = useState({
     SNo: null,
     firstname: "",
     lastname: "",
     phone: "",
   });
-  const [validationError, setValidationError] = useState(false);
-  const [editSNo, setEditSNo] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const searchInputRef = useRef(null);
-
-  const isDarkMode = useSelector((state) => state.appConfig.isDarkMode);
 
   const registerTeacher = async () => {
     try {
@@ -45,6 +45,7 @@ export default function Teacher() {
         lastname: "",
         phone: "",
       });
+      newTeacherFirstNameRef.current.focus();
     } catch (error) {
       console.error("Error:", error);
       toast.error(<b>{error}</b>);
@@ -283,6 +284,7 @@ export default function Teacher() {
                         ? "bg-gray-800 text-white"
                         : "bg-white text-gray-900"
                     }`}
+                    ref={newTeacherFirstNameRef}
                     disabled={editSNo !== null}
                   />
                 </td>

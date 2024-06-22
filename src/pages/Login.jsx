@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import { axiosClient } from "../services/axiosClient";
-import { setItem, setUsername } from "../services/LocalStorageManager";
+import { setFirstname, setItem, setUsername } from "../services/LocalStorageManager";
 
 import hide from "../assets/hide.png";
 import show from "../assets/show.png";
@@ -12,8 +12,11 @@ function Login() {
   const [isAdmin, setIsAdmin] = useState(true);
 
   const [ishide, setIsHide] = useState(true);
+  // username phone phone login
+  // forgot password
   const formik = useFormik({
     initialValues: {
+      phone: "",
       email: "",
       password: "",
     },
@@ -32,9 +35,12 @@ function Login() {
           setItem(response?.result.accessToken);
           setUsername(response?.result.username);
         } else {
-          response = await axiosClient.post("/teacher/login", values);
+          response = await axiosClient.post("/teacher/login", {
+            phone: values.phone,
+            password: values.password,
+          });
           setItem(response?.result.accessToken);
-          setUsername(response?.result.username);
+          setFirstname(response?.result.firstname);
         }
         toast.success(<b>Login Successfully</b>);
         resetForm();
@@ -65,16 +71,30 @@ function Login() {
               {isAdmin ? "Admin Login" : "Teacher Login"}
             </h2>
             <form onSubmit={formik.handleSubmit}>
-              <div className="mt-5">
-                <input
-                  type="text"
-                  name="email"
-                  placeholder={isAdmin ? "Admin email" : "Teacher email"}
-                  className="border border-gray-400 py-1 px-2 w-full"
-                  onChange={formik.handleChange}
-                  value={formik.values.email}
-                />
-              </div>
+              {isAdmin ? (
+                <div className="mt-5">
+                  <input
+                    type="text"
+                    name="email"
+                    placeholder="Admin email"
+                    className="border border-gray-400 py-1 px-2 w-full"
+                    onChange={formik.handleChange}
+                    value={formik.values.email}
+                  />
+                </div>
+              ) : (
+                <div className="mt-5">
+                  <input
+                    type="text"
+                    name="phone"
+                    placeholder="Teacher phone"
+                    className="border border-gray-400 py-1 px-2 w-full"
+                    onChange={formik.handleChange}
+                    value={formik.values.phone}
+                  />
+                </div>
+              )}
+
               <div className="mt-5 border border-gray-400  flex justify-center items-center focus-within:border-black focus-within:border-2 focus-within:rounded-md">
                 <input
                   type={ishide ? "password" : "text"}
