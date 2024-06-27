@@ -94,10 +94,22 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
     }
   };
 
+  const handleUpdateTeacherSection = async (section) => {
+    const res = await axiosClient.post("section/replace-teacher", {
+      sectionId: section._id,
+      teacherId: newSection.teacherId,
+    });
+    toast.success("Teacher updated successfully");
+    getUnassignedTeacher();
+    getSections();
+    setNewSection({ name: section.name, teacherId: newSection.teacherId });
+    setActiveSection(null);
+  };
+
   const handleUpdateClick = (section) => {
     getUnassignedTeacher();
     setActiveSection(section._id);
-    setNewSection({ name: section.name, teacherId: section.teacherId });
+    setNewSection({ name: section.name, teacherId: newSection.teacherId });
   };
 
   const getSections = async () => {
@@ -199,7 +211,7 @@ function Addsection({ setAddSectionModelOpen, clickedClassId, getAllClass }) {
                 <div className="flex items-center">
                   {activeSection === section._id ? (
                     <button
-                      onClick={handleSaveSection}
+                      onClick={() => handleUpdateTeacherSection(section)}
                       className={`${
                         isDarkMode
                           ? "text-white"

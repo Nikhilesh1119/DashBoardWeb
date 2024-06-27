@@ -6,7 +6,6 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ClassSetup from "./components/ClassSetup";
-import StudentRegister from "./components/StudentRegister";
 import TeacherPage from "./components/Teacher";
 import Event from "./components/Event";
 import Addsection from "./components/Addsection";
@@ -32,10 +31,6 @@ function App() {
                 />
                 
                 <Route path="register-parent" element={<ParentRegister/>} />
-                 <Route
-                  path="register-student"
-                  element={<StudentRegister />}
-                />
                 <Route path="event" element={<Event />} />
                 <Route path="register-parent" element={<ParentRegister/>} />
               </>
@@ -44,10 +39,6 @@ function App() {
                 <Route path="" element={<DashBoard />} />
                 <Route path="student-list" element={<Studentlist />} />
                 <Route path="student" element={<Studentlist />} />
-                <Route
-                  path="register-student"
-                  element={<StudentRegister />}
-                />
                 
                 <Route path="register-parent" element={<ParentRegister/>} />
                 <Route path="teacher" element={<TeacherPage />} />
