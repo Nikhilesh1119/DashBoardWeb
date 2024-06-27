@@ -12,11 +12,11 @@ function Login() {
   const [isAdmin, setIsAdmin] = useState(true);
 
   const [ishide, setIsHide] = useState(true);
-  // username phone phone login
+  // username user user login
   // forgot password
   const formik = useFormik({
     initialValues: {
-      phone: "",
+      user: "",
       email: "",
       password: "",
     },
@@ -36,7 +36,7 @@ function Login() {
           setUsername(response?.result.username);
         } else {
           response = await axiosClient.post("/teacher/login", {
-            phone: values.phone,
+            user: values.user,
             password: values.password,
           });
           setItem(response?.result.accessToken);
@@ -86,11 +86,11 @@ function Login() {
                 <div className="mt-5">
                   <input
                     type="text"
-                    name="phone"
-                    placeholder="Teacher phone"
+                    name="user"
+                    placeholder="username, email or phone"
                     className="border border-gray-400 py-1 px-2 w-full"
                     onChange={formik.handleChange}
-                    value={formik.values.phone}
+                    value={formik.values.user}
                   />
                 </div>
               )}

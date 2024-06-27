@@ -26,17 +26,22 @@ export default function StudentSection() {
   });
   const genders = ["Male", "Female", "Other"];
   const role = useSelector((state) => state.appAuth.role);
-
+  const teacherSectionId = useSelector((state) => state.appAuth.section);
   useEffect(() => {
     fetchStudents();
   }, []);
 
   const fetchStudents = async () => {
     try {
-      const res = await axiosClient.get(
-        `/student/admin-student-list/${sectionId}`
-      );
-      console.log(res.result.studentList);
+      let res;
+      if (role === "teacher") {
+        const sectionId = teacherSectionId;
+        res = await axiosClient.get(`/student/section-students/${sectionId}`);
+      } else {
+        res = await axiosClient.get(
+          `/student/admin-section-students/${sectionId}`
+        );
+      }
       const fetchedStudents = res.result.studentList;
       const studentsWithRollNos = fetchedStudents.map((student, index) => ({
         ...student,
@@ -63,12 +68,22 @@ export default function StudentSection() {
     }
 
     try {
-      const res = await axiosClient.post("/student/admin-register", {
-        ...newStudent,
-        classId,
-        sectionId,
-      });
-      toast.success(<b>{res}</b>);
+      if (role === "teacher") {
+        const sectionId = teacherSectionId;
+        const res = await axiosClient.post("/student/register", {
+          ...newStudent,
+          classId,
+          sectionId,
+        });
+        toast.success(<b>{res.result}</b>);
+      } else {
+        const res = await axiosClient.post("/student/admin-register", {
+          ...newStudent,
+          classId,
+          sectionId,
+        });
+        toast.success(<b>{res.result}</b>);
+      }
       fetchStudents();
       setNewStudent({
         RollNo: null,
@@ -107,8 +122,11 @@ export default function StudentSection() {
 
   const handleDelete = async (studentId) => {
     try {
-      console.log(studentId);
-      await axiosClient.delete(`/student/admin-delete/${studentId}`);
+      if (role === "teacher") {
+        await axiosClient.delete(`/student/delete/${studentId}`);
+      } else {
+        await axiosClient.delete(`/student/admin-delete/${studentId}`);
+      }
       fetchStudents();
       toast.success("Student Deleted");
     } catch (error) {
